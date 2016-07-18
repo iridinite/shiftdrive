@@ -250,20 +250,6 @@ Public Class Host
         Return Clients(clientID).Socket.Connected
     End Function
 
-    ''' <summary>Creates a new ghost socket with the Silenced flag set.</summary>
-    ''' <param name="clientID">Client index</param>
-    ''' <remarks>Silencing clients will cause Send class to them to be ignored.</remarks>
-    ''' <exception cref="InvalidOperationException">The server is not running.</exception>
-    ''' <exception cref="ArgumentException">The specified client already exists.</exception>
-    Public Sub CreateSilenced(clientID As Integer)
-        If Not Started Then Throw New InvalidOperationException("Server is not running.")
-        If Clients(clientID) IsNot Nothing Then Throw New ArgumentException("Such a client already exists.")
-
-        Dim Client As New CommClient
-        Client.Silenced = True
-        Clients(clientID) = Client
-    End Sub
-
     ''' <summary>
     ''' Asynchronously writes a byte array to the network stream of the specified client.
     ''' </summary>
@@ -282,7 +268,6 @@ Public Class Host
         If Not Started Then Throw New InvalidOperationException("Server is not running.")
         ' make sure the connection exists
         If Clients(clientID) Is Nothing Then Throw New ArgumentException("No such client exists.")
-        If Clients(clientID).Silenced Then Exit Sub
         If Not Clients(clientID).Socket.Connected Then Throw New ArgumentException("Specified client connection is closed.")
         If packet Is Nothing OrElse packet.Length < 1 Then Throw New ArgumentException("Invalid packet.")
 
@@ -331,7 +316,6 @@ Public Class Host
         For I As Integer = 0 To MaxClients - 1
             ' make sure the connection exists
             If Clients(I) Is Nothing Then Continue For
-            If Clients(I).Silenced Then Continue For
             If Not Clients(I).Socket.Connected Then Continue For
             ' send the data
             Send(I, packet)
@@ -395,14 +379,12 @@ End Class
 Friend Class CommClient
 
     Public Socket As TcpClient
-    Public Silenced As Boolean
 
     Public ReadBuffer(0 To 4095) As Byte
     Public PacketBuffer() As Byte
 
     Public Sub New()
         Socket = Nothing
-        Silenced = False
         PacketBuffer = New Byte() {}
     End Sub
 
