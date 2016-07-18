@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
@@ -40,6 +41,8 @@ namespace ShiftDrive {
         internal static extern lua_CFunction lua_atpanic(IntPtr L, lua_CFunction newfn);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int lua_error(IntPtr L);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int luaL_argerror(IntPtr L, int narg, string extramsg);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void luaL_where(IntPtr L, int lvl);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
@@ -147,6 +150,17 @@ namespace ShiftDrive {
             uint size;
             return Marshal.PtrToStringAnsi(lua_tolstring(L, index, out size), (int)size);
         }
+        internal static Vector2 lua_tovec2(IntPtr L, int idx) {
+            Vector2 ret;
+            luaL_checktype(L, idx, LUA_TTABLE);
+            lua_rawgeti(L, idx, 1);
+            ret.X = (float)lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            ret.Y = (float)lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
 
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void luaL_checktype(IntPtr L, int narg, int t);
@@ -161,7 +175,14 @@ namespace ShiftDrive {
             return Marshal.PtrToStringAnsi(luaL_checklstring(L, index, out size), (int)size);
         }
 
-        
+        internal static void lua_checkfieldtype(IntPtr L, int tableidx, string fieldname, int fieldidx, int reqtype) {
+            // checks the type of a field obtained from a table, throwing a descriptive error if mismatching
+            if (lua_type(L, fieldidx) == reqtype) return;
+            luaL_argerror(L, tableidx,
+                "bad type to field '" + fieldname + "': expected " + Marshal.PtrToStringAnsi(lua_typename(L, reqtype)) + ", got " +
+                Marshal.PtrToStringAnsi(lua_typename(L, lua_type(L, fieldidx))));
+        }
+
     }
 
 }
