@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
@@ -214,12 +215,46 @@ namespace ShiftDrive {
             GameObject newobj = null;
             string objtype = LuaAPI.luaL_checkstring(L, 1);
 
+            // -- Named Objects --
             if (objtype.Equals("player", StringComparison.InvariantCultureIgnoreCase)) {
+                // Player Ship
                 PlayerShip newship = new PlayerShip();
                 newobj = newship;
-
+                
             } else if (objtype.Equals("blackhole", StringComparison.InvariantCultureIgnoreCase)) {
+                // Black Hole
                 newobj = new BlackHole();
+
+            // -- Nameless Objects --
+            } else if (objtype.Equals("asteroid", StringComparison.InvariantCultureIgnoreCase)) {
+                // Asteroid Belt
+                // require metadata table as the second parameter
+                int a = LuaAPI.lua_gettop(L);
+                LuaAPI.luaL_checktype(L, 2, LuaAPI.LUA_TTABLE);
+                LuaAPI.lua_getfield(L, 2, "startpoint");
+                LuaAPI.lua_getfield(L, 2, "endpoint");
+                LuaAPI.lua_getfield(L, 2, "range");
+                LuaAPI.lua_getfield(L, 2, "count");
+                LuaAPI.lua_checkfieldtype(L, 2, "startpoint", 3, LuaAPI.LUA_TTABLE);
+                LuaAPI.lua_checkfieldtype(L, 2, "endpoint", 4, LuaAPI.LUA_TTABLE);
+                LuaAPI.lua_checkfieldtype(L, 2, "range", 5, LuaAPI.LUA_TNUMBER);
+                LuaAPI.lua_checkfieldtype(L, 2, "count", 6, LuaAPI.LUA_TNUMBER);
+                Vector2 start = LuaAPI.lua_tovec2(L, 3);
+                Vector2 end = LuaAPI.lua_tovec2(L, 4);
+                int range = (int)LuaAPI.lua_tonumber(L, 5);
+                int count = (int)LuaAPI.lua_tonumber(L, 6);
+                LuaAPI.lua_pop(L, 4); // remove the table fields from the stack
+                int b = LuaAPI.lua_gettop(L);
+
+                // now that we parsed the Lua table's info, we can create the objects
+                Vector2 increment = (end - start) / (count - 1);
+                for (int i = 0; i < count; i++) {
+                    Asteroid rock = new Asteroid();
+                    rock.position = start + (increment * i) + // base movement along the start-end line, plus random range
+                                    new Vector2(Utils.RNG.Next(range * 2) - range, Utils.RNG.Next(range * 2) - range);
+                    NetServer.world.Objects.Add(rock);
+                }
+                return 0;
 
             } else {
                 LuaAPI.lua_pushstring(L, "Unknown object type '" + objtype + "'");
@@ -227,6 +262,8 @@ namespace ShiftDrive {
                 return 0;
             }
 
+            // in the case of a named object, make sure to push it to Lua and the server state
+            // nameless object creations will create several instances, so don't bother returning just one
             NetServer.world.Objects.Add(newobj);
             newobj.PushToLua(L);
 

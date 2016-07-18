@@ -52,13 +52,16 @@ namespace ShiftDrive {
             int objectCount = reader.ReadInt32();
             for (int i = 0; i < objectCount; i++) {
                 ObjectType objtype = (ObjectType)reader.ReadByte();
-                NamedObject obj;
+                GameObject obj;
                 switch (objtype) {
                     case ObjectType.PlayerShip:
                         obj = new PlayerShip();
                         break;
                     case ObjectType.AIShip:
                         obj = new AIShip();
+                        break;
+                    case ObjectType.Asteroid:
+                        obj = new Asteroid();
                         break;
                     case ObjectType.BlackHole:
                         obj = new BlackHole();
