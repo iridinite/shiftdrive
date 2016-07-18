@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{49D15A09-4058-46B6-B118-1314FDF68972}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShiftDrive</RootNamespace>
+    <AssemblyName>ShiftDriveClient</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MonoGamePlatform>Windows</MonoGamePlatform>
+    <MonoGameContentBuilderExe>
+    </MonoGameContentBuilderExe>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Assets.cs" />
+    <Compile Include="Asteroid.cs" />
+    <Compile Include="Button.cs" />
+    <Compile Include="Control.cs" />
+    <Compile Include="LuaAPI.cs" />
+    <Compile Include="LuaState.cs" />
+    <Compile Include="TextField.cs" />
+    <Compile Include="FormConfirmExit.cs" />
+    <Compile Include="FormMessage.cs" />
+    <Compile Include="FormOptions.cs" />
+    <Compile Include="FormConnect.cs" />
+    <Compile Include="FormGame.cs" />
+    <Compile Include="FormLobby.cs" />
+    <Compile Include="FormMainMenu.cs" />
+    <Compile Include="Input.cs" />
+    <Compile Include="GameObject.cs" />
+    <Compile Include="PlayerRole.cs" />
+    <Compile Include="BlackHole.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="Ship.cs" />
+    <Compile Include="NetClient.cs" />
+    <Compile Include="NetServer.cs" />
+    <Compile Include="NetShared.cs" />
+    <Compile Include="Console.cs" />
+    <Compile Include="ConsoleHelm.cs" />
+    <Compile Include="ConsoleLrs.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Skybox.cs" />
+    <Compile Include="IForm.cs" />
+    <Compile Include="ShiftDriveGame.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.5.1.1679, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommLib\CommLib.vbproj">
+      <Project>{9a7ec68f-98ad-4b84-b95e-814cdea2ec13}</Project>
+      <Name>CommLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Localization\Localization.vbproj">
+      <Project>{bee5e0f2-ed50-4b82-b38b-f966f94b0b89}</Project>
+      <Name>Localization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)Lib\*.dll" "$(TargetDir)*.dll"
+xcopy "$(ProjectDir)Data" "$(TargetDir)Data" /E /I /F /Y</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
