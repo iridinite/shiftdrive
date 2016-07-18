@@ -19,21 +19,7 @@ namespace ShiftDrive {
         Station,
         BlackHole
     }
-
-    internal struct ObjectArt {
-        public readonly string meshfile;
-        public readonly string diffuse;
-        public readonly string normal;
-        public readonly string specular;
-
-        public ObjectArt(string meshfile, string diffuse, string normal = "", string specular = "") {
-            this.meshfile = meshfile;
-            this.diffuse = diffuse;
-            this.normal = normal;
-            this.specular = specular;
-        }
-    }
-
+    
     /// <summary>
     /// Represents a serializable object in the game world.
     /// </summary>
@@ -44,8 +30,7 @@ namespace ShiftDrive {
         public Vector2 position;
         public float facing;
         public int sector;
-
-        public ObjectArt art;
+        
         public string iconfile;
         public Color iconcolor;
 
@@ -128,13 +113,7 @@ namespace ShiftDrive {
             switch (key) {
                 case "position":
                     // position is a two-element table {x, y}
-                    LuaAPI.luaL_checktype(L, 3, LuaAPI.LUA_TTABLE);
-                    LuaAPI.lua_rawgeti(L, 3, 1);
-                    float x = (float)LuaAPI.lua_tonumber(L, -1);
-                    LuaAPI.lua_rawgeti(L, 3, 2);
-                    float y = (float)LuaAPI.lua_tonumber(L, -1);
-                    position = new Vector2(x, y);
-                    LuaAPI.lua_pop(L, 2);
+                    position = LuaAPI.lua_tovec2(L, 3);
                     break;
                 case "facing":
                     facing = (float)LuaAPI.luaL_checknumber(L, 3);
@@ -163,12 +142,7 @@ namespace ShiftDrive {
             writer.Write(position.Y);
             writer.Write(facing);
             writer.Write((byte)sector);
-
-            writer.Write(art.meshfile);
-            writer.Write(art.diffuse);
-            writer.Write(art.normal);
-            writer.Write(art.specular);
-
+            
             writer.Write(iconfile);
             writer.Write(iconcolor.PackedValue);
 
@@ -181,9 +155,7 @@ namespace ShiftDrive {
             position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
-
-            art = new ObjectArt(reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString());
-
+            
             iconfile = reader.ReadString();
             iconcolor.PackedValue = reader.ReadUInt32();
 
@@ -200,7 +172,6 @@ namespace ShiftDrive {
         public string desc;
 
         protected NamedObject() {
-            art = new ObjectArt("", "");
             iconfile = "";
             nameshort = "OBJ";
             namefull = "Object";
