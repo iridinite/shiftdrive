@@ -292,7 +292,11 @@ Public Class Host
         Buffer.BlockCopy(lenBf, 0, sendBf, 0, 4) ' byte count
         Buffer.BlockCopy(packet, 0, sendBf, 4, packet.Length) ' packet contents
 
-        Clients(clientID).Socket.GetStream.BeginWrite(sendBf, 0, sendBf.Length, callback, clientID)
+        Try
+            Clients(clientID).Socket.GetStream.BeginWrite(sendBf, 0, sendBf.Length, callback, clientID)
+        Catch ex As ObjectDisposedException
+            ' swallow erroneous access to a dead socket
+        End Try
     End Sub
 
     Private Sub SendCallback(ir As IAsyncResult)
