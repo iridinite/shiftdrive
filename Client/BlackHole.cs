@@ -38,7 +38,7 @@ namespace ShiftDrive {
                 if (pullpower >= 0.35f) gobj.TakeDamage(pullpower * pullpower * deltaTime * 10f);
 
                 // and stuff at the center is simply destroyed
-                if (pullpower >= 0.9f) gobj.Destroy();
+                if (pullpower >= 0.95f) gobj.Destroy();
             }
         }
 
