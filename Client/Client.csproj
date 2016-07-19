@@ -39,12 +39,14 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AIShip.cs" />
     <Compile Include="Assets.cs" />
     <Compile Include="Asteroid.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="LuaAPI.cs" />
     <Compile Include="LuaState.cs" />
+    <Compile Include="PlayerShip.cs" />
     <Compile Include="TextField.cs" />
     <Compile Include="FormConfirmExit.cs" />
     <Compile Include="FormMessage.cs" />
