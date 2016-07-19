@@ -1,11 +1,8 @@
 -- Siege gamemode
 -- creates a fairly generic world with linear progression
 
-local player = Create("player")
+local player = CreateShip(require("ships/player-lcruiser"), "player")
 player.position = {400, 500}
-player.topspeed = 35
-player.turnrate = 40
-player.iconname = "player"
 player.iconcolor = 0xFFFF00FF
 
 Create("asteroid", {startpoint = {100, 100}, endpoint = {900, 900}, range = 100, count = 100})

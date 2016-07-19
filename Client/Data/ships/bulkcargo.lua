@@ -10,6 +10,7 @@ return {
   shieldmax = 0,
   cargo = 4,
   
+  weaponslots = 0,
   weapons = {},
   
   iconname = "ship_cargo"
