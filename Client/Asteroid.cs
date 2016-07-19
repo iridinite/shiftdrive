@@ -23,6 +23,10 @@ namespace ShiftDrive {
         public override void Update(GameState world, float deltaTime) {
         }
 
+        public override bool IsTerrain() {
+            return true;
+        }
+
     }
 
 }

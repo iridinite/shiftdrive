@@ -42,6 +42,10 @@ namespace ShiftDrive {
             }
         }
 
+        public override bool IsTerrain() {
+            return true;
+        }
+
     }
 
 }

@@ -40,26 +40,55 @@ namespace ShiftDrive {
         private bool destroyScheduled;
         private static uint nextId;
 
-        public abstract void Update(GameState world, float deltaTime);
-
         protected GameObject() {
             id = ++nextId;
             refLuaGet = LuaGet;
             refLuaSet = LuaSet;
         }
 
+        /// <summary>
+        /// Updates this object.
+        /// </summary>
+        /// <param name="world">A reference to the <see cref="GameState"/> that this object is in.</param>
+        /// <param name="deltaTime">The number of seconds that passed since the previous update.</param>
+        public abstract void Update(GameState world, float deltaTime);
+
+        /// <summary>
+        /// Applies damage to this object. The derived class decides how
+        /// damage affects the object, if at all.
+        /// </summary>
+        /// <param name="damage">The damage total to apply.</param>
         public virtual void TakeDamage(float damage) {
             // breakable objects should override this
         }
 
+        /// <summary>
+        /// Specifies whether this object counts as terrain.
+        /// Terrain objects are only sent once to clients, saving bandwidth.
+        /// </summary>
+        public virtual bool IsTerrain() {
+            return false;
+        }
+
+        /// <summary>
+        /// Schedules this object for deletion. The server will erase the object
+        /// once the update cycle has been completed.
+        /// </summary>
         public virtual void Destroy() {
             destroyScheduled = true;
         }
 
+        /// <summary>
+        /// Returns a value indicating whether this object is scheduled for deletion.
+        /// </summary>
         public bool ShouldDestroy() {
             return destroyScheduled;
         }
 
+        /// <summary>
+        /// Pushes a table to the Lua stack that represents this object.
+        /// </summary>
+        /// <param name="L">A pointer to the Lua state.</param>
         public void PushToLua(IntPtr L) {
             // push a dummy table with a metatable behind it
             LuaAPI.lua_createtable(L, 0, 0);
@@ -71,6 +100,11 @@ namespace ShiftDrive {
             LuaAPI.lua_setmetatable(L, -2);
         }
 
+        /// <summary>
+        /// Implementation of the __index Lua metamethod.
+        /// </summary>
+        /// <param name="L">A pointer to the Lua state.</param>
+        /// <returns>The number of objects pushed on the stack.</returns>
         protected virtual int LuaGet(IntPtr L) {
             if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
             string key = LuaAPI.lua_tostring(L, 2);
@@ -106,6 +140,11 @@ namespace ShiftDrive {
             return 1;
         }
 
+        /// <summary>
+        /// Implementation of the __newindex Lua metamethod.
+        /// </summary>
+        /// <param name="L">A pointer to the Lua state.</param>
+        /// <returns>The number of objects pushed on the stack.</returns>
         protected virtual int LuaSet(IntPtr L) {
             if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
             string key = LuaAPI.lua_tostring(L, 2);
@@ -133,7 +172,11 @@ namespace ShiftDrive {
             }
             return 0;
         }
-
+        
+        /// <summary>
+        /// Serializes the object as a byte array.
+        /// </summary>
+        /// <param name="writer"></param>
         public virtual void Serialize(BinaryWriter writer) {
             writer.Write(id);
             writer.Write((byte)type);
@@ -148,6 +191,10 @@ namespace ShiftDrive {
             writer.Write(bounding);
         }
 
+        /// <summary>
+        /// Deserializes the object, reading a byte array from the stream as written by Serialize.
+        /// </summary>
+        /// <param name="reader"></param>
         public virtual void Deserialize(BinaryReader reader) {
             id = reader.ReadUInt32();
             type = (ObjectType)reader.ReadByte();
