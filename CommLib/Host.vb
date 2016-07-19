@@ -353,11 +353,8 @@ Public Class Host
         If packet Is Nothing OrElse packet.Length < 1 Then Throw New ArgumentException("Invalid packet.")
         ' make sure the connection exists
         If Clients(clientID) IsNot Nothing AndAlso Clients(clientID).Socket.Connected Then
-            ' disconnect the client*
+            ' disconnect the client
             Send(clientID, packet, AddressOf DelayKickCallback)
-            'Dim sendBf(Packet.Length) As Byte ' last byte will be 0x0
-            'Buffer.BlockCopy(Packet, 0, sendBf, 0, Packet.Length)
-            'Clients(clientID).Socket.GetStream.BeginWrite(sendBf, 0, sendBf.Length, New AsyncCallback(AddressOf DelayKickCallback), clientID)
         Else
             Clients(clientID) = Nothing
         End If
@@ -369,13 +366,16 @@ Public Class Host
             Dim clientID As Integer = CInt(ir.AsyncState)
             Clients(clientID).Socket.GetStream.EndWrite(ir)
             Kick(clientID)
-        Catch ex As SocketException
-            RaiseEvent OnError(ex)
+        Catch ex As Exception
+            ' swallow exceptions, we shouldn't error out when kicking a bad client
         End Try
     End Sub
 
 End Class
 
+''' <summary>
+''' Holds information about a connected client.
+''' </summary>
 Friend Class CommClient
 
     Public Socket As TcpClient
