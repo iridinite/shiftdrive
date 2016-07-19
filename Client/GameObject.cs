@@ -49,8 +49,7 @@ namespace ShiftDrive {
         }
 
         public virtual void TakeDamage(float damage) {
-            // most objects will simply break when damaged
-            Destroy();
+            // breakable objects should override this
         }
 
         public virtual void Destroy() {
