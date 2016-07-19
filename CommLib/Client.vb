@@ -35,7 +35,7 @@ Public Class Client
     Public Event OnDisconnected()
     Public Event OnDataReceived(packet As Byte())
 
-    Private readBuffer(4095) As Byte
+    Private ReadBuffer(4095) As Byte
     Private PacketBuffer() As Byte
 
     Public Sub New()
@@ -58,10 +58,7 @@ Public Class Client
             ' accept connection - if there was an error, it will be thrown by this call
             Client.EndConnect(ir)
             ' start reader
-            Client.GetStream.BeginRead(readBuffer, 0, 4096, AddressOf ReadCallback, Nothing)
-            'Reader = New Thread(AddressOf DataReadThread)
-            'Reader.IsBackground = True
-            'Reader.Start()
+            Client.GetStream.BeginRead(ReadBuffer, 0, 4096, AddressOf ReadCallback, Nothing)
             ' notify
             RaiseEvent OnConnected()
         Catch ex As SocketException
@@ -145,7 +142,11 @@ Public Class Client
         Buffer.BlockCopy(lenBf, 0, sendBf, 0, 4) ' byte count
         Buffer.BlockCopy(packet, 0, sendBf, 4, packet.Length) ' packet contents
 
-        Client.GetStream.BeginWrite(sendBf, 0, sendBf.Length, AddressOf SendCallback, Nothing)
+        Try
+            Client.GetStream.BeginWrite(sendBf, 0, sendBf.Length, AddressOf SendCallback, Nothing)
+        Catch ex As ObjectDisposedException
+            ' swallow erroneous access to a dead socket
+        End Try
     End Sub
 
     Private Sub SendCallback(ir As IAsyncResult)

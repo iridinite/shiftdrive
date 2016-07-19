@@ -250,20 +250,6 @@ Public Class Host
         Return Clients(clientID).Socket.Connected
     End Function
 
-    ''' <summary>Creates a new ghost socket with the Silenced flag set.</summary>
-    ''' <param name="clientID">Client index</param>
-    ''' <remarks>Silencing clients will cause Send class to them to be ignored.</remarks>
-    ''' <exception cref="InvalidOperationException">The server is not running.</exception>
-    ''' <exception cref="ArgumentException">The specified client already exists.</exception>
-    Public Sub CreateSilenced(clientID As Integer)
-        If Not Started Then Throw New InvalidOperationException("Server is not running.")
-        If Clients(clientID) IsNot Nothing Then Throw New ArgumentException("Such a client already exists.")
-
-        Dim Client As New CommClient
-        Client.Silenced = True
-        Clients(clientID) = Client
-    End Sub
-
     ''' <summary>
     ''' Asynchronously writes a byte array to the network stream of the specified client.
     ''' </summary>
@@ -282,7 +268,6 @@ Public Class Host
         If Not Started Then Throw New InvalidOperationException("Server is not running.")
         ' make sure the connection exists
         If Clients(clientID) Is Nothing Then Throw New ArgumentException("No such client exists.")
-        If Clients(clientID).Silenced Then Exit Sub
         If Not Clients(clientID).Socket.Connected Then Throw New ArgumentException("Specified client connection is closed.")
         If packet Is Nothing OrElse packet.Length < 1 Then Throw New ArgumentException("Invalid packet.")
 
@@ -292,7 +277,11 @@ Public Class Host
         Buffer.BlockCopy(lenBf, 0, sendBf, 0, 4) ' byte count
         Buffer.BlockCopy(packet, 0, sendBf, 4, packet.Length) ' packet contents
 
-        Clients(clientID).Socket.GetStream.BeginWrite(sendBf, 0, sendBf.Length, callback, clientID)
+        Try
+            Clients(clientID).Socket.GetStream.BeginWrite(sendBf, 0, sendBf.Length, callback, clientID)
+        Catch ex As ObjectDisposedException
+            ' swallow erroneous access to a dead socket
+        End Try
     End Sub
 
     Private Sub SendCallback(ir As IAsyncResult)
@@ -327,7 +316,6 @@ Public Class Host
         For I As Integer = 0 To MaxClients - 1
             ' make sure the connection exists
             If Clients(I) Is Nothing Then Continue For
-            If Clients(I).Silenced Then Continue For
             If Not Clients(I).Socket.Connected Then Continue For
             ' send the data
             Send(I, packet)
@@ -365,11 +353,8 @@ Public Class Host
         If packet Is Nothing OrElse packet.Length < 1 Then Throw New ArgumentException("Invalid packet.")
         ' make sure the connection exists
         If Clients(clientID) IsNot Nothing AndAlso Clients(clientID).Socket.Connected Then
-            ' disconnect the client*
+            ' disconnect the client
             Send(clientID, packet, AddressOf DelayKickCallback)
-            'Dim sendBf(Packet.Length) As Byte ' last byte will be 0x0
-            'Buffer.BlockCopy(Packet, 0, sendBf, 0, Packet.Length)
-            'Clients(clientID).Socket.GetStream.BeginWrite(sendBf, 0, sendBf.Length, New AsyncCallback(AddressOf DelayKickCallback), clientID)
         Else
             Clients(clientID) = Nothing
         End If
@@ -381,24 +366,25 @@ Public Class Host
             Dim clientID As Integer = CInt(ir.AsyncState)
             Clients(clientID).Socket.GetStream.EndWrite(ir)
             Kick(clientID)
-        Catch ex As SocketException
-            RaiseEvent OnError(ex)
+        Catch ex As Exception
+            ' swallow exceptions, we shouldn't error out when kicking a bad client
         End Try
     End Sub
 
 End Class
 
+''' <summary>
+''' Holds information about a connected client.
+''' </summary>
 Friend Class CommClient
 
     Public Socket As TcpClient
-    Public Silenced As Boolean
 
     Public ReadBuffer(0 To 4095) As Byte
     Public PacketBuffer() As Byte
 
     Public Sub New()
         Socket = Nothing
-        Silenced = False
         PacketBuffer = New Byte() {}
     End Sub
 
