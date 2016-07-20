@@ -44,6 +44,9 @@ namespace ShiftDrive {
             RegisterFunction("print", clua_print);
             RegisterFunction("now", clua_sinceepoch);
 
+            RegisterFunction("lshift", clua_lshift);
+            RegisterFunction("rshift", clua_rshift);
+
             RegisterFunction("Create", clua_create);
             RegisterFunction("GetObjectByName", clua_getObjectByName);
             RegisterFunction("GetObjectById", clua_getObjectById);
@@ -208,6 +211,17 @@ namespace ShiftDrive {
         private int clua_sinceepoch(IntPtr L) {
             TimeSpan t = new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1).Ticks);
             LuaAPI.lua_pushnumber(L, t.TotalSeconds);
+            return 1;
+        }
+
+        private int clua_lshift(IntPtr L) {
+            LuaAPI.lua_pushnumber(L, (int)LuaAPI.luaL_checknumber(L, 1) << (int)LuaAPI.luaL_checknumber(L, 2));
+            return 1;
+        }
+
+
+        private int clua_rshift(IntPtr L) {
+            LuaAPI.lua_pushnumber(L, (int)LuaAPI.luaL_checknumber(L, 1) >> (int)LuaAPI.luaL_checknumber(L, 2));
             return 1;
         }
 
