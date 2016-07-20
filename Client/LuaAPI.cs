@@ -166,6 +166,30 @@ namespace ShiftDrive {
             return ret;
         }
 
+        internal static int luaH_gettableint(IntPtr L, int tableidx, string name) {
+            lua_getfield(L, tableidx, name);
+            lua_checkfieldtype(L, tableidx, name, -1, LUA_TNUMBER);
+            int ret = (int)lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
+        internal static float luaH_gettablefloat(IntPtr L, int tableidx, string name) {
+            lua_getfield(L, tableidx, name);
+            lua_checkfieldtype(L, tableidx, name, -1, LUA_TNUMBER);
+            float ret = (float)lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
+        internal static string luaH_gettablestring(IntPtr L, int tableidx, string name) {
+            lua_getfield(L, tableidx, name);
+            lua_checkfieldtype(L, tableidx, name, -1, LUA_TSTRING);
+            string ret = lua_tostring(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void luaL_checktype(IntPtr L, int narg, int t);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
