@@ -234,7 +234,12 @@ namespace ShiftDrive {
                 // Player Ship
                 PlayerShip newship = new PlayerShip();
                 newobj = newship;
-                
+
+            } else if (objtype.Equals("ship", StringComparison.InvariantCultureIgnoreCase)) {
+                // NPC Ship
+                AIShip newship = new AIShip();
+                newobj = newship;
+
             } else if (objtype.Equals("blackhole", StringComparison.InvariantCultureIgnoreCase)) {
                 // Black Hole
                 newobj = new BlackHole();
