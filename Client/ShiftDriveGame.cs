@@ -80,6 +80,7 @@ namespace ShiftDrive {
             Assets.txAnnouncePanel = Content.Load<Texture2D>("Textures/UI/announcepanel");
             Assets.txFillbar = Content.Load<Texture2D>("Textures/UI/fillbar");
             Assets.txHullBar = Content.Load<Texture2D>("Textures/UI/hullbar");
+            Assets.txItemIcons = Content.Load<Texture2D>("Textures/UI/itemicons");
 
             Assets.txMapIcons = new Dictionary<string, Texture2D>();
             Assets.txMapIcons.Add("player", Content.Load<Texture2D>("Textures/Map/player"));
