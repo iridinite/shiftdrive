@@ -248,22 +248,16 @@ namespace ShiftDrive {
             } else if (objtype.Equals("asteroid", StringComparison.InvariantCultureIgnoreCase)) {
                 // Asteroid Belt
                 // require metadata table as the second parameter
-                int a = LuaAPI.lua_gettop(L);
                 LuaAPI.luaL_checktype(L, 2, LuaAPI.LUA_TTABLE);
                 LuaAPI.lua_getfield(L, 2, "startpoint");
                 LuaAPI.lua_getfield(L, 2, "endpoint");
-                LuaAPI.lua_getfield(L, 2, "range");
-                LuaAPI.lua_getfield(L, 2, "count");
                 LuaAPI.lua_checkfieldtype(L, 2, "startpoint", 3, LuaAPI.LUA_TTABLE);
                 LuaAPI.lua_checkfieldtype(L, 2, "endpoint", 4, LuaAPI.LUA_TTABLE);
-                LuaAPI.lua_checkfieldtype(L, 2, "range", 5, LuaAPI.LUA_TNUMBER);
-                LuaAPI.lua_checkfieldtype(L, 2, "count", 6, LuaAPI.LUA_TNUMBER);
                 Vector2 start = LuaAPI.lua_tovec2(L, 3);
                 Vector2 end = LuaAPI.lua_tovec2(L, 4);
-                int range = (int)LuaAPI.lua_tonumber(L, 5);
-                int count = (int)LuaAPI.lua_tonumber(L, 6);
-                LuaAPI.lua_pop(L, 4); // remove the table fields from the stack
-                int b = LuaAPI.lua_gettop(L);
+                LuaAPI.lua_pop(L, 2); // remove the table fields from the stack
+                int range = LuaAPI.luaH_gettableint(L, 2, "range");
+                int count = LuaAPI.luaH_gettableint(L, 2, "count");
 
                 // now that we parsed the Lua table's info, we can create the objects
                 Vector2 increment = (end - start) / (count - 1);
