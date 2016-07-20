@@ -15,8 +15,7 @@ namespace ShiftDrive {
         private readonly Button
             btnShiftShow,
             btnShiftConfirm,
-            btnShiftAbort,
-            btnReverse;
+            btnShiftAbort;
 
         private readonly TextField
             txtShiftDist,
@@ -49,7 +48,6 @@ namespace ShiftDrive {
             btnShiftConfirm.OnClick += BtnShiftConfirm_OnClick;
             btnShiftConfirm.Enabled = false;
             btnShiftAbort = new Button(1, 200, 200, 100, 35, "Abort");
-            btnReverse = new Button(2, SDGame.Inst.GameWidth - 150, 400, 120, 35, "Reverse");
         }
 
         public override void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
@@ -101,9 +99,9 @@ namespace ShiftDrive {
             spriteBatch.DrawString(Assets.fontDefault, "Throttle", new Vector2(32, throttleBarY - 25), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, (int)(targetThrottle * 100f) + "%", new Vector2(128, throttleBarY + throttleFillY - 10), Color.White);
 
-            // helm controls
-            btnReverse.Draw(spriteBatch);
-
+            // fuel bar
+            DrawFuelGauge(spriteBatch);
+            
             // pulse where user clicked
             if (glowVisible)
                 spriteBatch.Draw(Assets.txGlow1, glowPos, null, Color.White * Math.Max(0f, 1f - glowSize), 0f, new Vector2(16, 16), glowSize * 4f, SpriteEffects.None, 0f);
@@ -151,7 +149,6 @@ namespace ShiftDrive {
                      int.TryParse(txtShiftDist.text, out dummy) && int.TryParse(txtShiftDir.text, out dummy));
                 btnShiftConfirm.Update(gameTime);
             }
-            btnReverse.Update(gameTime);
 
             // animate the clicky glow pulse
             if (glowVisible) {
