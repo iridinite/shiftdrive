@@ -3,6 +3,8 @@
 ** (C) Mika Molenkamp, 2016.
 */
 
+using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -47,6 +49,16 @@ namespace ShiftDrive {
                         spriteBatch.Draw(Assets.txMapIcons[obj.iconfile], screenpos, null, obj.iconcolor, blackHoleRotation, new Vector2(Assets.txMapIcons[obj.iconfile].Width / 2f, Assets.txMapIcons[obj.iconfile].Height / 2f), .5f, SpriteEffects.None, 0f);
                         spriteBatch.Draw(Assets.txMapIcons[obj.iconfile], screenpos, null, obj.iconcolor, -blackHoleRotation, new Vector2(Assets.txMapIcons[obj.iconfile].Width / 2f, Assets.txMapIcons[obj.iconfile].Height / 2f), 1f,  SpriteEffects.None, 0f);
                         break;
+
+                    case ObjectType.PlayerShip:
+                    case ObjectType.AIShip:
+                        // don't draw the name for the local player ship
+                        if (obj.id == Player.id) goto default;
+                        // draw ship name above it
+                        Ship shipobj = obj as Ship;
+                        Debug.Assert(shipobj != null);
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, new Vector2(screenpos.X, screenpos.Y - 30) - Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f, shipobj.iconcolor);
+                        goto default;
 
                     default:
                         spriteBatch.Draw(Assets.txMapIcons[obj.iconfile], screenpos, null, obj.iconcolor, MathHelper.ToRadians(obj.facing), new Vector2(Assets.txMapIcons[obj.iconfile].Width / 2f, Assets.txMapIcons[obj.iconfile].Height / 2f), .5f, SpriteEffects.None, 0f);
