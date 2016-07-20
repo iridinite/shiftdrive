@@ -3,6 +3,7 @@
 ** (C) Mika Molenkamp, 2016.
 */
 
+using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 
@@ -63,6 +64,32 @@ namespace ShiftDrive {
 
         public void ConsumeFuel(float amount) {
             fuel -= amount;
+        }
+
+        protected override int LuaGet(IntPtr L) {
+            if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
+            string key = LuaAPI.lua_tostring(L, 2);
+            switch (key) {
+                case "fuel":
+                    LuaAPI.lua_pushnumber(L, fuel);
+                    break;
+                default:
+                    return base.LuaGet(L);
+            }
+            return 1;
+        }
+
+        protected override int LuaSet(IntPtr L) {
+            if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
+            string key = LuaAPI.lua_tostring(L, 2);
+            switch (key) {
+                case "fuel":
+                    fuel = (float)LuaAPI.luaL_checknumber(L, 3);
+                    break;
+                default:
+                    return base.LuaSet(L);
+            }
+            return 0;
         }
 
     }
