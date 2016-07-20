@@ -14,5 +14,5 @@ return {
   weapons = {},
   
   iconname = "player",
-  iconcolor = 0xFFFF00FF
+  iconcolor = Color(0, 144, 255)
 }

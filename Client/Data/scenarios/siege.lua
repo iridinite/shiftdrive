@@ -3,7 +3,11 @@
 
 local player = CreateShip(require("ships/player-lcruiser"), "player")
 player.position = {400, 500}
-player.iconcolor = 0xFFFF00FF
+player.fuel = 5.4
+
+local npc = CreateShip(require("ships/bulkcargo"))
+npc.facing = 105
+npc.position = {350, 450}
 
 Create("asteroid", {startpoint = {100, 100}, endpoint = {900, 900}, range = 100, count = 100})
 
