@@ -144,7 +144,7 @@ namespace ShiftDrive {
                         sb.AppendLine("number: " + LuaAPI.lua_tonumber(L, i).ToString());
                         break;
                     default:
-                        sb.AppendLine(Marshal.PtrToStringAnsi(LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i))));
+                        sb.AppendLine(LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i)));
                         break;
                 }
             }
