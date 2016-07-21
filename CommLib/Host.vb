@@ -54,7 +54,6 @@ Public Class Host
     End Property
 
     Private Sub ListenThread()
-        Debug.WriteLine("Listener started")
         Try
             While Not Kill
                 ' find a free slot
@@ -150,8 +149,6 @@ Public Class Host
     End Sub
 
     Private Sub ServerLoop()
-        Debug.WriteLine("Server loop started")
-
         Dim Iterations As Integer = 0
         While Not Kill
             ' reboot the listener thread
