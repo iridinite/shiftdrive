@@ -45,6 +45,7 @@
     <Compile Include="Button.cs" />
     <Compile Include="ConsoleWeapons.cs" />
     <Compile Include="Control.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="LuaAPI.cs" />
     <Compile Include="LuaState.cs" />
     <Compile Include="NamedObject.cs" />
