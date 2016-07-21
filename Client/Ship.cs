@@ -28,7 +28,10 @@ namespace ShiftDrive {
 
         public byte faction;
 
+        private bool needRetransmit;
+
         protected Ship() {
+            needRetransmit = true;
             hull = 100f;
             hullMax = 100f;
             shield = 100f;
@@ -48,9 +51,13 @@ namespace ShiftDrive {
             // MathHelper.Clamp(Utils.Repeat(((steering - facing) < 360 - (steering - facing) ? steering - facing : facing - steering), 0f, 360f), -1f, 1f);
             float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
             facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
+
+            changed = changed || throttle > 0f || Math.Abs(deltaFacing) > 0.001f;
         }
 
         public override void TakeDamage(float damage) {
+            // always retransmit
+            changed = true;
             // apply damage to shields first, if possible
             if (shieldActive && shield > 0f) {
                 shield -= MathHelper.Clamp(shield - damage, 0f, shieldMax);
@@ -70,16 +77,21 @@ namespace ShiftDrive {
             base.Serialize(writer);
             
             writer.Write(hull);
-            writer.Write(hullMax);
             writer.Write(shield);
             writer.Write(shieldMax);
             writer.Write(shieldActive);
 
-            writer.Write(topSpeed);
-            writer.Write(turnRate);
             writer.Write(throttle);
             writer.Write(steering);
 
+            writer.Write(needRetransmit);
+            if (!needRetransmit) return;
+            needRetransmit = false;
+
+            writer.Write(hullMax);
+            writer.Write(shieldMax);
+            writer.Write(topSpeed);
+            writer.Write(turnRate);
             writer.Write(faction);
         }
 
@@ -87,14 +99,18 @@ namespace ShiftDrive {
             base.Deserialize(reader);
 
             hull = reader.ReadSingle();
-            hullMax = reader.ReadSingle();
             shield = reader.ReadSingle();
-            shieldMax = reader.ReadSingle();
             shieldActive = reader.ReadBoolean();
-            topSpeed = reader.ReadSingle();
-            turnRate = reader.ReadSingle();
+
             throttle = reader.ReadSingle();
             steering = reader.ReadSingle();
+
+            if (!reader.ReadBoolean()) return;
+
+            hullMax = reader.ReadSingle();
+            shieldMax = reader.ReadSingle();
+            topSpeed = reader.ReadSingle();
+            turnRate = reader.ReadSingle();
             faction = reader.ReadByte();
         }
 
@@ -136,6 +152,7 @@ namespace ShiftDrive {
                 case "hullmax":
                     hullMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
                     hull = MathHelper.Clamp(hull, 0f, hullMax);
+                    needRetransmit = true;
                     break;
                 case "shield":
                     shield = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, shieldMax);
@@ -143,16 +160,20 @@ namespace ShiftDrive {
                 case "shieldmax":
                     shieldMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
                     shield = MathHelper.Clamp(shield, 0f, shieldMax);
+                    needRetransmit = true;
                     break;
                 case "topspeed":
                     topSpeed = (float)LuaAPI.luaL_checknumber(L, 3);
+                    needRetransmit = true;
                     break;
                 case "turnrate":
                     turnRate = (float)LuaAPI.luaL_checknumber(L, 3);
+                    needRetransmit = true;
                     break;
                 default:
                     return base.LuaSet(L);
             }
+            changed = true;
             return 0;
         }
     }

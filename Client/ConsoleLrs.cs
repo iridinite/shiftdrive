@@ -21,9 +21,8 @@ namespace ShiftDrive {
 
             // draw map icons for all game objects
             spriteBatch.Draw(Assets.txRect, new Rectangle((int)gridPos.X, (int)gridPos.Y, gridSize, gridSize), Color.DarkOliveGreen);
-            for (int i = 0; i < NetClient.World.Objects.Count; i++) {
-                GameObject go = NetClient.World.Objects[i];
-                spriteBatch.Draw(Assets.txRect, gridPos + new Vector2(gridSize * (go.position.X / 1000f), gridSize * (go.position.Y / 1000f)), null, go.iconcolor, MathHelper.ToRadians(go.facing), new Vector2(16, 16), 0.5f, SpriteEffects.None, 0f);
+            foreach (GameObject obj in NetClient.World.Objects.Values) {
+                spriteBatch.Draw(Assets.txRect, gridPos + new Vector2(gridSize * (obj.position.X / 1000f), gridSize * (obj.position.Y / 1000f)), null, obj.iconcolor, MathHelper.ToRadians(obj.facing), new Vector2(16, 16), 0.5f, SpriteEffects.None, 0f);
             }
 
             // draw info underneath mouse cursor

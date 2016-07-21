@@ -265,7 +265,7 @@ namespace ShiftDrive {
                     Asteroid rock = new Asteroid();
                     rock.position = start + (increment * i) + // base movement along the start-end line, plus random range
                                     new Vector2(Utils.RNG.Next(range * 2) - range, Utils.RNG.Next(range * 2) - range);
-                    NetServer.world.Objects.Add(rock);
+                    NetServer.AddObject(rock);
                 }
                 return 0;
 
@@ -277,7 +277,7 @@ namespace ShiftDrive {
 
             // in the case of a named object, make sure to push it to Lua and the server state
             // nameless object creations will create several instances, so don't bother returning just one
-            NetServer.world.Objects.Add(newobj);
+            NetServer.AddObject(newobj);
             newobj.PushToLua(L);
 
             return 1;
@@ -285,9 +285,9 @@ namespace ShiftDrive {
 
         private int clua_getObjectByName(IntPtr L) {
             string name = LuaAPI.luaL_checkstring(L, 1);
-            foreach (GameObject gobj in NetServer.world.Objects) {
+            foreach (var pair in NetServer.world.Objects) {
                 // check if this object is a matching named object
-                NamedObject nobj = gobj as NamedObject;
+                NamedObject nobj = pair.Value as NamedObject;
                 if (nobj == null || !nobj.nameshort.Equals(name)) continue;
 
                 nobj.PushToLua(L);
@@ -300,9 +300,9 @@ namespace ShiftDrive {
 
         private int clua_getObjectById(IntPtr L) {
             uint id = (uint)LuaAPI.luaL_checknumber(L, 1);
-            foreach (GameObject gobj in NetServer.world.Objects) {
-                if (gobj.id != id) continue;
-                gobj.PushToLua(L);
+            foreach (var pair in NetServer.world.Objects) {
+                if (pair.Value.id != id) continue;
+                pair.Value.PushToLua(L);
                 return 1;
             }
             // no result found, return nil

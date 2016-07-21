@@ -32,8 +32,7 @@ namespace ShiftDrive {
             Vector2 min = new Vector2(Player.position.X - viewradius, Player.position.Y - viewradius);
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
 
-            for (int i = 0; i < NetClient.World.Objects.Count; i++) {
-                GameObject obj = NetClient.World.Objects[i];
+            foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't bother drawing if outside window boundings
                 if (Vector2.DistanceSquared(Player.position, obj.position) > 1000 * 1000)
                     continue;
