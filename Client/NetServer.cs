@@ -6,35 +6,29 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Iridinite.Networking;
 
 namespace ShiftDrive {
     
     internal sealed class NetPlayer {
-    //    public int clientID;
-    //    public int ship;
         public bool authorized;
         public bool ready;
         public PlayerRole roles;
     }
 
-    public static class NetServer {
+    internal static class NetServer {
         internal static GameState world { get; private set; }
-
+        
         private static Host socket;
         private static LuaState lua;
-        private static readonly Random rng;
 
         private static Dictionary<int, NetPlayer> players;
 
         private static float heartbeatMax;
         private static float heartbeatTimer;
-
-        static NetServer() {
-            rng = new Random();
-        }
-
+        
         public static void PrepareWorld() {
             world = new GameState();
             world.IsServer = true;
@@ -71,11 +65,10 @@ namespace ShiftDrive {
 
             // update all gameobjects. use a backwards loop because some
             // objects may be scheduled for deletion and thus change the list order
-            for (int i = world.Objects.Count - 1; i >= 0; i--) {
-                GameObject gobj = world.Objects[i];
+            IEnumerable<ushort> keys = world.Objects.Keys.OrderByDescending(k => k);
+            foreach (ushort key in keys) {
+                GameObject gobj = world.Objects[key];
                 gobj.Update(world, (float)gameTime.ElapsedGameTime.TotalSeconds);
-
-                if (gobj.ShouldDestroy()) world.Objects.RemoveAt(i);
             }
 
             // decrement countdown timer
@@ -84,15 +77,22 @@ namespace ShiftDrive {
 
             heartbeatTimer = heartbeatMax;
             BroadcastGameState();
-        }
 
-        private static void Send(int clientID, Packet packet) {
-            socket.Send(clientID, packet.Bytes);
+            // destroy objects that should be deleted, now that they have also been
+            // broadcast to clients as being deleted
+            foreach (ushort key in keys) {
+                GameObject gobj = world.Objects[key];
+                if (gobj.ShouldDestroy()) world.Objects.Remove(key);
+            }
         }
-
+        
         public static void Stop() {
             lua.Destroy();
             socket.Stop();
+        }
+
+        public static void AddObject(GameObject obj) {
+            world.Objects.Add(obj.id, obj);
         }
 
         private static void Socket_OnServerStart() {
@@ -106,8 +106,6 @@ namespace ShiftDrive {
         private static void Socket_OnClientConnect(int clientID) {
             // add an entry for this new client into the player table
             NetPlayer newplr = new NetPlayer();
-            //newplr.clientID = clientID;
-            //newplr.ship = 1;
             newplr.roles = 0;
             newplr.ready = false;
             newplr.authorized = false;
@@ -211,11 +209,13 @@ namespace ShiftDrive {
                     case PacketType.HelmSteering:
                         // Helm sets ship steering vector.
                         world.GetPlayerShip().steering = BitConverter.ToSingle(packet.Payload, 0);
+                        world.GetPlayerShip().changed = true;
                         break;
 
                     case PacketType.HelmThrottle:
                         // Helm sets ship throttle. Clamp to ensure input sanity.
                         world.GetPlayerShip().throttle = MathHelper.Clamp(BitConverter.ToSingle(packet.Payload, 0), 0f, 1f);
+                        world.GetPlayerShip().changed = true;
                         break;
                 }
 

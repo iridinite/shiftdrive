@@ -22,7 +22,7 @@ namespace ShiftDrive {
 
         public override void Update(GameState world, float deltaTime) {
             // simulate gravitational pull
-            foreach (GameObject gobj in world.Objects) {
+            foreach (GameObject gobj in world.Objects.Values) {
                 // black holes don't affect themselves...
                 if (gobj.type == ObjectType.BlackHole) continue;
 
@@ -33,6 +33,7 @@ namespace ShiftDrive {
                 Vector2 pulldir = Vector2.Normalize(position - gobj.position);
                 float pullpower = 1f - Vector2.Distance(gobj.position, this.position) / 140f;
                 gobj.position += pulldir * pullpower * pullpower * deltaTime * 40f;
+                gobj.changed = true;
 
                 // objects that are too close to the center are damaged
                 if (pullpower >= 0.35f) gobj.TakeDamage(pullpower * pullpower * deltaTime * 10f);

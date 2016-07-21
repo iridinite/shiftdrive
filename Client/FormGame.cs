@@ -24,7 +24,10 @@ namespace ShiftDrive {
             Button btnHelm = new Button(0, 3, 3, 100, 35, "HELM");
             btnHelm.OnClick += BtnHelm_OnClick;
             consoleButtons.Add(btnHelm);
-            Button btnLRS = new Button(0, 105, 3, 100, 35, "LRS");
+            Button btnWeap = new Button(0, 105, 3, 100, 35, "WEAP");
+            btnWeap.OnClick += BtnWeap_OnClick;
+            consoleButtons.Add(btnWeap);
+            Button btnLRS = new Button(0, 207, 3, 100, 35, "LRS");
             btnLRS.OnClick += BtnLRS_OnClick;
             consoleButtons.Add(btnLRS);
 
@@ -35,14 +38,14 @@ namespace ShiftDrive {
             Console = new ConsoleHelm();
         }
 
+        private void BtnWeap_OnClick(Button sender) {
+            Console = new ConsoleWeapons();
+        }
+
         private void BtnLRS_OnClick(Button sender) {
             Console = new ConsoleLrs();
         }
-
-        private void DrawHullbarPiece(int x, int smin, int smax, float hullmin, float hullmax) {
-            
-        }
-
+        
         public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
             lock (NetClient.worldLock) {
                 PlayerShip player = NetClient.World.GetPlayerShip();

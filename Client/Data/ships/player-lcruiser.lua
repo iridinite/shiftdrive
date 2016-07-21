@@ -11,8 +11,11 @@ return {
   cargo = 4,
   
   weaponslots = 2,
-  weapons = {},
+  weapons = {
+    require("weapons/burstlaser"),
+    require("weapons/burstlaser")
+  },
   
   iconname = "player",
-  iconcolor = 0xFFFF00FF
+  iconcolor = Color(0, 144, 255)
 }

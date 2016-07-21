@@ -12,8 +12,12 @@ function CreateShip(prototype, enttype)
   ent.shieldmax = prototype.shieldmax or 1
   ent.shield = ent.shieldmax
   ent.iconname = prototype.iconname or "ship"
-  ent.iconcolor = prototype.iconcolor or 0xFFFFFFFF
+  ent.iconcolor = prototype.iconcolor or Color.White
   ent.bounding = prototype.bounding or 8
+  
+  ent.weaponslots = prototype.weaponslots or 0
+  ent.weapons = prototype.weapons or {}
+  
   return ent
 end
 
@@ -24,3 +28,18 @@ function GetRandomShipId()
     "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
   return chartbl[math.random(#chartbl)] .. tostring(math.random(10, 99))
 end
+
+
+-- Color table: helper for constructing packed XNA color structs
+Color = {}
+local mt = {__call = function(self, r, g, b, a)
+    return lshift(a or 255, 24) + lshift(b, 16) + lshift(g, 8) + r
+end}
+setmetatable(Color, mt)
+
+-- define a few common colors
+Color.White = Color(255, 255, 255)
+Color.Black = Color(0, 0, 0)
+Color.Red = Color(255, 0, 0)
+Color.Blue = Color(0, 0, 255)
+Color.Green = Color(0, 200, 0)

@@ -24,7 +24,7 @@ namespace ShiftDrive {
     /// Represents a serializable object in the game world.
     /// </summary>
     internal abstract class GameObject {
-        public uint id;
+        public ushort id;
         public ObjectType type;
 
         public Vector2 position;
@@ -36,14 +36,17 @@ namespace ShiftDrive {
 
         public float bounding;
 
+        public bool changed;
+
         private readonly lua_CFunction refLuaGet, refLuaSet;
         private bool destroyScheduled;
-        private static uint nextId;
+        private static ushort nextId;
 
         protected GameObject() {
             id = ++nextId;
             refLuaGet = LuaGet;
             refLuaSet = LuaSet;
+            changed = true;
         }
 
         /// <summary>
@@ -170,6 +173,7 @@ namespace ShiftDrive {
                     LuaAPI.lua_error(L);
                     break;
             }
+            changed = true;
             return 0;
         }
         
@@ -196,7 +200,7 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="reader"></param>
         public virtual void Deserialize(BinaryReader reader) {
-            id = reader.ReadUInt32();
+            id = reader.ReadUInt16();
             type = (ObjectType)reader.ReadByte();
             position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();
@@ -275,6 +279,7 @@ namespace ShiftDrive {
                 default:
                     return base.LuaSet(L);
             }
+            changed = true;
             return 0;
         }
 

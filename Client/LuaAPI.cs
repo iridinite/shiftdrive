@@ -114,8 +114,12 @@ namespace ShiftDrive {
         internal static extern int lua_isstring(IntPtr L, int index);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int lua_type(IntPtr luaState, int index);
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr lua_typename(IntPtr luaState, int index);
+        [DllImport(LIBNAME, EntryPoint = "lua_typename", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr lua_typename_backend(IntPtr luaState, int index);
+
+        internal static string lua_typename(IntPtr L, int index) {
+            return Marshal.PtrToStringAnsi(lua_typename_backend(L, index));
+        }
 
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void lua_pushstring(IntPtr L, string s);
@@ -162,6 +166,30 @@ namespace ShiftDrive {
             return ret;
         }
 
+        internal static int luaH_gettableint(IntPtr L, int tableidx, string name) {
+            lua_getfield(L, tableidx, name);
+            lua_checkfieldtype(L, tableidx, name, -1, LUA_TNUMBER);
+            int ret = (int)lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
+        internal static float luaH_gettablefloat(IntPtr L, int tableidx, string name) {
+            lua_getfield(L, tableidx, name);
+            lua_checkfieldtype(L, tableidx, name, -1, LUA_TNUMBER);
+            float ret = (float)lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
+        internal static string luaH_gettablestring(IntPtr L, int tableidx, string name) {
+            lua_getfield(L, tableidx, name);
+            lua_checkfieldtype(L, tableidx, name, -1, LUA_TSTRING);
+            string ret = lua_tostring(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void luaL_checktype(IntPtr L, int narg, int t);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
@@ -179,8 +207,7 @@ namespace ShiftDrive {
             // checks the type of a field obtained from a table, throwing a descriptive error if mismatching
             if (lua_type(L, fieldidx) == reqtype) return;
             luaL_argerror(L, tableidx,
-                "bad type to field '" + fieldname + "': expected " + Marshal.PtrToStringAnsi(lua_typename(L, reqtype)) + ", got " +
-                Marshal.PtrToStringAnsi(lua_typename(L, lua_type(L, fieldidx))));
+                "bad type to field '" + fieldname + "': expected " + lua_typename(L, reqtype) + ", got " + lua_typename(L, lua_type(L, fieldidx)));
         }
 
     }

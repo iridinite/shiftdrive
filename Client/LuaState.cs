@@ -44,6 +44,9 @@ namespace ShiftDrive {
             RegisterFunction("print", clua_print);
             RegisterFunction("now", clua_sinceepoch);
 
+            RegisterFunction("lshift", clua_lshift);
+            RegisterFunction("rshift", clua_rshift);
+
             RegisterFunction("Create", clua_create);
             RegisterFunction("GetObjectByName", clua_getObjectByName);
             RegisterFunction("GetObjectById", clua_getObjectById);
@@ -144,7 +147,7 @@ namespace ShiftDrive {
                         sb.AppendLine("number: " + LuaAPI.lua_tonumber(L, i).ToString());
                         break;
                     default:
-                        sb.AppendLine(Marshal.PtrToStringAnsi(LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i))));
+                        sb.AppendLine(LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i)));
                         break;
                 }
             }
@@ -211,6 +214,17 @@ namespace ShiftDrive {
             return 1;
         }
 
+        private int clua_lshift(IntPtr L) {
+            LuaAPI.lua_pushnumber(L, (int)LuaAPI.luaL_checknumber(L, 1) << (int)LuaAPI.luaL_checknumber(L, 2));
+            return 1;
+        }
+
+
+        private int clua_rshift(IntPtr L) {
+            LuaAPI.lua_pushnumber(L, (int)LuaAPI.luaL_checknumber(L, 1) >> (int)LuaAPI.luaL_checknumber(L, 2));
+            return 1;
+        }
+
         private int clua_create(IntPtr L) {
             GameObject newobj = null;
             string objtype = LuaAPI.luaL_checkstring(L, 1);
@@ -220,7 +234,12 @@ namespace ShiftDrive {
                 // Player Ship
                 PlayerShip newship = new PlayerShip();
                 newobj = newship;
-                
+
+            } else if (objtype.Equals("ship", StringComparison.InvariantCultureIgnoreCase)) {
+                // NPC Ship
+                AIShip newship = new AIShip();
+                newobj = newship;
+
             } else if (objtype.Equals("blackhole", StringComparison.InvariantCultureIgnoreCase)) {
                 // Black Hole
                 newobj = new BlackHole();
@@ -229,22 +248,16 @@ namespace ShiftDrive {
             } else if (objtype.Equals("asteroid", StringComparison.InvariantCultureIgnoreCase)) {
                 // Asteroid Belt
                 // require metadata table as the second parameter
-                int a = LuaAPI.lua_gettop(L);
                 LuaAPI.luaL_checktype(L, 2, LuaAPI.LUA_TTABLE);
                 LuaAPI.lua_getfield(L, 2, "startpoint");
                 LuaAPI.lua_getfield(L, 2, "endpoint");
-                LuaAPI.lua_getfield(L, 2, "range");
-                LuaAPI.lua_getfield(L, 2, "count");
                 LuaAPI.lua_checkfieldtype(L, 2, "startpoint", 3, LuaAPI.LUA_TTABLE);
                 LuaAPI.lua_checkfieldtype(L, 2, "endpoint", 4, LuaAPI.LUA_TTABLE);
-                LuaAPI.lua_checkfieldtype(L, 2, "range", 5, LuaAPI.LUA_TNUMBER);
-                LuaAPI.lua_checkfieldtype(L, 2, "count", 6, LuaAPI.LUA_TNUMBER);
                 Vector2 start = LuaAPI.lua_tovec2(L, 3);
                 Vector2 end = LuaAPI.lua_tovec2(L, 4);
-                int range = (int)LuaAPI.lua_tonumber(L, 5);
-                int count = (int)LuaAPI.lua_tonumber(L, 6);
-                LuaAPI.lua_pop(L, 4); // remove the table fields from the stack
-                int b = LuaAPI.lua_gettop(L);
+                LuaAPI.lua_pop(L, 2); // remove the table fields from the stack
+                int range = LuaAPI.luaH_gettableint(L, 2, "range");
+                int count = LuaAPI.luaH_gettableint(L, 2, "count");
 
                 // now that we parsed the Lua table's info, we can create the objects
                 Vector2 increment = (end - start) / (count - 1);
@@ -252,7 +265,7 @@ namespace ShiftDrive {
                     Asteroid rock = new Asteroid();
                     rock.position = start + (increment * i) + // base movement along the start-end line, plus random range
                                     new Vector2(Utils.RNG.Next(range * 2) - range, Utils.RNG.Next(range * 2) - range);
-                    NetServer.world.Objects.Add(rock);
+                    NetServer.AddObject(rock);
                 }
                 return 0;
 
@@ -264,7 +277,7 @@ namespace ShiftDrive {
 
             // in the case of a named object, make sure to push it to Lua and the server state
             // nameless object creations will create several instances, so don't bother returning just one
-            NetServer.world.Objects.Add(newobj);
+            NetServer.AddObject(newobj);
             newobj.PushToLua(L);
 
             return 1;
@@ -272,9 +285,9 @@ namespace ShiftDrive {
 
         private int clua_getObjectByName(IntPtr L) {
             string name = LuaAPI.luaL_checkstring(L, 1);
-            foreach (GameObject gobj in NetServer.world.Objects) {
+            foreach (var pair in NetServer.world.Objects) {
                 // check if this object is a matching named object
-                NamedObject nobj = gobj as NamedObject;
+                NamedObject nobj = pair.Value as NamedObject;
                 if (nobj == null || !nobj.nameshort.Equals(name)) continue;
 
                 nobj.PushToLua(L);
@@ -287,9 +300,9 @@ namespace ShiftDrive {
 
         private int clua_getObjectById(IntPtr L) {
             uint id = (uint)LuaAPI.luaL_checknumber(L, 1);
-            foreach (GameObject gobj in NetServer.world.Objects) {
-                if (gobj.id != id) continue;
-                gobj.PushToLua(L);
+            foreach (var pair in NetServer.world.Objects) {
+                if (pair.Value.id != id) continue;
+                pair.Value.PushToLua(L);
                 return 1;
             }
             // no result found, return nil

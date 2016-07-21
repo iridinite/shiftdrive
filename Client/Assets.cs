@@ -28,7 +28,8 @@ namespace ShiftDrive {
             txGlow1,
             txFillbar,
             txHullBar,
-            txAnnouncePanel;
+            txAnnouncePanel,
+            txItemIcons;
 
         public static Dictionary<string, Texture2D>
             txMapIcons,

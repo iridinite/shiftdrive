@@ -13,5 +13,5 @@ return {
   weaponslots = 0,
   weapons = {},
   
-  iconname = "ship_cargo"
+  iconname = "player"
 }
