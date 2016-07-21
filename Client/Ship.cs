@@ -14,6 +14,8 @@ namespace ShiftDrive {
     /// </summary>
     internal abstract class Ship : NamedObject {
 
+        private const int WEAPON_ARRAY_SIZE = 4;
+
         public float hull;
         public float hullMax;
         public float shield;
@@ -22,6 +24,9 @@ namespace ShiftDrive {
 
         public float topSpeed;
         public float turnRate;
+
+        public byte weaponMax;
+        public Weapon[] weapons;
 
         public float throttle;
         public float steering;
@@ -37,6 +42,7 @@ namespace ShiftDrive {
             shield = 100f;
             shieldMax = 100f;
             shieldActive = false;
+            weapons = new Weapon[WEAPON_ARRAY_SIZE];
         }
 
         public override void Update(GameState world, float deltaTime) {
@@ -48,7 +54,6 @@ namespace ShiftDrive {
             position.X = MathHelper.Clamp(position.X, 0f, 1000f);
             position.Y = MathHelper.Clamp(position.Y, 0f, 1000f);
             // apply maneuver: find whether turning left or right is fastest
-            // MathHelper.Clamp(Utils.Repeat(((steering - facing) < 360 - (steering - facing) ? steering - facing : facing - steering), 0f, 360f), -1f, 1f);
             float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
             facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
 
@@ -78,7 +83,6 @@ namespace ShiftDrive {
             
             writer.Write(hull);
             writer.Write(shield);
-            writer.Write(shieldMax);
             writer.Write(shieldActive);
 
             writer.Write(throttle);
@@ -92,6 +96,16 @@ namespace ShiftDrive {
             writer.Write(shieldMax);
             writer.Write(topSpeed);
             writer.Write(turnRate);
+            writer.Write(weaponMax);
+            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                if (weapons[i] != null) {
+                    writer.Write((byte)1);
+                    weapons[i].Serialize(writer);
+                } else {
+                    writer.Write((byte)0);
+                }
+            }
+
             writer.Write(faction);
         }
 
@@ -111,6 +125,16 @@ namespace ShiftDrive {
             shieldMax = reader.ReadSingle();
             topSpeed = reader.ReadSingle();
             turnRate = reader.ReadSingle();
+            weaponMax = reader.ReadByte();
+
+            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                if (reader.ReadByte() == 1) {
+                    weapons[i] = Weapon.FromStream(reader);
+                } else {
+                    weapons[i] = null;
+                }
+            }
+
             faction = reader.ReadByte();
         }
 
@@ -135,6 +159,9 @@ namespace ShiftDrive {
                     break;
                 case "turnrate":
                     LuaAPI.lua_pushnumber(L, turnRate);
+                    break;
+                case "weaponslots":
+                    LuaAPI.lua_pushnumber(L, weaponMax);
                     break;
                 default:
                     return base.LuaGet(L);
@@ -168,6 +195,22 @@ namespace ShiftDrive {
                     break;
                 case "turnrate":
                     turnRate = (float)LuaAPI.luaL_checknumber(L, 3);
+                    needRetransmit = true;
+                    break;
+                case "weaponslots":
+                    weaponMax = (byte)LuaAPI.luaL_checknumber(L, 3);
+                    needRetransmit = true;
+                    break;
+                case "weapons":
+                    // parse the table of weapon tables
+                    for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                        LuaAPI.lua_rawgeti(L, 3, i + 1);
+                        if (LuaAPI.lua_type(L, 4) == LuaAPI.LUA_TNIL)
+                            weapons[i] = null;
+                        else
+                            weapons[i] = Weapon.FromLua(L, 4);
+                        LuaAPI.lua_pop(L, 1);
+                    }
                     needRetransmit = true;
                     break;
                 default:

@@ -14,6 +14,10 @@ function CreateShip(prototype, enttype)
   ent.iconname = prototype.iconname or "ship"
   ent.iconcolor = prototype.iconcolor or Color.White
   ent.bounding = prototype.bounding or 8
+  
+  ent.weaponslots = prototype.weaponslots or 0
+  ent.weapons = prototype.weapons or {}
+  
   return ent
 end
 
