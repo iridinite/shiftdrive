@@ -83,17 +83,19 @@ namespace ShiftDrive {
                     scriptname = scriptname.Substring(0, scriptname.Length - file.Extension.Length).Replace('\\', '/');
                     // compile the string as a Lua chunk
                     if (LuaAPI.luaL_loadstringex(L, script, scriptname) != 0) {
-                        Print("[Lua] Load error (" + file.Name + "): " + LuaAPI.lua_tostring(L, -1), true);
+                        LuaAPI.lua_pushstring(L, $"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
+                        LuaAPI.lua_error(L);
                         break;
                     }
                     // insert the compiled Lua function into the table and obtain a reference integer
                     compiledfns.Add(scriptname, LuaAPI.luaL_ref(L, -2));
                     
                 } catch (Exception e) {
-                    Print("[Lua] File IO failure (" + file.Name + "): " + e.ToString(), true);
 #if DEBUG
                     System.Diagnostics.Debugger.Break();
 #endif
+                    LuaAPI.lua_pushstring(L, $"I/O error occurred while compiling {file.Name}: {e}");
+                    LuaAPI.lua_error(L);
                 }
             }
             // save the table of compiled functions into the Lua registry
@@ -165,8 +167,11 @@ namespace ShiftDrive {
             // transfer control to Lua
             if (LuaAPI.lua_pcall(L, nargs, nresults, 1) != 0) {
                 // error handler: lua_errorhandler should have appended a stack trace to the error message
+#if DEBUG
+                System.Diagnostics.Debugger.Break();
+#endif
                 if (LuaAPI.lua_isstring(L, -1) == 1)
-                    Print("[Lua] Error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  "), true);
+                    SDGame.Logger.LogError("Lua error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  "));
                 LuaAPI.lua_pop(L, 1);
             }
 
@@ -175,7 +180,7 @@ namespace ShiftDrive {
         }
 
         private int clua_panic(IntPtr L) {
-            Print("[Lua] PANIC: Error in unprotected environment: " + LuaAPI.lua_tostring(L, -1), true);
+            Logger.WriteExceptionReport(new ApplicationException("Lua Panic! Error in unprotected environment: " + LuaAPI.lua_tostring(L, -1)));
             // I don't know if the string should be popped or not. Then again, it probably doesn't really matter
             // because if Lua panics then the game will crash as soon as we return from this handler anyway.
 

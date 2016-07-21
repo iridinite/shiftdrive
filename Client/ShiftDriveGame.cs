@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using ShiftDrive;
 
 namespace ShiftDrive {
 
@@ -19,7 +18,9 @@ namespace ShiftDrive {
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        public static SDGame Inst { get; private set; }
+        internal static SDGame Inst { get; private set; }
+        internal static Logger Logger { get { return Inst.loggerInst; } }
+        private readonly Logger loggerInst;
 
         /// <summary>
         /// The currently active form object.
@@ -29,7 +30,7 @@ namespace ShiftDrive {
         /// <summary>
         /// The projection matrix used for 3D rendering.
         /// </summary>
-        public Matrix Projection { get; private set; }
+        internal Matrix Projection { get; private set; }
 
         /// <summary>
         /// Width of the game client viewport, in pixels.
@@ -42,6 +43,7 @@ namespace ShiftDrive {
 
         public SDGame() {
             Inst = this;
+            loggerInst = new Logger();
 
             Window.AllowUserResizing = false;
             IsMouseVisible = true;
@@ -51,11 +53,15 @@ namespace ShiftDrive {
             graphics.PreferredBackBufferHeight = 768;
 
             Content.RootDirectory = "Content";
+
+            Exiting += SDGame_Exiting;
         }
-        
+
         protected override void Initialize() {
             // initialize MonoGame core
             base.Initialize();
+
+            loggerInst.Log("ShiftDrive Client " + Utils.GetVersionString());
         }
         
         protected override void LoadContent() {
@@ -147,5 +153,10 @@ namespace ShiftDrive {
 
             base.Draw(gameTime);
         }
+
+        private void SDGame_Exiting(object sender, EventArgs e) {
+            loggerInst?.Dispose();
+        }
+
     }
 }
