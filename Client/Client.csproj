@@ -47,6 +47,7 @@
     <Compile Include="Control.cs" />
     <Compile Include="LuaAPI.cs" />
     <Compile Include="LuaState.cs" />
+    <Compile Include="NamedObject.cs" />
     <Compile Include="PlayerShip.cs" />
     <Compile Include="TextField.cs" />
     <Compile Include="FormConfirmExit.cs" />
