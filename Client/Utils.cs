@@ -54,10 +54,15 @@ namespace ShiftDrive {
             logoY += (y - logoY) / 16f;
             spriteBatch.Draw(Assets.txTitle, new Vector2(SDGame.Inst.GameWidth / 2 - 128, SDGame.Inst.GameHeight / 4f + logoY), Color.White);
 
-            string versionstr = "v" + Assembly.GetExecutingAssembly().GetName().Version +
+            string versionstr = GetVersionString() +
                                 " / Protocol " + NetShared.ProtocolVersion;
-            spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("credit"), new Vector2(16, SDGame.Inst.GameHeight - 28), Color.Gray);
+            spriteBatch.DrawString(Assets.fontDefault, LocaleGet("credit"), new Vector2(16, SDGame.Inst.GameHeight - 28), Color.Gray);
             spriteBatch.DrawString(Assets.fontDefault, versionstr, new Vector2(SDGame.Inst.GameWidth - Assets.fontDefault.MeasureString(versionstr).X - 16, SDGame.Inst.GameHeight - 28), Color.Gray);
+        }
+
+        public static string GetVersionString() {
+            Version v = Assembly.GetExecutingAssembly().GetName().Version;
+            return $"v{v.Major}.{v.Minor}.{v.Revision}";
         }
 
         public static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end) {
