@@ -12,8 +12,16 @@ namespace ShiftDrive {
         [STAThread]
         public static void Main()
         {
+#if !DEBUG
+            try {
+#endif
             using (var game = new SDGame())
                 game.Run();
+#if !DEBUG
+            } catch (Exception ex) {
+                Logger.WriteExceptionReport(ex);
+            }
+#endif
         }
     }
 #endif
