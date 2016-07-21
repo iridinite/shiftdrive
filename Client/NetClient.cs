@@ -55,6 +55,7 @@ namespace ShiftDrive {
             socket.OnError += Client_OnError;
             socket.OnDataReceived += Client_OnDataReceived;
             // connect to remote host
+            SDGame.Logger.Log("Connecting...");
             socket.RemoteIP = host;
             socket.RemotePort = 8080;
             socket.Connect();
@@ -66,6 +67,7 @@ namespace ShiftDrive {
 
         private static void Client_OnConnected() {
             Debug.Assert(Connected);
+            SDGame.Logger.Log("Connected to server! Sending handshake.");
 
             // report back to the connect UI that we're connected
             connectCallback(true, null);
@@ -80,12 +82,15 @@ namespace ShiftDrive {
             // show a 'connection lost' message if the disconnect was unexpected
             if (!expectShutdown)
                 SDGame.Inst.ActiveForm = new FormMessage(Utils.LocaleGet("err_connlost"));
+            SDGame.Logger.Log("Disconnected from server.");
         }
 
         private static void Client_OnError(Exception ex) {
             if (IsConnecting) {
+                SDGame.Logger.LogError("Failed to connect: " + ex.Message);
                 connectCallback(false, ex.Message);
             } else {
+                SDGame.Logger.LogError("Client error: " + ex);
 #if DEBUG
                 Debugger.Break();
 #endif
@@ -137,10 +142,12 @@ namespace ShiftDrive {
                         break;
 
                     default:
+                        SDGame.Logger.LogError("Client got unknown packet " + packet.Type);
                         throw new InvalidDataException(Utils.LocaleGet("err_unknownpacket") + " (" + packet.Type + ")");
                 }
             } catch (Exception ex) {
                 Disconnect();
+                SDGame.Logger.LogError("Client error in OnDataReceived: " + ex);
                 SDGame.Inst.ActiveForm = new FormMessage(Utils.LocaleGet("err_comm") + Environment.NewLine + ex.ToString());
             }
         }

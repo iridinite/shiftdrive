@@ -33,12 +33,15 @@ namespace ShiftDrive {
             world = new GameState();
             world.IsServer = true;
 
+            SDGame.Logger.Log("Initializing Lua state...");
             lua = new LuaState();
             lua.Precompile();
+            SDGame.Logger.Log("Precompilation finished.");
             lua.LoadFile("main");
             lua.Call(0, 0);
             lua.LoadFile("scenarios/siege");
             lua.Call(0, 0);
+            SDGame.Logger.Log("Scripts ran successfully.");
         }
 
         public static void Start() {
@@ -46,8 +49,9 @@ namespace ShiftDrive {
             heartbeatTimer = 0f;
 
             if (socket != null && socket.Listening)
-                socket.Stop();
+                Stop();
 
+            SDGame.Logger.Log("Starting server...");
             socket = new Host();
             socket.OnClientConnect += Socket_OnClientConnect;
             socket.OnClientDisconnect += Socket_OnClientDisconnect;
@@ -87,6 +91,7 @@ namespace ShiftDrive {
         }
         
         public static void Stop() {
+            SDGame.Logger.Log("Stopping server and closing Lua state.");
             lua.Destroy();
             socket.Stop();
         }
@@ -96,10 +101,12 @@ namespace ShiftDrive {
         }
 
         private static void Socket_OnServerStart() {
+            SDGame.Logger.Log("Server socket started.");
             players = new Dictionary<int, NetPlayer>();
         }
 
         private static void Socket_OnServerStop() {
+            SDGame.Logger.Log("Server stopped.");
             players.Clear();
         }
 
@@ -110,12 +117,14 @@ namespace ShiftDrive {
             newplr.ready = false;
             newplr.authorized = false;
             players.Add(clientID, newplr);
+            SDGame.Logger.Log($"Client connected (#{clientID} @ {socket.GetClientIP(clientID)}).");
         }
 
         private static void Socket_OnClientDisconnect(int clientID) {
             // remove this client from the player table
             players.Remove(clientID);
             BroadcastLobbyState();
+            SDGame.Logger.Log($"Client #{clientID} disconnected.");
         }
 
         private static void BroadcastLobbyState() {
@@ -193,6 +202,7 @@ namespace ShiftDrive {
                         Packet confirmroles = new Packet(PacketType.SelectRole, (byte)player.roles);
                         socket.Send(clientID, confirmroles.Bytes);
                         BroadcastLobbyState();
+                        SDGame.Logger.Log($"Client #{clientID} has roles {player.roles}.");
                         break;
 
                     case PacketType.Ready:
@@ -201,6 +211,7 @@ namespace ShiftDrive {
                             return;
                         }
                         player.ready = (packet.Payload[0] == 1);
+                        SDGame.Logger.Log($"Client #{clientID} ready: {player.ready}");
                         // temp begingame packet
                         Packet begingamePacket = new Packet(PacketType.EnterGame);
                         socket.Send(clientID, begingamePacket.Bytes);
@@ -228,6 +239,7 @@ namespace ShiftDrive {
         }
 
         private static void Socket_OnError(Exception ex) {
+            SDGame.Logger.LogError(ex.ToString());
 #if DEBUG
             System.Diagnostics.Debugger.Break();
 #endif
