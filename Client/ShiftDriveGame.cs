@@ -21,6 +21,7 @@ namespace ShiftDrive {
         internal static SDGame Inst { get; private set; }
         internal static Logger Logger { get { return Inst.loggerInst; } }
         private readonly Logger loggerInst;
+        private readonly DeveloperConsole console;
 
         /// <summary>
         /// The currently active form object.
@@ -43,7 +44,9 @@ namespace ShiftDrive {
 
         public SDGame() {
             Inst = this;
+
             loggerInst = new Logger();
+            console = new DeveloperConsole();
 
             Window.AllowUserResizing = false;
             IsMouseVisible = true;
@@ -140,6 +143,7 @@ namespace ShiftDrive {
                 ActiveForm = new FormMainMenu();
             // update the active form
             ActiveForm.Update(gameTime);
+            console.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
@@ -151,11 +155,23 @@ namespace ShiftDrive {
             if (ActiveForm != null)
                 ActiveForm.Draw(GraphicsDevice, spriteBatch);
 
+            // draw the developer console text
+            console.Draw(spriteBatch);
+
             base.Draw(gameTime);
         }
 
         private void SDGame_Exiting(object sender, EventArgs e) {
             loggerInst?.Dispose();
+        }
+
+        /// <summary>
+        /// Prints a message to the developer console.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        /// <param name="error">Whether to draw the message in red or not.</param>
+        public void Print(string message, bool error = false) {
+            console.AddMessage(message, error);
         }
 
     }

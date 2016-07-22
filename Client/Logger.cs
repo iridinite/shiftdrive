@@ -79,6 +79,9 @@ namespace ShiftDrive {
 
             LogHeader("WARN");
             Writer?.WriteLine(message);
+#if DEBUG
+            SDGame.Inst.Print(message);
+#endif
         }
 
         /// <summary>
@@ -90,9 +93,7 @@ namespace ShiftDrive {
 
             LogHeader("ERROR");
             Writer?.WriteLine(message);
-#if DEBUG
-            System.Diagnostics.Debugger.Break();
-#endif
+            SDGame.Inst.Print(message, true);
         }
 
         /// <summary>

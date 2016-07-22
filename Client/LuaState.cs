@@ -63,7 +63,7 @@ namespace ShiftDrive {
         }
         
         public void Print(string s, bool error = false) {
-            System.Diagnostics.Debug.Print(s);
+            SDGame.Inst.Print(s, error);
         }
 
         public void Precompile() {
@@ -167,9 +167,6 @@ namespace ShiftDrive {
             // transfer control to Lua
             if (LuaAPI.lua_pcall(L, nargs, nresults, 1) != 0) {
                 // error handler: lua_errorhandler should have appended a stack trace to the error message
-#if DEBUG
-                System.Diagnostics.Debugger.Break();
-#endif
                 if (LuaAPI.lua_isstring(L, -1) == 1)
                     SDGame.Logger.LogError("Lua error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  "));
                 LuaAPI.lua_pop(L, 1);
