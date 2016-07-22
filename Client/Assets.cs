@@ -28,6 +28,7 @@ namespace ShiftDrive {
             txGlow1,
             txFillbar,
             txHullBar,
+            txChargeBar,
             txAnnouncePanel,
             txItemIcons;
 
