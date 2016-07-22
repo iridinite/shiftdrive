@@ -1,6 +1,6 @@
 return {
-  name = "Burst Laser",
-  desc = "A standard-issue laser.",
+  name = localize("weapon_burstlaser"),
+  desc = localize("weapon_burstlaser_desc"),
   draw = 0.05,
   damagetype = DamageType.THERMAL,
   damage = 5,

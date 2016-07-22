@@ -2,7 +2,7 @@
 -- large, sluggish ship. not suited for combat: no shields, no weapons.
 return {
   nameshort = GetRandomShipId(),
-  namefull = "Bulk Cargo Transporter",
+  namefull = localize("ship_bulkcargo"),
   
   topspeed = 15,
   turnrate = 20,

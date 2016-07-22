@@ -2,7 +2,7 @@
 -- medium ship, slightly above average engines, below average offense
 return {
   nameshort = GetRandomShipId(),
-  namefull = "IASN Light Cruiser",
+  namefull = localize("ship_plr_lcruiser"),
   
   topspeed = 35,
   turnrate = 35,
@@ -10,7 +10,7 @@ return {
   shieldmax = 80,
   cargo = 4,
   
-  weaponslots = 2,
+  weaponslots = 3,
   weapons = {
     require("weapons/burstlaser"),
     require("weapons/burstlaser")

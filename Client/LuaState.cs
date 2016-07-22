@@ -44,6 +44,9 @@ namespace ShiftDrive {
             RegisterFunction("print", clua_print);
             RegisterFunction("now", clua_sinceepoch);
 
+            RegisterFunction("localize", clua_localize);
+            RegisterFunction("phrase", clua_phrase);
+
             RegisterFunction("lshift", clua_lshift);
             RegisterFunction("rshift", clua_rshift);
 
@@ -224,6 +227,16 @@ namespace ShiftDrive {
 
         private int clua_rshift(IntPtr L) {
             LuaAPI.lua_pushnumber(L, (int)LuaAPI.luaL_checknumber(L, 1) >> (int)LuaAPI.luaL_checknumber(L, 2));
+            return 1;
+        }
+
+        private int clua_localize(IntPtr L) {
+            LuaAPI.lua_pushstring(L, Utils.LocaleGet(LuaAPI.luaL_checkstring(L, 1)));
+            return 1;
+        }
+
+        private int clua_phrase(IntPtr L) {
+            LuaAPI.lua_pushstring(L, Utils.LocalePhrase(LuaAPI.luaL_checkstring(L, 1)));
             return 1;
         }
 
