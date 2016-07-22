@@ -33,17 +33,36 @@ err_unknownpacket       = Unrecognized packet type in packet header.
 err_unknownobject       = Unrecognized object type in game update.
 err_version             = The server is running an incompatible game version.
 
-console_helm            = Helm
+console_helm            = Helmsman
 console_wep             = Weapons
 console_eng             = Engineering
-console_sci             = Science
-console_comm            = Comms
+console_quar            = Quartermaster
+console_intel           = Intelligence
 console_helm_short      = HELM
 console_wep_short       = WEAP
 console_eng_short       = ENGI
-console_sci_short       = SCAN
-console_comm_short      = COMM
+console_quar_short      = QUAR
+console_intel_short     = INTL
 console_lrs_short       = LRS
+
+shiftctl_title          = Shift Drive Control
+shiftctl_dest           = Destination:
+shiftctl_jump           = Jump
+shiftctl_confirm        = Confirm?
+shiftctl_abort          = Abort
+shiftctl_charging       = Charging...
+
+announce_fuellow        = Warning: Fuel reserves low.
+announce_fuelcrit       = Warning: Fuel reserves critical.
+announce_blackhole      = Warning: Gravitational pull detected.
+announce_shieldlow      = Warning: Shield strength low.
+announce_shielddown     = Warning: Shields offline.
+announce_shieldup       = Shields online.
+announce_shiftinit      = Shift Drive charging. Please stand by.
+announce_shiftsoon      = Shift Jump imminent.
+announce_hull75         = Warning: Hull integrity at 75%.
+announce_hull50         = Warning: Hull integrity at 50%.
+announce_hull25         = Warning: Hull integrity at 25%.
 
 no_weapon               = No weapon loaded.
 weapon_burstlaser       = Burst Laser
