@@ -61,10 +61,8 @@ namespace ShiftDrive {
                 // hull integrity bar
                 int hullbarx = MathHelper.Max((consoleButtons.Count * 105) + 40, SDGame.Inst.GameWidth / 2 - 350);
                 float hullFraction = player.hull / player.hullMax;
-                //int hullbarw = SDGame.Inst.GameWidth - 550 - hullbarx;
-                //int hullbarsegment =
-                Color outlineColor = player.hull <= 0.35f && hullFlicker >= 0.5f ? Color.Red : Color.White;
-                Color hullbarColor = player.hull <= 0.35f ? Color.Red : player.hull <= 0.7f ? Color.Orange : Color.Green;
+                Color outlineColor = hullFraction <= 0.35f && hullFlicker >= 0.5f ? Color.Red : Color.White;
+                Color hullbarColor = hullFraction <= 0.35f ? Color.Red : hullFraction <= 0.7f ? Color.Orange : Color.Green;
                 spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 64, 512, 64), Color.White);
                 spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, (int)(hullPrevious / player.hullMax * 512f), 64), new Rectangle(0, 128, (int)(hullPrevious / player.hullMax * 512f), 64), Color.DarkRed);
                 spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, (int)(hullFraction * 512f), 64), new Rectangle(0, 128, (int)(hullFraction * 512f), 64), hullbarColor);
@@ -74,11 +72,7 @@ namespace ShiftDrive {
 
                 foreach (Button b in consoleButtons)
                     b.Draw(spriteBatch);
-
-                //spriteBatch.DrawString(Assets.fontDefault, "pos: " + NetClient.World.GetPlayerShip().position.ToString(), new Vector2(115, 415), Color.White);
-                //spriteBatch.DrawString(Assets.fontDefault, "bng: " + NetClient.World.GetPlayerShip().facing.ToString(), new Vector2(115, 435), Color.White);
-                //spriteBatch.DrawString(Assets.fontDefault, "sri: " + NetClient.World.GetPlayerShip().steering.ToString(), new Vector2(115, 455), Color.White);
-
+                
                 spriteBatch.End();
             }
         }
