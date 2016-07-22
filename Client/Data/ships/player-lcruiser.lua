@@ -10,7 +10,7 @@ return {
   shieldmax = 80,
   cargo = 4,
   
-  weaponslots = 3,
+  weaponslots = 2,
   weapons = {
     require("weapons/burstlaser"),
     require("weapons/burstlaser")
