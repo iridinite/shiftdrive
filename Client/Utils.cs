@@ -75,8 +75,8 @@ namespace ShiftDrive {
         /// </summary>
         public static void LocaleLoad() {
             loc = new Localizer();
-            loc.LoadLocale("Data//locale.txt");
-            loc.LoadPhrases("Data//phrases.txt");
+            loc.LoadLocale("Data//locale//en-GB//strings.txt");
+            loc.LoadPhrases("Data//locale//en-GB//phrases.txt");
         }
 
         /// <summary>
