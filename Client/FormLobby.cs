@@ -10,7 +10,7 @@ namespace ShiftDrive {
 
     internal class FormLobby : IForm {
 
-        private readonly Button btnHelm, btnWeap, btnEngi, btnSci, btnComm, btnReady, btnDisconnect;
+        private readonly Button btnHelm, btnWeap, btnEngi, btnQuar, btnIntel, btnReady, btnDisconnect;
         private int leaveAction;
         private bool isReady;
 
@@ -23,10 +23,10 @@ namespace ShiftDrive {
             btnWeap.OnClick += BtnWeap_OnClick;
             btnEngi = new Button(3, cx - 80, cy - 50, 200, 40, Utils.LocaleGet("console_eng"));
             btnEngi.OnClick += BtnEngi_OnClick;
-            btnSci = new Button(4, cx - 80, cy, 200, 40, Utils.LocaleGet("console_sci"));
-            btnSci.OnClick += BtnSci_OnClick;
-            btnComm = new Button(5, cx - 80, cy + 50, 200, 40, Utils.LocaleGet("console_comm"));
-            btnComm.OnClick += BtnComm_OnClick;
+            btnQuar = new Button(4, cx - 80, cy, 200, 40, Utils.LocaleGet("console_quar"));
+            btnQuar.OnClick += BtnQuar_OnClick;
+            btnIntel = new Button(5, cx - 80, cy + 50, 200, 40, Utils.LocaleGet("console_intel"));
+            btnIntel.OnClick += BtnIntel_OnClick;
 
             btnDisconnect = new Button(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("disconnect"));
             btnDisconnect.CancelSound = true;
@@ -48,8 +48,8 @@ namespace ShiftDrive {
             btnHelm.Draw(spriteBatch);
             btnWeap.Draw(spriteBatch);
             btnEngi.Draw(spriteBatch);
-            btnSci.Draw(spriteBatch);
-            btnComm.Draw(spriteBatch);
+            btnQuar.Draw(spriteBatch);
+            btnIntel.Draw(spriteBatch);
 
             for (int i = 0; i < 5; i++) {
                 PlayerRole thisrole = (PlayerRole) (1 << i);
@@ -69,8 +69,8 @@ namespace ShiftDrive {
             btnHelm.Update(gameTime);
             btnWeap.Update(gameTime);
             btnEngi.Update(gameTime);
-            btnSci.Update(gameTime);
-            btnComm.Update(gameTime);
+            btnQuar.Update(gameTime);
+            btnIntel.Update(gameTime);
             btnDisconnect.Update(gameTime);
             btnReady.Update(gameTime);
 
@@ -90,8 +90,8 @@ namespace ShiftDrive {
             btnHelm.Close();
             btnWeap.Close();
             btnEngi.Close();
-            btnSci.Close();
-            btnComm.Close();
+            btnQuar.Close();
+            btnIntel.Close();
             btnReady.Close();
             btnDisconnect.Close();
         }
@@ -124,12 +124,12 @@ namespace ShiftDrive {
             ToggleRole(PlayerRole.Engineering);
         }
 
-        private void BtnSci_OnClick(Button sender) {
-            ToggleRole(PlayerRole.Science);
+        private void BtnQuar_OnClick(Button sender) {
+            ToggleRole(PlayerRole.Quartermaster);
         }
 
-        private void BtnComm_OnClick(Button sender) {
-            ToggleRole(PlayerRole.Comms);
+        private void BtnIntel_OnClick(Button sender) {
+            ToggleRole(PlayerRole.Intelligence);
         }
 
     }

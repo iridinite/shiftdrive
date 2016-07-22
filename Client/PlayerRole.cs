@@ -12,8 +12,8 @@ namespace ShiftDrive {
         Helm = 1,
         Weapons = 2,
         Engineering = 4,
-        Science = 8,
-        Comms = 16
+        Quartermaster = 8,
+        Intelligence = 16
     }
 
 }
