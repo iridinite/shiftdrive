@@ -64,6 +64,7 @@ namespace ShiftDrive {
         public WeaponType ProjType;
         public string ProjSprite;
         public float ProjSpeed;
+        public float ProjSpread;
 
         public AmmoType Ammo;
         public int AmmoUsed;
@@ -85,6 +86,7 @@ namespace ShiftDrive {
             if (ret.ProjType == WeaponType.Projectile) {
                 ret.ProjSprite = LuaAPI.luaH_gettablestring(L, tableidx, "projsprite");
                 ret.ProjSpeed = LuaAPI.luaH_gettablefloat(L, tableidx, "projspeed");
+                ret.ProjSpread = LuaAPI.luaH_gettablefloat(L, tableidx, "projspread");
             }
 
             ret.Ammo = (AmmoType)LuaAPI.luaH_gettableint(L, tableidx, "ammotype");

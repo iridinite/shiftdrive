@@ -12,7 +12,19 @@ return {
   
   mounts = {
     {
-      position = {0, -2},
+      position = {0, -20},
+      bearing = 0,
+      arc = 100,
+      size = Mount.SMALL
+    },
+    {
+      position = {-20, -2},
+      bearing = 0,
+      arc = 100,
+      size = Mount.SMALL
+    },
+    {
+      position = {20, -2},
       bearing = 0,
       arc = 100,
       size = Mount.SMALL
@@ -31,6 +43,8 @@ return {
     }]]
   },
   weapons = {
+    require("weapons/autocannon"),
+    require("weapons/autocannon"),
     require("weapons/autocannon"),
     --require("weapons/burstlaser"),
     --require("weapons/autocannon")

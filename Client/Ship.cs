@@ -78,7 +78,8 @@ namespace ShiftDrive {
                     if (wep.Charge < wep.ChargeTime) continue;
 
                     wep.Charge = 0f;
-                    NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing, 0f, 360f), wep.ProjSpeed, this.faction));
+                    float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
+                    NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, this.faction));
                 }
             }
 
