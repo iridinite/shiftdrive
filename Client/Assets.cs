@@ -36,6 +36,8 @@ namespace ShiftDrive {
             sndUIAppear4;
 
         public static Texture2D GetTexture(string name) {
+            if (!textures.ContainsKey(name.ToLowerInvariant()))
+                throw new KeyNotFoundException("Texture '" + name + "' was not found.");
             return textures[name.ToLowerInvariant()];
         }
 
