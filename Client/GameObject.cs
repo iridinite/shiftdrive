@@ -18,7 +18,8 @@ namespace ShiftDrive {
         AIShip,
         PlayerShip,
         Station,
-        BlackHole
+        BlackHole,
+        Projectile
     }
     
     /// <summary>
