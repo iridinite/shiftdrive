@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
     
@@ -30,9 +31,10 @@ namespace ShiftDrive {
         public Vector2 position;
         public float facing;
         public int sector;
-        
-        public string iconfile;
-        public Color iconcolor;
+
+        public string spritename;
+        public Texture2D sprite;
+        public Color color;
 
         public float bounding;
 
@@ -129,11 +131,11 @@ namespace ShiftDrive {
                 case "bounding":
                     LuaAPI.lua_pushnumber(L, bounding);
                     break;
-                case "iconname":
-                    LuaAPI.lua_pushstring(L, iconfile);
+                case "sprite":
+                    LuaAPI.lua_pushstring(L, spritename);
                     break;
-                case "iconcolor":
-                    LuaAPI.lua_pushnumber(L, iconcolor.PackedValue);
+                case "color":
+                    LuaAPI.lua_pushnumber(L, color.PackedValue);
                     break;
                 default:
                     LuaAPI.lua_pushstring(L, "attempt to read unknown field '" + key + "'");
@@ -162,11 +164,11 @@ namespace ShiftDrive {
                 case "bounding":
                     bounding = (float)LuaAPI.luaL_checknumber(L, 3);
                     break;
-                case "iconname":
-                    iconfile = LuaAPI.luaL_checkstring(L, 3);
+                case "sprite":
+                    spritename = LuaAPI.luaL_checkstring(L, 3);
                     break;
-                case "iconcolor":
-                    iconcolor.PackedValue = (uint)LuaAPI.luaL_checknumber(L, 3);
+                case "color":
+                    color.PackedValue = (uint)LuaAPI.luaL_checknumber(L, 3);
                     break;
                 default:
                     LuaAPI.lua_pushstring(L, "attempt to modify unknown field '" + key + "'");
@@ -189,8 +191,8 @@ namespace ShiftDrive {
             writer.Write(facing);
             writer.Write((byte)sector);
             
-            writer.Write(iconfile);
-            writer.Write(iconcolor.PackedValue);
+            writer.Write(spritename);
+            writer.Write(color.PackedValue);
 
             writer.Write(bounding);
         }
@@ -206,8 +208,9 @@ namespace ShiftDrive {
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
             
-            iconfile = reader.ReadString();
-            iconcolor.PackedValue = reader.ReadUInt32();
+            spritename = reader.ReadString();
+            sprite = Assets.GetTexture(spritename);
+            color.PackedValue = reader.ReadUInt32();
 
             bounding = reader.ReadSingle();
         }

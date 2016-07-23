@@ -15,8 +15,8 @@ namespace ShiftDrive {
         public BlackHole() {
             type = ObjectType.BlackHole;
             facing = 0f;
-            iconfile = "blackhole";
-            iconcolor = Color.Blue;
+            spritename = "map/blackhole";
+            color = Color.Blue;
             bounding = 0f; // no bounding sphere; Update handles gravity pull
         }
 

@@ -24,8 +24,8 @@ namespace ShiftDrive {
 
         public PlayerShip() {
             type = ObjectType.PlayerShip;
-            iconfile = "player";
-            iconcolor = Color.Blue;
+            spritename = "map/player";
+            color = Color.Blue;
             bounding = 10f;
             destroyed = false;
         }

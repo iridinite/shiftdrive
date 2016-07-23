@@ -36,6 +36,6 @@ return {
     require("weapons/autocannon")
   },
   
-  iconname = "player",
-  iconcolor = Color(0, 144, 255)
+  sprite = "player",
+  color = Color(0, 144, 255)
 }

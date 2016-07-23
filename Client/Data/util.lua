@@ -11,8 +11,8 @@ function CreateShip(prototype, enttype)
   ent.hull = ent.hullmax
   ent.shieldmax = prototype.shieldmax or 1
   ent.shield = ent.shieldmax
-  ent.iconname = prototype.iconname or "ship"
-  ent.iconcolor = prototype.iconcolor or Color.White
+  ent.sprite = prototype.sprite or "ship"
+  ent.color = prototype.color or Color.White
   ent.bounding = prototype.bounding or 8
   
   ent.mounts = prototype.mounts or {}
