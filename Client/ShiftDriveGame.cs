@@ -84,7 +84,7 @@ namespace ShiftDrive {
             Assets.txButton = Content.Load<Texture2D>("Textures/UI/button");
             Assets.txTextEntry = Content.Load<Texture2D>("Textures/UI/textentry");
             Assets.txRadarRing = Content.Load<Texture2D>("Textures/UI/radar");
-            Assets.txSkybox = Content.Load<Texture2D>("Textures/Models/Skybox");
+            Assets.txSkybox = Content.Load<Texture2D>("Textures/UI/skybox");
             Assets.txGlow1 = Content.Load<Texture2D>("Textures/UI/glow1");
             Assets.txAnnouncePanel = Content.Load<Texture2D>("Textures/UI/announcepanel");
             Assets.txFillbar = Content.Load<Texture2D>("Textures/UI/fillbar");
