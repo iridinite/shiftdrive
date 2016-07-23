@@ -34,9 +34,9 @@ namespace ShiftDrive {
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Assets.txTextEntry, new Rectangle(x, y, 8, 24), new Rectangle(0, 0, 8, 24), Color.White);
-            spriteBatch.Draw(Assets.txTextEntry, new Rectangle(x + 8, y, width - 16, 24), new Rectangle(8, 0, 8, 24), Color.White);
-            spriteBatch.Draw(Assets.txTextEntry, new Rectangle(x + width - 8, y, 8, 24), new Rectangle(16, 0, 8, 24), Color.White);
+            spriteBatch.Draw(Assets.textures["ui/textentry"], new Rectangle(x, y, 8, 24), new Rectangle(0, 0, 8, 24), Color.White);
+            spriteBatch.Draw(Assets.textures["ui/textentry"], new Rectangle(x + 8, y, width - 16, 24), new Rectangle(8, 0, 8, 24), Color.White);
+            spriteBatch.Draw(Assets.textures["ui/textentry"], new Rectangle(x + width - 8, y, 8, 24), new Rectangle(16, 0, 8, 24), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, blinkmode && focus ? text + "|" : text, new Vector2(x + 6, y + 6), Color.Black);
         }
 

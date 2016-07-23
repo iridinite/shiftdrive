@@ -52,7 +52,7 @@ namespace ShiftDrive {
         /// </summary>
         public static void DrawTitle(SpriteBatch spriteBatch, float y) {
             logoY += (y - logoY) / 16f;
-            spriteBatch.Draw(Assets.txTitle, new Vector2(SDGame.Inst.GameWidth / 2 - 128, SDGame.Inst.GameHeight / 4f + logoY), Color.White);
+            spriteBatch.Draw(Assets.textures["ui/title"], new Vector2(SDGame.Inst.GameWidth / 2 - 128, SDGame.Inst.GameHeight / 4f + logoY), Color.White);
 
             string versionstr = GetVersionString() +
                                 " / Protocol " + NetShared.ProtocolVersion;

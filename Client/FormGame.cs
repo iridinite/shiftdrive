@@ -54,8 +54,8 @@ namespace ShiftDrive {
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-                spriteBatch.Draw(Assets.txAnnouncePanel, new Rectangle(-490 + (consoleButtons.Count * 105), 0, 512, 64), null, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
-                spriteBatch.Draw(Assets.txAnnouncePanel, new Rectangle(SDGame.Inst.GameWidth - 450, 0, 512, 64), Color.White);
+                spriteBatch.Draw(Assets.textures["ui/announcepanel"], new Rectangle(-490 + (consoleButtons.Count * 105), 0, 512, 64), null, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
+                spriteBatch.Draw(Assets.textures["ui/announcepanel"], new Rectangle(SDGame.Inst.GameWidth - 450, 0, 512, 64), Color.White);
                 spriteBatch.DrawString(Assets.fontDefault, "Sample announcement text", new Vector2(SDGame.Inst.GameWidth - 430, 12), Color.White);
 
                 // hull integrity bar
@@ -63,10 +63,10 @@ namespace ShiftDrive {
                 float hullFraction = player.hull / player.hullMax;
                 Color outlineColor = hullFraction <= 0.35f && hullFlicker >= 0.5f ? Color.Red : Color.White;
                 Color hullbarColor = hullFraction <= 0.35f ? Color.Red : hullFraction <= 0.7f ? Color.Orange : Color.Green;
-                spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 64, 512, 64), Color.White);
-                spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, (int)(hullPrevious / player.hullMax * 512f), 64), new Rectangle(0, 128, (int)(hullPrevious / player.hullMax * 512f), 64), Color.DarkRed);
-                spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, (int)(hullFraction * 512f), 64), new Rectangle(0, 128, (int)(hullFraction * 512f), 64), hullbarColor);
-                spriteBatch.Draw(Assets.txHullBar, new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 0, 512, 64), outlineColor);
+                spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 64, 512, 64), Color.White);
+                spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, (int)(hullPrevious / player.hullMax * 512f), 64), new Rectangle(0, 128, (int)(hullPrevious / player.hullMax * 512f), 64), Color.DarkRed);
+                spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, (int)(hullFraction * 512f), 64), new Rectangle(0, 128, (int)(hullFraction * 512f), 64), hullbarColor);
+                spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 0, 512, 64), outlineColor);
                 spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 472, 34), Color.Black);
                 spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 470, 32), outlineColor);
 

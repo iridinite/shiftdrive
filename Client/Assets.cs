@@ -17,24 +17,9 @@ namespace ShiftDrive {
         public static SpriteFont
             fontDefault,
             fontBold;
-
-        public static Texture2D
-            txTitle,
-            txRect,
-            txButton,
-            txTextEntry,
-            txSkybox,
-            txRadarRing,
-            txGlow1,
-            txFillbar,
-            txHullBar,
-            txChargeBar,
-            txAnnouncePanel,
-            txItemIcons;
-
-        public static Dictionary<string, Texture2D>
-            txMapIcons,
-            txModelTextures;
+        
+        public static readonly Dictionary<string, Texture2D>
+            textures = new Dictionary<string, Texture2D>();
         
         public static Model
             mdlSkybox;
@@ -49,6 +34,10 @@ namespace ShiftDrive {
             sndUIAppear2,
             sndUIAppear3,
             sndUIAppear4;
+
+        public static Texture2D GetTexture(string name) {
+            return textures[name.ToLowerInvariant()];
+        }
 
     }
 

@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -78,27 +79,14 @@ namespace ShiftDrive {
             Assets.fontDefault = Content.Load<SpriteFont>("Fonts/Default");
             Assets.fontDefault.LineSpacing = 20;
             Assets.fontBold = Content.Load<SpriteFont>("Fonts/Bold");
-
-            Assets.txTitle = Content.Load<Texture2D>("Textures/UI/title");
-            Assets.txRect = Content.Load<Texture2D>("Textures/UI/rect");
-            Assets.txButton = Content.Load<Texture2D>("Textures/UI/button");
-            Assets.txTextEntry = Content.Load<Texture2D>("Textures/UI/textentry");
-            Assets.txRadarRing = Content.Load<Texture2D>("Textures/UI/radar");
-            Assets.txSkybox = Content.Load<Texture2D>("Textures/UI/skybox");
-            Assets.txGlow1 = Content.Load<Texture2D>("Textures/UI/glow1");
-            Assets.txAnnouncePanel = Content.Load<Texture2D>("Textures/UI/announcepanel");
-            Assets.txFillbar = Content.Load<Texture2D>("Textures/UI/fillbar");
-            Assets.txHullBar = Content.Load<Texture2D>("Textures/UI/hullbar");
-            Assets.txChargeBar = Content.Load<Texture2D>("Textures/UI/chargebar");
-            Assets.txItemIcons = Content.Load<Texture2D>("Textures/UI/itemicons");
-
-            Assets.txMapIcons = new Dictionary<string, Texture2D>();
-            Assets.txMapIcons.Add("player", Content.Load<Texture2D>("Textures/Map/player"));
-            Assets.txMapIcons.Add("asteroid", Content.Load<Texture2D>("Textures/Map/asteroid"));
-            Assets.txMapIcons.Add("mine", Content.Load<Texture2D>("Textures/Map/mine"));
-            Assets.txMapIcons.Add("nebula", Content.Load<Texture2D>("Textures/Map/nebula"));
-            Assets.txMapIcons.Add("blackhole", Content.Load<Texture2D>("Textures/Map/blackhole"));
-
+            
+            DirectoryInfo dir = new DirectoryInfo("Content/Textures/");
+            foreach (FileInfo file in dir.GetFiles("*.xnb", SearchOption.AllDirectories)) {
+                string shortname = file.FullName.Substring(dir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
+                shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
+                Assets.textures.Add(shortname, Content.Load<Texture2D>("Textures/" + shortname));
+            }
+            
             Assets.mdlSkybox = Content.Load<Model>("Models/Skybox");
 
             Assets.fxUnlit = Content.Load<Effect>("Fx/Unlit");

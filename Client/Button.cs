@@ -47,17 +47,19 @@ namespace ShiftDrive {
         public override void Draw(SpriteBatch spriteBatch) {
             if (expand <= .1f) return;
 
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x, EffY, 8, 8), new Rectangle(state * 24, 0, 8, 8), Color.White); // top left
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x + 8, EffY, width - 16, 8), new Rectangle(state * 24 + 8, 0, 8, 8), Color.White); // top middle
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x + width - 8, EffY, 8, 8), new Rectangle(state * 24 + 16, 0, 8, 8), Color.White); // top right
+            Texture2D txButton = Assets.textures["ui/button"];
 
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x, EffY + 8, 8, EffHeight - 16), new Rectangle(state * 24, 8, 8, 8), Color.White); // middle left
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x + 8, EffY + 8, width - 16, EffHeight - 16), new Rectangle(state * 24 + 8, 8, 8, 8), Color.White); // center
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x + width - 8, EffY + 8, 8, EffHeight - 16), new Rectangle(state * 24 + 16, 8, 8, 8), Color.White); // middle right
+            spriteBatch.Draw(txButton, new Rectangle(x, EffY, 8, 8), new Rectangle(state * 24, 0, 8, 8), Color.White); // top left
+            spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY, width - 16, 8), new Rectangle(state * 24 + 8, 0, 8, 8), Color.White); // top middle
+            spriteBatch.Draw(txButton, new Rectangle(x + width - 8, EffY, 8, 8), new Rectangle(state * 24 + 16, 0, 8, 8), Color.White); // top right
 
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24, 16, 8, 8), Color.White); // bottom left
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x + 8, EffY + EffHeight - 8, width - 16, 8), new Rectangle(state * 24 + 8, 16, 8, 8), Color.White); // bottom middle
-            spriteBatch.Draw(Assets.txButton, new Rectangle(x + width - 8, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24 + 16, 16, 8, 8), Color.White); // bottom right
+            spriteBatch.Draw(txButton, new Rectangle(x, EffY + 8, 8, EffHeight - 16), new Rectangle(state * 24, 8, 8, 8), Color.White); // middle left
+            spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY + 8, width - 16, EffHeight - 16), new Rectangle(state * 24 + 8, 8, 8, 8), Color.White); // center
+            spriteBatch.Draw(txButton, new Rectangle(x + width - 8, EffY + 8, 8, EffHeight - 16), new Rectangle(state * 24 + 16, 8, 8, 8), Color.White); // middle right
+
+            spriteBatch.Draw(txButton, new Rectangle(x, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24, 16, 8, 8), Color.White); // bottom left
+            spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY + EffHeight - 8, width - 16, 8), new Rectangle(state * 24 + 8, 16, 8, 8), Color.White); // bottom middle
+            spriteBatch.Draw(txButton, new Rectangle(x + width - 8, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24 + 16, 16, 8, 8), Color.White); // bottom right
 
             if (expand >= 1f) {
                 int textOffset = (state == 2) ? 7 : 4;

@@ -17,7 +17,7 @@ namespace ShiftDrive {
         public string desc;
 
         protected NamedObject() {
-            iconfile = "";
+            spritename = "ui/rect";
             nameshort = "OBJ";
             namefull = "Object";
             desc = "";
