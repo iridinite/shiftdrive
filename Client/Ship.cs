@@ -75,7 +75,7 @@ namespace ShiftDrive {
                     if (weapons[i] == null) continue;
                     Weapon wep = weapons[i];
                     wep.Charge += deltaTime;
-                    if (wep.Charge < wep.ChargeTime) return;
+                    if (wep.Charge < wep.ChargeTime) continue;
 
                     wep.Charge = 0f;
                     NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing, 0f, 360f), wep.ProjSpeed, this.faction));
