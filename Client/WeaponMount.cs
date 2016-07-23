@@ -23,8 +23,10 @@ namespace ShiftDrive {
     internal sealed class WeaponMount {
 
         public Vector2 Offset;
+        public Vector2 Position;
         public float Bearing;
         public float Arc;
+        public float OffsetMag;
         public MountSize Size;
 
         public static WeaponMount FromLua(IntPtr L, int tableidx) {
@@ -34,6 +36,7 @@ namespace ShiftDrive {
             LuaAPI.lua_getfield(L, tableidx, "position");
             LuaAPI.lua_checkfieldtype(L, tableidx, "position", -1, LuaAPI.LUA_TTABLE);
             ret.Offset = LuaAPI.lua_tovec2(L, -1);
+            ret.OffsetMag = -ret.Offset.Length();
             LuaAPI.lua_pop(L, 1);
             ret.Bearing = LuaAPI.luaH_gettablefloat(L, tableidx, "bearing");
             ret.Arc = LuaAPI.luaH_gettablefloat(L, tableidx, "arc");

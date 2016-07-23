@@ -4,8 +4,10 @@ return {
   mount = Mount.SMALL,
   draw = 0.025,
   weapontype = WeaponType.PROJECTILE,
+  projsprite = "projectile/bullet",
+  projspeed = 200,
   damagetype = DamageType.KINETIC,
   damage = 0.25,
-  chargetime = 0.5,
+  chargetime = 0.1,
   ammotype = AmmoType.NONE
 }

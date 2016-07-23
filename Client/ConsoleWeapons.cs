@@ -35,7 +35,7 @@ namespace ShiftDrive {
                 }
                 
                 // draw weapon details
-                spriteBatch.Draw(Assets.textures["ui/itemicons"], new Rectangle(188, weaponCurrentY + 10, 32, 32), new Rectangle((int)wep.Type * 32, 32, 32, 32), Color.White);
+                spriteBatch.Draw(Assets.textures["ui/itemicons"], new Rectangle(188, weaponCurrentY + 10, 32, 32), new Rectangle((int)wep.DamageType * 32, 32, 32, 32), Color.White);
                 spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(16, weaponCurrentY + 55, 128, 16), new Rectangle(0, 16, 128, 16), Color.White);
                 spriteBatch.DrawString(Assets.fontDefault, wep.Name, new Vector2(18, weaponCurrentY + 10), Color.Black);
                 spriteBatch.DrawString(Assets.fontDefault, wep.Name, new Vector2(16, weaponCurrentY + 8), Color.White);

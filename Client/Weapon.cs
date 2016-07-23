@@ -9,6 +9,17 @@ using System.IO;
 namespace ShiftDrive {
 
     /// <summary>
+    /// Determines what the weapon fires.
+    /// </summary>
+    /// <remarks>
+    /// If you change this enum, make sure to also update the table in main.lua.
+    /// </remarks>
+    internal enum WeaponType {
+        Beam = 0,
+        Projectile = 1
+    }
+
+    /// <summary>
     /// Represents the kind of damage that a weapon deals.
     /// </summary>
     /// <remarks>
@@ -41,13 +52,18 @@ namespace ShiftDrive {
         public string Name;
         public string Description;
 
+        public MountSize Mount;
         public bool Powered;
         public float PowerDraw;
 
-        public DamageType Type;
+        public DamageType DamageType;
         public float Damage;
         public float ChargeTime;
         public float Charge;
+
+        public WeaponType ProjType;
+        public string ProjSprite;
+        public float ProjSpeed;
 
         public AmmoType Ammo;
         public int AmmoUsed;
@@ -58,12 +74,22 @@ namespace ShiftDrive {
             Weapon ret = new Weapon();
             ret.Name = LuaAPI.luaH_gettablestring(L, tableidx, "name");
             ret.Description = LuaAPI.luaH_gettablestring(L, tableidx, "desc");
+            ret.Mount = (MountSize)LuaAPI.luaH_gettableint(L, tableidx, "mount");
+
+            ret.DamageType = (DamageType)LuaAPI.luaH_gettableint(L, tableidx, "damagetype");
             ret.PowerDraw = LuaAPI.luaH_gettablefloat(L, tableidx, "draw");
             ret.Damage = LuaAPI.luaH_gettablefloat(L, tableidx, "damage");
             ret.ChargeTime = LuaAPI.luaH_gettablefloat(L, tableidx, "chargetime");
-            ret.Type = (DamageType)LuaAPI.luaH_gettableint(L, tableidx, "damagetype");
+            
+            ret.ProjType = (WeaponType)LuaAPI.luaH_gettableint(L, tableidx, "weapontype");
+            if (ret.ProjType == WeaponType.Projectile) {
+                ret.ProjSprite = LuaAPI.luaH_gettablestring(L, tableidx, "projsprite");
+                ret.ProjSpeed = LuaAPI.luaH_gettablefloat(L, tableidx, "projspeed");
+            }
+
             ret.Ammo = (AmmoType)LuaAPI.luaH_gettableint(L, tableidx, "ammotype");
             ret.AmmoUsed = ret.Ammo == AmmoType.None ? 0 : LuaAPI.luaH_gettableint(L, tableidx, "ammousage");
+
             ret.Powered = false;
             ret.Charge = 0f;
             return ret;
@@ -75,7 +101,7 @@ namespace ShiftDrive {
             ret.Description = reader.ReadString();
             ret.Powered = reader.ReadBoolean();
             ret.PowerDraw = reader.ReadSingle();
-            ret.Type = (DamageType)reader.ReadByte();
+            ret.DamageType = (DamageType)reader.ReadByte();
             ret.Damage = reader.ReadSingle();
             ret.ChargeTime = reader.ReadSingle();
             ret.Charge = reader.ReadSingle();
@@ -89,7 +115,7 @@ namespace ShiftDrive {
             writer.Write(Description);
             writer.Write(Powered);
             writer.Write(PowerDraw);
-            writer.Write((byte)Type);
+            writer.Write((byte)DamageType);
             writer.Write(Damage);
             writer.Write(ChargeTime);
             writer.Write(Charge);

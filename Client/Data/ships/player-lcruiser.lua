@@ -12,12 +12,12 @@ return {
   
   mounts = {
     {
-      position = {-5, 0},
-      bearing = 290,
+      position = {0, -2},
+      bearing = 0,
       arc = 100,
       size = Mount.SMALL
     },
-    {
+    --[[{
       position = {5, 0},
       bearing = 70,
       arc = 100,
@@ -28,14 +28,14 @@ return {
       bearing = 0,
       arc = 100,
       size = Mount.MEDIUM
-    }
+    }]]
   },
   weapons = {
-    require("weapons/burstlaser"),
-    require("weapons/burstlaser"),
-    require("weapons/autocannon")
+    require("weapons/autocannon"),
+    --require("weapons/burstlaser"),
+    --require("weapons/autocannon")
   },
   
-  sprite = "player",
+  sprite = "map/player",
   color = Color(0, 144, 255)
 }

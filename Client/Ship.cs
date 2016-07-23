@@ -60,6 +60,28 @@ namespace ShiftDrive {
             float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
             facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
 
+            // fire ze missiles
+            if (world.IsServer) { // only fire projectiles on the server
+                for (int i = 0; i < mountsNum; i++) {
+                    // update mount point position
+                    if (mounts[i] == null) continue;
+                    float relangle = Utils.CalculateBearing(Vector2.Zero, mounts[i].Offset);
+
+                    mounts[i].Position = new Vector2(
+                        mounts[i].OffsetMag * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
+                        mounts[i].OffsetMag * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
+
+                    // update weapon charges
+                    if (weapons[i] == null) continue;
+                    Weapon wep = weapons[i];
+                    wep.Charge += deltaTime;
+                    if (wep.Charge < wep.ChargeTime) return;
+
+                    wep.Charge = 0f;
+                    NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing, 0f, 360f), wep.ProjSpeed, this.faction));
+                }
+            }
+
             changed = changed || throttle > 0f || Math.Abs(deltaFacing) > 0.001f;
         }
 
