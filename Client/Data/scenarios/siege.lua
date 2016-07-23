@@ -5,11 +5,13 @@ local player = CreateShip(require("ships/player-lcruiser"), "player")
 player.position = {400, 500}
 player.fuel = 5.4
 
-local npc = CreateShip(require("ships/bulkcargo"))
-npc.facing = 105
-npc.position = {350, 450}
+--local npc = CreateShip(require("ships/bulkcargo"))
+--npc.facing = 105
+--npc.position = {350, 450}
 
 Create("asteroid", {startpoint = {100, 100}, endpoint = {900, 900}, range = 100, count = 100})
+
+Create("asteroid", {startpoint = {400, 400}, endpoint = {600, 600}, range = 0, count = 10})
 
 local bh = Create("blackhole")
 repeat
