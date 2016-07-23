@@ -16,7 +16,7 @@ namespace ShiftDrive {
             type = ObjectType.Asteroid;
             facing = Utils.RNG.Next(0, 360);
             spritename = "map/asteroid";
-            color = Color.Brown;
+            color = Color.White;
             bounding = 10f;
         }
 
