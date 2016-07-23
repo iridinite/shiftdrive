@@ -86,19 +86,17 @@ namespace ShiftDrive {
                     scriptname = scriptname.Substring(0, scriptname.Length - file.Extension.Length).Replace('\\', '/');
                     // compile the string as a Lua chunk
                     if (LuaAPI.luaL_loadstringex(L, script, scriptname) != 0) {
-                        LuaAPI.lua_pushstring(L, $"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
-                        LuaAPI.lua_error(L);
+                        SDGame.Logger.LogError($"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
                         break;
                     }
                     // insert the compiled Lua function into the table and obtain a reference integer
                     compiledfns.Add(scriptname, LuaAPI.luaL_ref(L, -2));
                     
                 } catch (Exception e) {
+                    SDGame.Logger.LogError($"I/O error occurred while compiling {file.Name}: {e}");
 #if DEBUG
                     System.Diagnostics.Debugger.Break();
 #endif
-                    LuaAPI.lua_pushstring(L, $"I/O error occurred while compiling {file.Name}: {e}");
-                    LuaAPI.lua_error(L);
                 }
             }
             // save the table of compiled functions into the Lua registry
