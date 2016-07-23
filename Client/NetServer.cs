@@ -45,7 +45,7 @@ namespace ShiftDrive {
         }
 
         public static void Start() {
-            heartbeatMax = 0.06f;
+            heartbeatMax = 0.1f;
             heartbeatTimer = 0f;
 
             if (socket != null && socket.Listening)
@@ -160,6 +160,7 @@ namespace ShiftDrive {
             byte[] compressed = NetShared.CompressBuffer(worldbytes);
 
             // send the compressed state out to all connected clients
+            //SDGame.Inst.Print($"Update: {worldbytes.Length} bytes -> {compressed.Length} bytes");
             Packet gspacket = new Packet(PacketType.GameUpdate, compressed);
             socket.Broadcast(gspacket.Bytes);
         }
