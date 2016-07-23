@@ -14,7 +14,7 @@ namespace ShiftDrive {
     /// </summary>
     internal abstract class Ship : NamedObject {
 
-        private const int WEAPON_ARRAY_SIZE = 4;
+        private const int WEAPON_ARRAY_SIZE = 8;
 
         public float hull;
         public float hullMax;
@@ -25,7 +25,8 @@ namespace ShiftDrive {
         public float topSpeed;
         public float turnRate;
 
-        public byte weaponMax;
+        public byte mountsNum;
+        public WeaponMount[] mounts;
         public Weapon[] weapons;
 
         public float throttle;
@@ -42,6 +43,8 @@ namespace ShiftDrive {
             shield = 100f;
             shieldMax = 100f;
             shieldActive = false;
+            mountsNum = 0;
+            mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
         }
 
@@ -96,7 +99,8 @@ namespace ShiftDrive {
             writer.Write(shieldMax);
             writer.Write(topSpeed);
             writer.Write(turnRate);
-            writer.Write(weaponMax);
+
+            writer.Write(mountsNum);
             for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                 if (weapons[i] != null) {
                     writer.Write((byte)1);
@@ -125,8 +129,8 @@ namespace ShiftDrive {
             shieldMax = reader.ReadSingle();
             topSpeed = reader.ReadSingle();
             turnRate = reader.ReadSingle();
-            weaponMax = reader.ReadByte();
 
+            mountsNum = reader.ReadByte();
             for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                 if (reader.ReadByte() == 1) {
                     weapons[i] = Weapon.FromStream(reader);
@@ -159,9 +163,6 @@ namespace ShiftDrive {
                     break;
                 case "turnrate":
                     LuaAPI.lua_pushnumber(L, turnRate);
-                    break;
-                case "weaponslots":
-                    LuaAPI.lua_pushnumber(L, weaponMax);
                     break;
                 default:
                     return base.LuaGet(L);
@@ -197,8 +198,18 @@ namespace ShiftDrive {
                     turnRate = (float)LuaAPI.luaL_checknumber(L, 3);
                     needRetransmit = true;
                     break;
-                case "weaponslots":
-                    weaponMax = (byte)LuaAPI.luaL_checknumber(L, 3);
+                case "mounts":
+                    // table of weapon mount points
+                    for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                        LuaAPI.lua_rawgeti(L, 3, i + 1);
+                        if (LuaAPI.lua_type(L, 4) == LuaAPI.LUA_TNIL) {
+                            mounts[i] = null;
+                        } else {
+                            mounts[i] = WeaponMount.FromLua(L, 4);
+                            mountsNum++;
+                        }
+                        LuaAPI.lua_pop(L, 1);
+                    }
                     needRetransmit = true;
                     break;
                 case "weapons":

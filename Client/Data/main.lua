@@ -1,5 +1,11 @@
+math.randomseed(now())
 require("extensions")
 require("util")
+
+WeaponType = {
+  BEAM = 0,
+  PROJECTILE = 1
+}
 
 DamageType = {
   THERMAL = 0,
@@ -14,4 +20,8 @@ AmmoType = {
   MINE = 3
 }
 
-math.randomseed(now())
+Mount = {
+  SMALL = 1,
+  MEDIUM = 2,
+  LARGE = 3
+}

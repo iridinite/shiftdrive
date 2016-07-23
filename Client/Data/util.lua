@@ -15,7 +15,7 @@ function CreateShip(prototype, enttype)
   ent.iconcolor = prototype.iconcolor or Color.White
   ent.bounding = prototype.bounding or 8
   
-  ent.weaponslots = prototype.weaponslots or 0
+  ent.mounts = prototype.mounts or {}
   ent.weapons = prototype.weapons or {}
   
   return ent

@@ -67,6 +67,10 @@ announce_hull25         = Warning: Hull integrity at 25%.
 no_weapon               = No weapon loaded.
 weapon_burstlaser       = Burst Laser
 weapon_burstlaser_desc  = A standard-issue laser that fires two shots in quick succession.
+weapon_autocannon       = Autocannon
+weapon_autocannon_desc  = A rotary gun that rapidly fires bullets.
+weapon_railgun          = Railgun
+weapon_railgun_desc     = Launches a projectile at a fraction of lightspeed.
 
 ship_plr_lcruiser       = IASN Light Cruiser
 ship_plr_bship          = IASN Battleship

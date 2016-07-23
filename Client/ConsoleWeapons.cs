@@ -21,8 +21,8 @@ namespace ShiftDrive {
             DrawFuelGauge(spriteBatch);
 
             // draw a list of currently active weapons
-            int weaponBoxY = SDGame.Inst.GameHeight - Player.weaponMax * 90 - 20;
-            for (int i = 0; i < Player.weaponMax; i++) {
+            int weaponBoxY = SDGame.Inst.GameHeight - Player.mountsNum * 90 - 20;
+            for (int i = 0; i < Player.mountsNum; i++) {
                 // draw box background
                 int weaponCurrentY = weaponBoxY + i * 90;
                 spriteBatch.Draw(Assets.txRect, new Rectangle(0, weaponCurrentY, 230, 80), Color.Gray);
