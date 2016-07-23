@@ -51,7 +51,7 @@ namespace ShiftDrive {
         }
 
         public override void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            graphicsDevice.Clear(Color.FromNonPremultiplied(0, 0, 32, 255));
+            graphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             DrawLocalArea(spriteBatch);
