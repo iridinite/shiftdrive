@@ -15,26 +15,28 @@ namespace ShiftDrive {
         SelectRole = 3,
         Ready = 4,
         EnterGame = 5,
-        GameSettings = 6,
-        GameUpdate = 7,
+        GameUpdate = 6,
+        Announcement = 7,
 
-        HelmSteering = 11,
-        HelmThrottle = 12,
-        HelmShift = 13,
-        WeapShields = 14,
-        WeapPower = 15,
-        WeapTarget = 16,
-        WeapMissile = 17,
-        EngiSetPower = 18,
-        EngiSetCoolant = 19,
-        EngiRepair = 20,
-        SciScan = 21,
-        CommInText = 22,
-        CommInVoice = 23,
-        CommInShop = 24,
-        CommSend = 25,
-        CommShopOpen = 28,
-        CommShopBuy = 29
+        HelmSteering = 8,
+        HelmThrottle = 9,
+        HelmShift = 10,
+
+        WeapShields = 11,
+        WeapTarget = 12,
+        WeapMissileLoad = 13,
+        WeapMissileLaunch = 14,
+
+        EngiSetPower = 15,
+        EngiDamageReport = 16,
+
+        QuarOrder = 17,
+
+        IntelScan = 18,
+        IntelInText = 19,
+        IntelSend = 20,
+        IntelShopInfo = 21,
+        IntelShopBuy = 22
     }
 
     /// <summary>
