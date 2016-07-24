@@ -32,7 +32,7 @@ namespace ShiftDrive {
                 // pull this object in closer
                 Vector2 pulldir = Vector2.Normalize(position - gobj.position);
                 float pullpower = 1f - Vector2.Distance(gobj.position, this.position) / 140f;
-                gobj.position += pulldir * pullpower * pullpower * deltaTime * 50f;
+                gobj.position += pulldir * pullpower * pullpower * deltaTime * 40f;
                 gobj.changed = true;
 
                 // objects that are too close to the center are damaged
