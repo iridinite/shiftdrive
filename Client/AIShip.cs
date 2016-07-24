@@ -15,7 +15,6 @@ namespace ShiftDrive {
         public AIShip() {
             type = ObjectType.AIShip;
             spritename = "map/player";
-            color = Color.Blue;
             bounding = 10f;
         }
 
