@@ -5,10 +5,12 @@ return {
   draw = 0.025,
   weapontype = WeaponType.PROJECTILE,
   projsprite = "projectile/bullet",
-  projspeed = 200,
-  projspread = 5,
+  projspeed = 150,
+  projspread = 3,
   damagetype = DamageType.KINETIC,
   damage = 0.25,
   chargetime = 0.1,
-  ammotype = AmmoType.NONE
+  ammotype = AmmoType.NONE,
+  ammoperclip = 200,
+  ammoclips = 10
 }

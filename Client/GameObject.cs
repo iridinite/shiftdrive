@@ -50,6 +50,7 @@ namespace ShiftDrive {
             refLuaGet = LuaGet;
             refLuaSet = LuaSet;
             changed = true;
+            color = Color.White;
         }
 
         /// <summary>

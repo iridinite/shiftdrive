@@ -17,7 +17,8 @@ AmmoType = {
   NONE = 0,
   MISSILE = 1,
   EMP = 2,
-  MINE = 3
+  MINE = 3,
+  BULLET = 4
 }
 
 Mount = {
