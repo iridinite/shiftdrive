@@ -6,7 +6,7 @@ return {
   weapontype = WeaponType.PROJECTILE,
   projsprite = "projectile/bullet",
   projspeed = 150,
-  projspread = 3,
+  projspread = 1,
   damagetype = DamageType.KINETIC,
   damage = 0.25,
   chargetime = 0.1,
