@@ -2,7 +2,7 @@ function CreateShip(prototype, enttype)
   assert(type(prototype) == "table", "CreateShip expected a table")
   
   local ent = Create(enttype or "ship")
-  ent.nameshort = prototype.nameshort or ""
+  ent.nameshort = prototype.nameshort or GetRandomShipId()
   ent.namefull = prototype.namefull or ""
   ent.desc = prototype.desc or ""
   ent.topspeed = prototype.topspeed or 25
