@@ -158,7 +158,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Map/nebula.png
 
-#begin Textures/Map/player.png
+#begin Textures/Ship/broadside.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -168,7 +168,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Map/player.png
+/build:Textures/Ship/broadside.png
 
 #begin Textures/UI/radar.png
 /importer:TextureImporter
