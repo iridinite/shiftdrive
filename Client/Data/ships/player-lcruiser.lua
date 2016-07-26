@@ -71,5 +71,5 @@ return {
     require("weapons/autocannon")
   },
   
-  sprite = "map/player"
+  sprite = "ship/broadside"
 }
