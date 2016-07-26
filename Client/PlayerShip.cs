@@ -24,7 +24,6 @@ namespace ShiftDrive {
 
         public PlayerShip() {
             type = ObjectType.PlayerShip;
-            spritename = "map/player";
             bounding = 10f;
             destroyed = false;
         }
