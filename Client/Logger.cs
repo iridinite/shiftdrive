@@ -16,7 +16,7 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class Logger : IDisposable {
 
-        private static readonly DirectoryInfo BaseDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+        internal static readonly DirectoryInfo BaseDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
         private StreamWriter Writer;
 
         private bool disposedValue = false; // To detect redundant calls
@@ -47,7 +47,7 @@ namespace ShiftDrive {
         /// <summary>
         /// Verifies if the calling thread has permission to write a file to the application directory.
         /// </summary>
-        private static bool HasWritePermission() {
+        public static bool HasWritePermission() {
             PermissionSet permissionSet = new PermissionSet(PermissionState.None);
             FileIOPermission writePermission = new FileIOPermission(FileIOPermissionAccess.Write, BaseDir.FullName);
             permissionSet.AddPermission(writePermission);
