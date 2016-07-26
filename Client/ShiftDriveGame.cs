@@ -48,13 +48,15 @@ namespace ShiftDrive {
 
             loggerInst = new Logger();
             console = new DeveloperConsole();
+            Config.Inst = Config.Load();
 
             Window.AllowUserResizing = false;
             IsMouseVisible = true;
 
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1366;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferWidth = Config.Inst.ResolutionW;
+            graphics.PreferredBackBufferHeight = Config.Inst.ResolutionH;
+            graphics.IsFullScreen = Config.Inst.FullScreen;
 
             Content.RootDirectory = "Content";
 
@@ -151,6 +153,7 @@ namespace ShiftDrive {
         }
 
         private void SDGame_Exiting(object sender, EventArgs e) {
+            Config.Inst.Save();
             loggerInst?.Dispose();
         }
 
