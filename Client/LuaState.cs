@@ -121,8 +121,7 @@ namespace ShiftDrive {
 
         public void LoadFile(string filename) {
             if (!compiledfns.ContainsKey(filename)) {
-                LuaAPI.lua_pushstring(L, LuaAPI.lua_getwhere(L, 0) + "no such script exists '" + filename + "'");
-                LuaAPI.lua_error(L);
+                SDGame.Logger.LogError(LuaAPI.lua_getwhere(L, 0) + "no such script exists '" + filename + "'");
                 return;
             }
             LuaAPI.lua_getregistry(L, "precompiled");
