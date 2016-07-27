@@ -30,6 +30,7 @@ namespace ShiftDrive {
         public ObjectType type;
 
         public Vector2 position;
+        public Vector2 velocity;
         public float facing;
         public byte sector;
 

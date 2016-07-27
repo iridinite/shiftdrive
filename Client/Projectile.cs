@@ -14,7 +14,6 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class Projectile : GameObject {
         
-        public Vector2 velocity;
         public float lifetime;
         public byte faction;
 
