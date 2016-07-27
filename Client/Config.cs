@@ -78,6 +78,20 @@ namespace ShiftDrive {
             }
         }
 
+        /// <summary>
+        /// Calculates a volume multiplier.
+        /// </summary>
+        public float GetVolumeSound() {
+            return VolumeSound / 10f;
+        }
+
+        /// <summary>
+        /// Calculates a volume multiplier.
+        /// </summary>
+        public float GetVolumeMusic() {
+            return VolumeMusic / 10f;
+        }
+
     }
 
 }
