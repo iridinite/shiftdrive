@@ -59,7 +59,31 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="world">A reference to the <see cref="GameState"/> that this object is in.</param>
         /// <param name="deltaTime">The number of seconds that passed since the previous update.</param>
-        public abstract void Update(GameState world, float deltaTime);
+        public virtual void Update(GameState world, float deltaTime) {
+            // handle collision with objects
+            if (bounding > 0f) {
+                foreach (GameObject obj in world.Objects.Values) {
+                    if (obj.id == this.id)
+                        continue; // don't collide with self
+                    if (obj.bounding <= 0f)
+                        continue; // don't collide with bounding-less objects
+
+                    float dist = Vector2.DistanceSquared(obj.position, this.position);
+                    if (dist > Math.Pow(obj.bounding + this.bounding, 2))
+                        continue; // bounding sphere check
+
+                    // apply minimum translation vector to resolve collision
+                    Vector2 normal = Vector2.Normalize(this.position - obj.position);
+                    float penetration = this.bounding + obj.bounding - (float)Math.Sqrt(dist);
+                    //SDGame.Inst.Print($"Collision! {id} vs {obj.id}; normal = {normal}, pen = {penetration}, mtv = {normal * penetration}");
+                    this.velocity += normal * penetration;
+                }
+            }
+
+            // integrate velocity into position
+            position += velocity * deltaTime;
+            velocity *= (float)Math.Pow(0.75f, deltaTime);
+        }
 
         /// <summary>
         /// Applies damage to this object. The derived class decides how
