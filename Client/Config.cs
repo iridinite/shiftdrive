@@ -29,7 +29,7 @@ namespace ShiftDrive {
             if (!Logger.HasWritePermission())
                 SDGame.Logger.LogError("Warning: ShiftDrive does not have permission to save files to the app directory.\nAny settings you change will be lost.");
 
-#if !DEBUG
+#if DEBUG
             // if debugging, we probably always want windowed mode etc.
             return new Config();
 #else
