@@ -32,6 +32,8 @@ namespace ShiftDrive {
             Vector2 min = new Vector2(Player.position.X - viewradius, Player.position.Y - viewradius);
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
 
+            spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), new Rectangle((int)Player.position.X, (int)Player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
+
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't bother drawing if outside window boundings
                 if (Vector2.DistanceSquared(Player.position, obj.position) > 300f * 300f)
