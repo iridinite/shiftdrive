@@ -50,6 +50,7 @@ namespace ShiftDrive {
 
         public override void Update(GameState world, float deltaTime) {
             base.Update(world, deltaTime);
+            velocity = Vector2.Zero;
 
             // apply throttle velocity based on the ship's facing
             position += new Vector2(
