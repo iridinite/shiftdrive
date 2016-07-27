@@ -35,8 +35,9 @@ namespace ShiftDrive {
         }
 
         public override void Update(GameState world, float deltaTime) {
+            base.Update(world, deltaTime);
+
             // move forward
-            position += velocity * deltaTime;
             lifetime += deltaTime;
 
             // TODO: collision detection

@@ -49,6 +49,8 @@ namespace ShiftDrive {
         }
 
         public override void Update(GameState world, float deltaTime) {
+            base.Update(world, deltaTime);
+
             // apply throttle velocity based on the ship's facing
             position += new Vector2(
                 (float)Math.Cos(MathHelper.ToRadians(facing - 90f)),
