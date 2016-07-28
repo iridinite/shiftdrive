@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
@@ -46,6 +47,16 @@ namespace ShiftDrive {
 
         public override bool IsTerrain() {
             return true;
+        }
+
+        public override void Serialize(BinaryWriter writer) {
+            base.Serialize(writer);
+            writer.Write(angularVelocity);
+        }
+
+        public override void Deserialize(BinaryReader reader) {
+            base.Deserialize(reader);
+            angularVelocity = reader.ReadSingle();
         }
 
     }
