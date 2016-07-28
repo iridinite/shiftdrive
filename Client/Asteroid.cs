@@ -24,6 +24,15 @@ namespace ShiftDrive {
             base.Update(world, deltaTime);
         }
 
+        protected override void OnCollision(GameObject other, float dist) {
+            base.OnCollision(other, dist);
+
+            // asteroids shouldn't move so much if ships bump into them, because
+            // they should look heavy and sluggish
+            if (other.type == ObjectType.AIShip || other.type == ObjectType.PlayerShip)
+                this.velocity *= 0.5f;
+        }
+
         public override bool IsTerrain() {
             return true;
         }
