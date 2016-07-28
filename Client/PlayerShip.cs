@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
@@ -40,6 +41,12 @@ namespace ShiftDrive {
             destroyed = true;
             hull = 0f;
             throttle = 0f;
+        }
+
+        protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
+            base.OnCollision(other, normal, penetration);
+            if (other.type == ObjectType.Asteroid)
+                velocity *= 0.5f;
         }
 
         public override void Serialize(BinaryWriter writer) {

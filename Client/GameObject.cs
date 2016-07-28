@@ -72,8 +72,11 @@ namespace ShiftDrive {
                     if (dist > Math.Pow(obj.bounding + this.bounding, 2))
                         continue; // bounding sphere check
 
+                    // calculate contact information
+                    Vector2 normal = Vector2.Normalize(this.position - obj.position);
+                    float penetration = this.bounding + obj.bounding - (float)Math.Sqrt(dist);
                     // handle collision response
-                    OnCollision(obj, dist);
+                    OnCollision(obj, normal, penetration);
                 }
             }
 
@@ -94,11 +97,8 @@ namespace ShiftDrive {
         /// <summary>
         /// Handle a collision with another <see cref="GameObject"/>.
         /// </summary>
-        protected virtual void OnCollision(GameObject other, float dist) {
+        protected virtual void OnCollision(GameObject other, Vector2 normal, float penetration) {
             // apply minimum translation vector to resolve collision
-            Vector2 normal = Vector2.Normalize(this.position - other.position);
-            float penetration = this.bounding + other.bounding - (float)Math.Sqrt(dist);
-            //SDGame.Inst.Print($"Collision! {id} vs {obj.id}; normal = {normal}, pen = {penetration}, mtv = {normal * penetration}");
             this.velocity += normal * penetration;
         }
 

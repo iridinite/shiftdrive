@@ -24,8 +24,9 @@ namespace ShiftDrive {
             base.Update(world, deltaTime);
         }
 
-        protected override void OnCollision(GameObject other, float dist) {
-            base.OnCollision(other, dist);
+        protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
+            base.OnCollision(other, normal, penetration);
+
 
             // asteroids shouldn't move so much if ships bump into them, because
             // they should look heavy and sluggish
