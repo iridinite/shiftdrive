@@ -69,8 +69,8 @@ namespace ShiftDrive {
 
             // update all gameobjects. use a backwards loop because some
             // objects may be scheduled for deletion and thus change the list order
-            IEnumerable<ushort> keys = world.Objects.Keys.OrderByDescending(k => k);
-            foreach (ushort key in keys) {
+            IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
+            foreach (uint key in keys) {
                 GameObject gobj = world.Objects[key];
                 gobj.Update(world, (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
@@ -84,7 +84,7 @@ namespace ShiftDrive {
 
             // destroy objects that should be deleted, now that they have also been
             // broadcast to clients as being deleted
-            foreach (ushort key in keys) {
+            foreach (uint key in keys) {
                 GameObject gobj = world.Objects[key];
                 if (gobj.ShouldDestroy()) world.Objects.Remove(key);
             }

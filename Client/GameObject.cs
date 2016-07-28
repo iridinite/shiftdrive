@@ -26,7 +26,7 @@ namespace ShiftDrive {
     /// Represents a serializable object in the game world.
     /// </summary>
     internal abstract class GameObject {
-        public ushort id;
+        public uint id;
         public ObjectType type;
 
         public Vector2 position;
@@ -44,7 +44,7 @@ namespace ShiftDrive {
 
         private readonly lua_CFunction refLuaGet, refLuaSet;
         private bool destroyScheduled;
-        private static ushort nextId;
+        private static uint nextId;
 
         protected GameObject() {
             id = ++nextId;
