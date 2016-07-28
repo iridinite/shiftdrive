@@ -30,7 +30,7 @@ namespace ShiftDrive {
             // asteroids shouldn't move so much if ships bump into them, because
             // they should look heavy and sluggish
             if (other.type == ObjectType.AIShip || other.type == ObjectType.PlayerShip)
-                this.velocity *= 0.5f;
+                this.velocity *= 0.8f;
         }
 
         public override bool IsTerrain() {

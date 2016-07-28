@@ -79,7 +79,7 @@ namespace ShiftDrive {
 
             // integrate velocity into position
             position += velocity * deltaTime;
-            velocity *= (float)Math.Pow(0.75f, deltaTime);
+            velocity *= (float)Math.Pow(0.8f, deltaTime);
         }
 
         /// <summary>

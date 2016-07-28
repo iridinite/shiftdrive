@@ -9,7 +9,7 @@ return {
   hullmax = 100,
   shieldmax = 80,
   cargo = 4,
-  bounding = 40,
+  bounding = 25,
   
   mounts = {
     {
