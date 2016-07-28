@@ -21,6 +21,7 @@ namespace ShiftDrive {
         }
 
         public override void Update(GameState world, float deltaTime) {
+            base.Update(world, deltaTime);
         }
 
         public override bool IsTerrain() {
