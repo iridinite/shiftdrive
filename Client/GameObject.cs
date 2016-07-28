@@ -221,7 +221,6 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="writer"></param>
         public virtual void Serialize(BinaryWriter writer) {
-            writer.Write(id);
             writer.Write((byte)type);
             writer.Write(position.X);
             writer.Write(position.Y);
@@ -239,7 +238,6 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="reader"></param>
         public virtual void Deserialize(BinaryReader reader) {
-            id = reader.ReadUInt16();
             type = (ObjectType)reader.ReadByte();
             position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();

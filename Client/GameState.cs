@@ -93,6 +93,7 @@ namespace ShiftDrive {
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }
                     obj.Deserialize(reader);
+                    obj.id = objid;
                     Objects.Add(objid, obj);
                 }
                 else {
