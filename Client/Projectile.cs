@@ -14,7 +14,6 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class Projectile : GameObject {
         
-        public Vector2 velocity;
         public float lifetime;
         public byte faction;
 
@@ -36,8 +35,9 @@ namespace ShiftDrive {
         }
 
         public override void Update(GameState world, float deltaTime) {
+            base.Update(world, deltaTime);
+
             // move forward
-            position += velocity * deltaTime;
             lifetime += deltaTime;
 
             // TODO: collision detection

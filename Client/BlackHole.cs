@@ -21,6 +21,8 @@ namespace ShiftDrive {
         }
 
         public override void Update(GameState world, float deltaTime) {
+            base.Update(world, deltaTime);
+
             // simulate gravitational pull
             foreach (GameObject gobj in world.Objects.Values) {
                 // black holes don't affect themselves...

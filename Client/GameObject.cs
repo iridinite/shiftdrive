@@ -26,10 +26,11 @@ namespace ShiftDrive {
     /// Represents a serializable object in the game world.
     /// </summary>
     internal abstract class GameObject {
-        public ushort id;
+        public uint id;
         public ObjectType type;
 
         public Vector2 position;
+        public Vector2 velocity;
         public float facing;
         public byte sector;
 
@@ -43,7 +44,7 @@ namespace ShiftDrive {
 
         private readonly lua_CFunction refLuaGet, refLuaSet;
         private bool destroyScheduled;
-        private static ushort nextId;
+        private static uint nextId;
 
         protected GameObject() {
             id = ++nextId;
@@ -58,7 +59,33 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="world">A reference to the <see cref="GameState"/> that this object is in.</param>
         /// <param name="deltaTime">The number of seconds that passed since the previous update.</param>
-        public abstract void Update(GameState world, float deltaTime);
+        public virtual void Update(GameState world, float deltaTime) {
+            // handle collision with objects
+            if (bounding > 0f) {
+                foreach (GameObject obj in world.Objects.Values) {
+                    if (obj.id == this.id)
+                        continue; // don't collide with self
+                    if (obj.bounding <= 0f)
+                        continue; // don't collide with bounding-less objects
+
+                    float dist = Vector2.DistanceSquared(obj.position, this.position);
+                    if (dist > Math.Pow(obj.bounding + this.bounding, 2))
+                        continue; // bounding sphere check
+
+                    // calculate contact information
+                    Vector2 normal = Vector2.Normalize(this.position - obj.position);
+                    float penetration = this.bounding + obj.bounding - (float)Math.Sqrt(dist);
+                    // handle collision response
+                    OnCollision(obj, normal, penetration);
+                }
+            }
+
+            // integrate velocity into position
+            position += velocity * deltaTime;
+            velocity *= (float)Math.Pow(0.8f, deltaTime);
+            // re-transmit object if it's moving around
+            changed = changed || velocity.LengthSquared() > 0.01f;
+        }
 
         /// <summary>
         /// Applies damage to this object. The derived class decides how
@@ -67,6 +94,14 @@ namespace ShiftDrive {
         /// <param name="damage">The damage total to apply.</param>
         public virtual void TakeDamage(float damage) {
             // breakable objects should override this
+        }
+
+        /// <summary>
+        /// Handle a collision with another <see cref="GameObject"/>.
+        /// </summary>
+        protected virtual void OnCollision(GameObject other, Vector2 normal, float penetration) {
+            // apply minimum translation vector to resolve collision
+            this.velocity += normal * penetration;
         }
 
         /// <summary>
@@ -186,7 +221,6 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="writer"></param>
         public virtual void Serialize(BinaryWriter writer) {
-            writer.Write(id);
             writer.Write((byte)type);
             writer.Write(position.X);
             writer.Write(position.Y);
@@ -204,7 +238,6 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="reader"></param>
         public virtual void Deserialize(BinaryReader reader) {
-            id = reader.ReadUInt16();
             type = (ObjectType)reader.ReadByte();
             position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();

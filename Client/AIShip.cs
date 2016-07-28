@@ -12,7 +12,6 @@ namespace ShiftDrive {
 
         public AIShip() {
             type = ObjectType.AIShip;
-            bounding = 10f;
         }
 
         public override void Update(GameState world, float deltaTime) {

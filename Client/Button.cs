@@ -81,10 +81,10 @@ namespace ShiftDrive {
                         opening = false;
                         int appearsound = Utils.RNG.Next(1, 5);
                         switch (appearsound) {
-                            case 1: Assets.sndUIAppear1.Play(); break;
-                            case 2: Assets.sndUIAppear2.Play(); break;
-                            case 3: Assets.sndUIAppear3.Play(); break;
-                            case 4: Assets.sndUIAppear4.Play(); break;
+                            case 1: Assets.sndUIAppear1.Play(Config.Inst.GetVolumeSound(), 0f, 0f); break;
+                            case 2: Assets.sndUIAppear2.Play(Config.Inst.GetVolumeSound(), 0f, 0f); break;
+                            case 3: Assets.sndUIAppear3.Play(Config.Inst.GetVolumeSound(), 0f, 0f); break;
+                            case 4: Assets.sndUIAppear4.Play(Config.Inst.GetVolumeSound(), 0f, 0f); break;
                         }
                     }
                 }
@@ -116,9 +116,9 @@ namespace ShiftDrive {
                         state = 0;
                         if (Mouse.IsInArea(x, y, width, height) && OnClick != null) {
                             if (CancelSound)
-                                Assets.sndUICancel.Play();
+                                Assets.sndUICancel.Play(Config.Inst.GetVolumeSound(), 0f, 0f);
                             else
-                                Assets.sndUIConfirm.Play();
+                                Assets.sndUIConfirm.Play(Config.Inst.GetVolumeSound(), 0f, 0f);
                             OnClick(this);
                         }
                     }

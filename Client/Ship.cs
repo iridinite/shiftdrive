@@ -49,6 +49,9 @@ namespace ShiftDrive {
         }
 
         public override void Update(GameState world, float deltaTime) {
+            base.Update(world, deltaTime);
+            velocity = Vector2.Zero;
+
             // apply throttle velocity based on the ship's facing
             position += new Vector2(
                 (float)Math.Cos(MathHelper.ToRadians(facing - 90f)),
@@ -79,7 +82,7 @@ namespace ShiftDrive {
 
                     wep.Charge = 0f;
                     float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                    NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, this.faction));
+                    //NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, this.faction));
                 }
             }
 

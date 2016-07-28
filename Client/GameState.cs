@@ -11,10 +11,10 @@ namespace ShiftDrive {
     
     internal sealed class GameState {
 
-        public readonly Dictionary<ushort, GameObject> Objects;
+        public readonly Dictionary<uint, GameObject> Objects;
         public bool IsServer;
         
-        private ushort cachedPlayerShipId;
+        private uint cachedPlayerShipId;
 
         /// <summary>
         /// Returns the player ship object. Currently does not support multiple player ships.
@@ -31,7 +31,7 @@ namespace ShiftDrive {
         }
 
         public GameState() {
-            Objects = new Dictionary<ushort, GameObject>();
+            Objects = new Dictionary<uint, GameObject>();
             cachedPlayerShipId = 0;
         }
 
@@ -51,15 +51,15 @@ namespace ShiftDrive {
                     pair.Value.changed = false;
                 }
             }
-            // 0x0000 marks the end of the message
+            // 0x00000000 marks the end of the message
             // (makes sense to use 0 because that's an invalid object ID)
-            writer.Write((ushort)0);
+            writer.Write((uint)0);
         }
 
         public void Deserialize(BinaryReader reader) {
             while (true) {
                 // read next object ID. zero means end of message
-                ushort objid = reader.ReadUInt16();
+                uint objid = reader.ReadUInt32();
                 if (objid == 0) break;
 
                 // set flag means a deleted object
@@ -93,6 +93,7 @@ namespace ShiftDrive {
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }
                     obj.Deserialize(reader);
+                    obj.id = objid;
                     Objects.Add(objid, obj);
                 }
                 else {
