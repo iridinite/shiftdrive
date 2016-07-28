@@ -28,6 +28,8 @@ namespace ShiftDrive {
 
             facing += angularVelocity * deltaTime;
             angularVelocity *= (float)Math.Pow(0.8f, deltaTime);
+            // re-transmit object if it's moving around
+            changed = changed || angularVelocity > 0.01f;
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
