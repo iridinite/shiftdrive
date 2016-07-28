@@ -23,7 +23,6 @@ namespace ShiftDrive {
 
         public PlayerShip() {
             type = ObjectType.PlayerShip;
-            bounding = 10f;
             destroyed = false;
         }
 
