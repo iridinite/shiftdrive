@@ -9,9 +9,10 @@ return {
   hullmax = 120,
   shieldmax = 0,
   cargo = 4,
+  bounding = 25,
   
   weaponslots = 0,
   weapons = {},
   
-  iconname = "player"
+  sprite = "ship/broadside"
 }
