@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AIShip.cs" />
+    <Compile Include="AITask.cs" />
     <Compile Include="Assets.cs" />
     <Compile Include="Asteroid.cs" />
     <Compile Include="Button.cs" />
