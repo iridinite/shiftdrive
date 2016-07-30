@@ -20,6 +20,9 @@ namespace ShiftDrive {
         
         public static readonly Dictionary<string, Texture2D>
             textures = new Dictionary<string, Texture2D>();
+
+        public static readonly Dictionary<string, SpriteSheet>
+            sprites = new Dictionary<string, SpriteSheet>();
         
         public static Model
             mdlSkybox;
@@ -39,6 +42,12 @@ namespace ShiftDrive {
             if (!textures.ContainsKey(name.ToLowerInvariant()))
                 throw new KeyNotFoundException($"Texture '{name}' was not found.");
             return textures[name.ToLowerInvariant()];
+        }
+
+        public static SpriteSheet GetSprite(string name) {
+            if (!sprites.ContainsKey(name.ToLowerInvariant()))
+                throw new KeyNotFoundException($"Sprite '{name}' was not found.");
+            return sprites[name.ToLowerInvariant()];
         }
 
     }
