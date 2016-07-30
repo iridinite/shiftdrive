@@ -43,6 +43,7 @@ namespace ShiftDrive {
             SpriteSheet ret = new SpriteSheet();
             SpriteFrame frame = null;
             float? currentFrameWait = null;
+            bool staticMode = false;
             ret.frames = new List<SpriteFrame>();
             ret.isPrototype = true;
 
@@ -61,7 +62,7 @@ namespace ShiftDrive {
 
                     // follow the command
                     switch (parts[0].Trim()) {
-                        case "blend":
+                        case "blend": // Specify a blend mode for the sprite
                             if (parts[1].Equals("alpha", StringComparison.InvariantCulture))
                                 ret.blend = BlendState.AlphaBlend;
                             else if (parts[1].Equals("additive", StringComparison.InvariantCulture))
@@ -70,7 +71,7 @@ namespace ShiftDrive {
                                 throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized blend state '{parts[1]}'");
                             break;
 
-                        case "offset":
+                        case "offset": // Specify a numerical or random offset into the first frame
                             if (parts[1].Equals("random", StringComparison.InvariantCulture))
                                 ret.offsetRandom = true;
                             else if (!float.TryParse(parts[1], NumberStyles.Float,
@@ -78,11 +79,13 @@ namespace ShiftDrive {
                                 throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized offset setting '{parts[1]}'");
                             break;
 
-                        case "frame":
+                        case "frame": // Add a new frame with a given texture
                             if (frame != null) {
                                 // flush frame to sheet
                                 if (currentFrameWait == null)
                                     throw new InvalidDataException($"In sprite sheet '{filename}':Encountered frame before wait specification: '{parts[1]}'");
+                                if (staticMode)
+                                    throw new InvalidDataException($"In sprite sheet '{filename}': Static sprite cannot have more than one frame");
                                 frame.wait = currentFrameWait.Value;
                                 ret.frames.Add(frame);
                             }
@@ -93,12 +96,24 @@ namespace ShiftDrive {
                                     .Replace("\n", Environment.NewLine));
                             break;
 
-                        case "wait":
+                        case "wait": // Specify the time to wait until the next frame
                             float val;
+                            if (staticMode)
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Unexpected wait time declaration in static sprite");
                             if (!float.TryParse(parts[1], NumberStyles.Float,
                                 CultureInfo.InvariantCulture.NumberFormat, out val))
                                 throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse wait time '{parts[1]}'");
                             currentFrameWait = val;
+                            break;
+
+                        case "static": // Specify that this sprite has no animation
+                            // Assign a dummy value to the frame wait time. Because there are no other
+                            // frames, the value has no meaning, but it's cleaner to have the sprite
+                            // sheet itself explicitly specify that no animation is intentional.
+                            if (currentFrameWait != null)
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Unexpected static declaration after wait time declaration");
+                            currentFrameWait = 1f;
+                            staticMode = true;
                             break;
 
                         default:
