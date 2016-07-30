@@ -54,6 +54,7 @@
     <Compile Include="NamedObject.cs" />
     <Compile Include="PlayerShip.cs" />
     <Compile Include="Projectile.cs" />
+    <Compile Include="SpriteSheet.cs" />
     <Compile Include="TextField.cs" />
     <Compile Include="FormConfirmExit.cs" />
     <Compile Include="FormMessage.cs" />
