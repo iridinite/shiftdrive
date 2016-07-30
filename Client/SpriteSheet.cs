@@ -56,8 +56,8 @@ namespace ShiftDrive {
                     line = line.Trim();
                     if (line.StartsWith("#")) continue; // comment
                     string[] parts = line.Split(new[] {' '}, 2);
-                    if (parts.Length != 2)
-                        throw new InvalidDataException($"Could not parse line '{line}'");
+                    if (parts.Length < 1)
+                        throw new InvalidDataException($"In sprite sheet '{filename}': Could not parse line '{line}'");
 
                     // follow the command
                     switch (parts[0].Trim()) {
@@ -67,7 +67,7 @@ namespace ShiftDrive {
                             else if (parts[1].Equals("additive", StringComparison.InvariantCulture))
                                 ret.blend = BlendState.Additive;
                             else
-                                throw new InvalidDataException($"Unrecognized blend state '{parts[1]}'");
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized blend state '{parts[1]}'");
                             break;
 
                         case "offset":
@@ -75,14 +75,14 @@ namespace ShiftDrive {
                                 ret.offsetRandom = true;
                             else if (!float.TryParse(parts[1], NumberStyles.Float,
                                 CultureInfo.InvariantCulture.NumberFormat, out ret.offset))
-                                throw new InvalidDataException($"Unrecognized offset setting '{parts[1]}'");
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized offset setting '{parts[1]}'");
                             break;
 
                         case "frame":
                             if (frame != null) {
                                 // flush frame to sheet
                                 if (currentFrameWait == null)
-                                    throw new InvalidDataException($"Encountered frame before wait specification: '{parts[1]}'");
+                                    throw new InvalidDataException($"In sprite sheet '{filename}':Encountered frame before wait specification: '{parts[1]}'");
                                 frame.wait = currentFrameWait.Value;
                                 ret.frames.Add(frame);
                             }
@@ -97,12 +97,12 @@ namespace ShiftDrive {
                             float val;
                             if (!float.TryParse(parts[1], NumberStyles.Float,
                                 CultureInfo.InvariantCulture.NumberFormat, out val))
-                                throw new InvalidDataException($"Failed to parse wait time '{parts[1]}'");
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse wait time '{parts[1]}'");
                             currentFrameWait = val;
                             break;
 
                         default:
-                            throw new InvalidDataException($"Could not parse line '{line}'");
+                            throw new InvalidDataException($"In sprite sheet '{filename}': Could not parse line '{line}'");
                     }
 
                 }
@@ -110,7 +110,7 @@ namespace ShiftDrive {
                 // flush last frame to sheet
                 if (frame != null) {
                     if (currentFrameWait == null)
-                        throw new InvalidDataException("Unspecified frame wait time at end of file");
+                        throw new InvalidDataException($"In sprite sheet '{filename}': Unspecified frame wait time at end of file");
                     frame.wait = currentFrameWait.Value;
                     ret.frames.Add(frame);
                 }
