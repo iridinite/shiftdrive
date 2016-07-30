@@ -83,11 +83,18 @@ namespace ShiftDrive {
             
             DirectoryInfo dir = new DirectoryInfo("Content/Textures/");
             foreach (FileInfo file in dir.GetFiles("*.xnb", SearchOption.AllDirectories)) {
+                // load all textures
                 string shortname = file.FullName.Substring(dir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
                 shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
                 Assets.textures.Add(shortname, Content.Load<Texture2D>("Textures/" + shortname));
             }
-            
+            foreach (FileInfo file in dir.GetFiles("*.txt", SearchOption.AllDirectories)) {
+                // then parse all sprite sheet prototypes
+                string shortname = file.FullName.Substring(dir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
+                shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
+                Assets.sprites.Add(shortname, SpriteSheet.FromFile(file.FullName));
+            }
+
             Assets.mdlSkybox = Content.Load<Model>("Models/Skybox");
 
             Assets.fxUnlit = Content.Load<Effect>("Fx/Unlit");
