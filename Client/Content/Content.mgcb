@@ -332,3 +332,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures\Ship\broadside0.png
 
+#begin Textures/Map/mine.txt
+/copy:Textures/Map/mine.txt
+
