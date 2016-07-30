@@ -47,8 +47,7 @@ namespace ShiftDrive {
                 switch (obj.type) {
                     case ObjectType.BlackHole:
                         // black hole is drawn rotating, and with a second larger one around it
-                        spriteBatch.Draw(obj.sprite, screenpos, null, obj.color, blackHoleRotation, new Vector2(obj.sprite.Width / 2f, obj.sprite.Height / 2f), .5f, SpriteEffects.None, 0f);
-                        spriteBatch.Draw(obj.sprite, screenpos, null, obj.color, -blackHoleRotation, new Vector2(obj.sprite.Width / 2f, obj.sprite.Height / 2f), 1f,  SpriteEffects.None, 0f);
+                        obj.sprite.Draw(spriteBatch, screenpos, obj.color, blackHoleRotation);
                         break;
 
                     case ObjectType.PlayerShip:
@@ -62,7 +61,7 @@ namespace ShiftDrive {
                         goto default;
 
                     default:
-                        spriteBatch.Draw(obj.sprite, screenpos, null, obj.color, MathHelper.ToRadians(obj.facing), new Vector2(obj.sprite.Width / 2f, obj.sprite.Height / 2f), .5f, SpriteEffects.None, 0f);
+                        obj.sprite.Draw(spriteBatch, screenpos, obj.color, MathHelper.ToRadians(obj.facing));
                         break;
                 }
             }

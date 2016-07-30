@@ -35,7 +35,7 @@ namespace ShiftDrive {
         public byte sector;
 
         public string spritename;
-        public Texture2D sprite;
+        public SpriteSheet sprite;
         public Color color;
 
         public float bounding;
@@ -86,7 +86,7 @@ namespace ShiftDrive {
             // re-transmit object if it's moving around
             changed = changed || velocity.LengthSquared() > 0.01f;
         }
-
+        
         /// <summary>
         /// Applies damage to this object. The derived class decides how
         /// damage affects the object, if at all.
@@ -244,7 +244,7 @@ namespace ShiftDrive {
             sector = reader.ReadByte();
             
             spritename = reader.ReadString();
-            sprite = Assets.GetTexture(spritename);
+            sprite = Assets.GetSprite(spritename).Clone();
             color.PackedValue = reader.ReadUInt32();
 
             bounding = reader.ReadSingle();
