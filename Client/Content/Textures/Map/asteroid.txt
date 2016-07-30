@@ -1,0 +1,3 @@
+static
+blend alpha
+frame "map/asteroid0"
