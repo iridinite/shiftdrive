@@ -138,13 +138,20 @@ namespace ShiftDrive {
         /// <summary>
         /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
         /// </summary>
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, float scale) {
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation) {
             if (isPrototype) return;
 
             Texture2D tex = frames[frameNo].texture; // shorthand
-            float aspect = SDGame.Inst.GameWidth / 1920f;
-            spriteBatch.DrawString(Assets.fontDefault, $"{SDGame.Inst.GameWidth}, {SDGame.Inst.GameHeight}", new Vector2(10, 10), Color.White);
-            spriteBatch.Draw(tex, position * (SDGame.Inst.GameWidth / 1280f), null, color, rotation, new Vector2(tex.Width * .5f, tex.Height * .5f), aspect, SpriteEffects.None, 0f);
+            spriteBatch.Draw(
+                tex,
+                position * (SDGame.Inst.GameWidth / 1280f), 
+                null,
+                color,
+                rotation,
+                new Vector2(tex.Width * .5f, tex.Height * .5f),
+                SDGame.Inst.GameWidth / 1920f,
+                SpriteEffects.None,
+                0f);
         }
 
         /// <summary>
