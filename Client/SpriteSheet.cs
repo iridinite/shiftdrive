@@ -16,24 +16,59 @@ namespace ShiftDrive {
     /// Represents an animated sprite.
     /// </summary>
     internal sealed class SpriteSheet {
+        
+        /// <summary>
+        /// Specifies a style with which to render a sprite.
+        /// </summary>
+        private enum SpriteBlend {
+            AlphaBlend,
+            Additive,
+            HalfBlend
+        }
 
         /// <summary>
         /// Represents a single frame in the animation.
         /// </summary>
         private class SpriteFrame {
             public Texture2D texture;
+            public SpriteBlend blend;
             public float wait;
         }
 
-        private List<SpriteFrame> frames;
-        private BlendState blend;
+        /// <summary>
+        /// Represents a sprite frame that is queued for rendering.
+        /// </summary>
+        /// <remarks>
+        /// This type is a struct so QueueDraw below can abuse the value
+        /// copying behaviour of structs.
+        /// </remarks>
+        private struct QueuedFrame {
+            public Texture2D texture;
+            public Color color;
+            public Vector2 position;
+            public float rotation;
+            public float scale;
+        }
+
+        /// <summary>
+        /// Represents a texture layer in a layered sprite.
+        /// </summary>
+        private class SpriteLayer {
+            public List<SpriteFrame> frames = new List<SpriteFrame>();
+            public float scale;
+            public float rotate;
+            public float rotateSpeed;
+
+            public int frameNo;
+            public float frameTime;
+        }
+
+        private List<SpriteLayer> layers = new List<SpriteLayer>();
         private bool isPrototype;
-
-        private int frameNo;
-        private float frameTime;
-
         private bool offsetRandom;
-        private float offset;
+
+        private static List<QueuedFrame> drawQueueAlpha = new List<QueuedFrame>();
+        private static List<QueuedFrame> drawQueueAdditive = new List<QueuedFrame>();
 
         /// <summary>
         /// Reads a sprite sheet prototype from a file.
@@ -41,11 +76,14 @@ namespace ShiftDrive {
         /// <param name="filename">The path to the file.</param>
         public static SpriteSheet FromFile(string filename) {
             SpriteSheet ret = new SpriteSheet();
+            ret.isPrototype = true;
+
+            // variables for recording parsing state
+            SpriteLayer layer = null;
             SpriteFrame frame = null;
+            SpriteBlend blend = SpriteBlend.AlphaBlend;
             float? currentFrameWait = null;
             bool staticMode = false;
-            ret.frames = new List<SpriteFrame>();
-            ret.isPrototype = true;
 
             using (StreamReader reader = new StreamReader(filename)) {
                 while (!reader.EndOfStream) {
@@ -64,36 +102,71 @@ namespace ShiftDrive {
                     switch (parts[0].Trim()) {
                         case "blend": // Specify a blend mode for the sprite
                             if (parts[1].Equals("alpha", StringComparison.InvariantCulture))
-                                ret.blend = BlendState.AlphaBlend;
+                                blend = SpriteBlend.AlphaBlend;
                             else if (parts[1].Equals("additive", StringComparison.InvariantCulture))
-                                ret.blend = BlendState.Additive;
+                                blend = SpriteBlend.Additive;
+                            else if (parts[1].Equals("half", StringComparison.InvariantCulture))
+                                blend = SpriteBlend.HalfBlend;
                             else
                                 throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized blend state '{parts[1]}'");
                             break;
 
-                        case "offset": // Specify a numerical or random offset into the first frame
+                        case "offset": // Specify a random offset into the first frame
                             if (parts[1].Equals("random", StringComparison.InvariantCulture))
                                 ret.offsetRandom = true;
-                            else if (!float.TryParse(parts[1], NumberStyles.Float,
-                                CultureInfo.InvariantCulture.NumberFormat, out ret.offset))
+                            else
                                 throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized offset setting '{parts[1]}'");
                             break;
 
                         case "frame": // Add a new frame with a given texture
+                            // create a default layer
+                            if (layer == null) {
+                                layer = new SpriteLayer();
+                                layer.scale = 1f;
+                                layer.rotateSpeed = 0f;
+                            }
+                            // flush any existing frame to the active layer
                             if (frame != null) {
-                                // flush frame to sheet
                                 if (currentFrameWait == null)
-                                    throw new InvalidDataException($"In sprite sheet '{filename}':Encountered frame before wait specification: '{parts[1]}'");
+                                    throw new InvalidDataException($"In sprite sheet '{filename}': Encountered frame before wait specification: '{parts[1]}'");
                                 if (staticMode)
                                     throw new InvalidDataException($"In sprite sheet '{filename}': Static sprite cannot have more than one frame");
                                 frame.wait = currentFrameWait.Value;
-                                ret.frames.Add(frame);
+                                frame.blend = blend;
+                                layer.frames.Add(frame);
                             }
                             frame = new SpriteFrame();
-                            frame.texture =
-                                Assets.GetTexture(parts[1].Trim('"')
-                                    .Replace("\\\"", "\"")
-                                    .Replace("\n", Environment.NewLine));
+                            frame.texture = Assets.GetTexture(parts[1].Trim('"'));
+                            break;
+
+                        case "layer":
+                            // flush any existing frame to the active layer
+                            if (frame != null) {
+                                if (currentFrameWait == null)
+                                    throw new InvalidDataException($"In sprite sheet '{filename}': Unspecified frame wait time at '{line}'");
+                                frame.wait = currentFrameWait.Value;
+                                frame.blend = blend;
+                                layer.frames.Add(frame);
+                            }
+                            // save currently open layer to the sheet
+                            frame = null;
+                            if (layer != null) ret.layers.Add(layer);
+
+                            layer = new SpriteLayer();
+                            layer.scale = 1f;
+                            layer.rotateSpeed = 0f;
+                            break;
+
+                        case "rotate":
+                            if (!float.TryParse(parts[1], NumberStyles.Float,
+                                CultureInfo.InvariantCulture.NumberFormat, out layer.rotateSpeed))
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse rotate speed '{parts[1]}'");
+                            break;
+
+                        case "scale":
+                            if (!float.TryParse(parts[1], NumberStyles.Float,
+                                CultureInfo.InvariantCulture.NumberFormat, out layer.scale))
+                                throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse scale '{parts[1]}'");
                             break;
 
                         case "wait": // Specify the time to wait until the next frame
@@ -127,8 +200,10 @@ namespace ShiftDrive {
                     if (currentFrameWait == null)
                         throw new InvalidDataException($"In sprite sheet '{filename}': Unspecified frame wait time at end of file");
                     frame.wait = currentFrameWait.Value;
-                    ret.frames.Add(frame);
+                    frame.blend = blend;
+                    layer.frames.Add(frame);
                 }
+                ret.layers.Add(layer);
 
                 return ret;
             }
@@ -139,32 +214,77 @@ namespace ShiftDrive {
         /// </summary>
         /// <returns></returns>
         public SpriteSheet Clone() {
+            if (!isPrototype) throw new InvalidOperationException("Cannot clone instantiated sprite sheet. Clone a prototype instead.");
+
             SpriteSheet ret = new SpriteSheet();
             ret.isPrototype = false;
-            ret.frames = this.frames;
-            ret.blend = this.blend;
-            ret.frameNo = 0;
-            ret.frameTime = offsetRandom ? (float)Utils.RNG.NextDouble() * frames[0].wait : offset;
-            ret.offsetRandom = this.offsetRandom;
-            ret.offset = this.offset;
+            ret.layers = this.layers;
+            if (offsetRandom) // randomize offsets
+                foreach (SpriteLayer layer in ret.layers)
+                    layer.frameTime = (float)Utils.RNG.NextDouble() * layer.frames[0].wait;
             return ret;
         }
 
         /// <summary>
         /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
         /// </summary>
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation) {
+        public void QueueDraw(Vector2 position, Color color, float rotation) {
             if (isPrototype) return;
 
-            Texture2D tex = frames[frameNo].texture; // shorthand
+            foreach (SpriteLayer layer in layers) {
+                SpriteFrame currentFrame = layer.frames[layer.frameNo];
+                QueuedFrame queuedFrame = new QueuedFrame();
+                queuedFrame.texture = currentFrame.texture;
+                queuedFrame.position = position;
+                queuedFrame.rotation = layer.rotate + rotation;
+                queuedFrame.scale = layer.scale;
+                queuedFrame.color = color;
+
+                switch (currentFrame.blend) {
+                    case SpriteBlend.AlphaBlend:
+                        drawQueueAlpha.Add(queuedFrame);
+                        break;
+                    case SpriteBlend.Additive:
+                        drawQueueAdditive.Add(queuedFrame);
+                        break;
+                    case SpriteBlend.HalfBlend:
+                        //drawQueueAdditive.Add(queuedFrame);
+                        queuedFrame.color.R = (byte)(color.R * (color.A / 255f));
+                        queuedFrame.color.G = (byte)(color.G * (color.A / 255f));
+                        queuedFrame.color.B = (byte)(color.B * (color.A / 255f));
+                        queuedFrame.color.A /= 2;
+                        //queuedFrame.color *= .5f;
+                        drawQueueAlpha.Add(queuedFrame);
+                        break;
+                }
+            }
+        }
+
+        public static void RenderAlpha(SpriteBatch spriteBatch) {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            foreach (QueuedFrame frame in drawQueueAlpha)
+                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale);
+            drawQueueAlpha.Clear();
+            spriteBatch.End();
+        }
+
+        public static void RenderAdditive(SpriteBatch spriteBatch) {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
+            foreach (QueuedFrame frame in drawQueueAdditive)
+                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale);
+            drawQueueAdditive.Clear();
+            spriteBatch.End();
+        }
+
+        private static void DrawInternal(SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Color color, float rotation, float scale) {
             spriteBatch.Draw(
                 tex,
-                position * (SDGame.Inst.GameWidth / 1280f), 
+                position * (SDGame.Inst.GameWidth / 1280f),
                 null,
                 color,
                 rotation,
                 new Vector2(tex.Width * .5f, tex.Height * .5f),
-                SDGame.Inst.GameWidth / 1920f,
+                (SDGame.Inst.GameWidth / 1920f) * scale,
                 SpriteEffects.None,
                 0f);
         }
@@ -172,18 +292,23 @@ namespace ShiftDrive {
         /// <summary>
         /// Updates this sprite sheet, advancing the animation as necessary.
         /// </summary>
-        /// <param name="gameTime">The time that passed since the last call to Update.</param>
-        public void Update(GameTime gameTime) {
+        /// <param name="deltaTime">The time that passed since the last call to Update.</param>
+        public void Update(float deltaTime) {
             if (isPrototype) return;
 
-            // add delta time to this frame's lifetime
-            frameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (!(frameTime > frames[frameNo].wait)) return;
+            foreach (SpriteLayer layer in layers) {
+                // advance rotation speed
+                layer.rotate += layer.rotateSpeed * deltaTime;
 
-            // if the wait time is over, advance the frame
-            frameNo++;
-            frameTime = 0f;
-            if (frameNo >= frames.Count) frameNo = 0;
+                // add delta time to this frame's lifetime
+                layer.frameTime += deltaTime;
+                if (!(layer.frameTime > layer.frames[layer.frameNo].wait)) continue;
+
+                // if the wait time is over, advance the frame
+                layer.frameNo++;
+                layer.frameTime = 0f;
+                if (layer.frameNo >= layer.frames.Count) layer.frameNo = 0;
+            }
         }
 
     }
