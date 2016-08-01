@@ -83,6 +83,10 @@ namespace ShiftDrive {
             // integrate velocity into position
             position += velocity * deltaTime;
             velocity *= (float)Math.Pow(0.8f, deltaTime);
+
+            // animate the object sprite
+            if (!world.IsServer) sprite.Update(deltaTime);
+
             // re-transmit object if it's moving around
             changed = changed || velocity.LengthSquared() > 0.01f;
         }
