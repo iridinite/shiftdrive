@@ -105,6 +105,7 @@ namespace ShiftDrive {
         /// </summary>
         protected virtual void OnCollision(GameObject other, Vector2 normal, float penetration) {
             // apply minimum translation vector to resolve collision
+            this.position += normal * penetration;
             this.velocity += normal * penetration;
         }
 
