@@ -1,0 +1,5 @@
+static
+blend alpha
+frame "ship/broadside0"
+#layer "base" "ship/broadside0"
+#layer "accent" "ship/broadside1"

@@ -1,0 +1,12 @@
+static
+
+layer
+frame "map/blackhole0"
+blend alpha
+scale 2.0
+rotate 0.25
+
+layer
+frame "map/blackhole0"
+blend additive
+rotate -0.15
