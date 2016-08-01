@@ -15,9 +15,7 @@ namespace ShiftDrive {
     /// </summary>
     internal abstract class Console {
         public abstract void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch);
-
-        private static float blackHoleRotation = 0f;
-
+        
         /// <summary>
         /// Shorthand for NetClient.World.GetPlayerShip()
         /// </summary>
@@ -31,8 +29,9 @@ namespace ShiftDrive {
             const float viewradius = 250f;
             Vector2 min = new Vector2(Player.position.X - viewradius, Player.position.Y - viewradius);
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
-
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), new Rectangle((int)Player.position.X, (int)Player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
+            spriteBatch.End();
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't bother drawing if outside window boundings
@@ -45,11 +44,6 @@ namespace ShiftDrive {
 
                 // draw the object
                 switch (obj.type) {
-                    case ObjectType.BlackHole:
-                        // black hole is drawn rotating, and with a second larger one around it
-                        obj.sprite.Draw(spriteBatch, screenpos, obj.color, blackHoleRotation);
-                        break;
-
                     case ObjectType.PlayerShip:
                     case ObjectType.AIShip:
                         // don't draw the name for the local player ship
@@ -61,13 +55,19 @@ namespace ShiftDrive {
                         goto default;
 
                     default:
-                        obj.sprite.Draw(spriteBatch, screenpos, obj.color, MathHelper.ToRadians(obj.facing));
+                        obj.sprite.QueueDraw(screenpos, obj.color, MathHelper.ToRadians(obj.facing));
                         break;
                 }
             }
 
+            // perform the queued object renders
+            SpriteSheet.RenderAlpha(spriteBatch);
+            SpriteSheet.RenderAdditive(spriteBatch);
+
             // draw a radar ring
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             spriteBatch.Draw(Assets.textures["ui/radar"], new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f), null, Color.White, 0f, new Vector2(256, 256), 1f, SpriteEffects.None, 0f);
+            spriteBatch.End();
         }
 
         /// <summary>
@@ -86,10 +86,8 @@ namespace ShiftDrive {
         }
 
         public virtual void Update(GameTime gameTime) {
-            // animate black holes on the tactical map
-            blackHoleRotation += (float)(gameTime.ElapsedGameTime.TotalSeconds * 0.25);
-            while (blackHoleRotation >= MathHelper.TwoPi) blackHoleRotation -= MathHelper.TwoPi;
         }
+
     }
 
 }
