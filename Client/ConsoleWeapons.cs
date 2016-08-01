@@ -15,9 +15,9 @@ namespace ShiftDrive {
 
         public override void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
             graphicsDevice.Clear(Color.Black);
+            DrawLocalArea(spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-            DrawLocalArea(spriteBatch);
             DrawFuelGauge(spriteBatch);
 
             // draw a list of currently active weapons
