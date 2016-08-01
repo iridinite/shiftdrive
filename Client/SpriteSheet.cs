@@ -54,7 +54,7 @@ namespace ShiftDrive {
         /// Represents a texture layer in a layered sprite.
         /// </summary>
         private class SpriteLayer {
-            public List<SpriteFrame> frames = new List<SpriteFrame>();
+            public readonly List<SpriteFrame> frames = new List<SpriteFrame>();
             public float scale;
             public float rotate;
             public float rotateSpeed;
@@ -67,8 +67,8 @@ namespace ShiftDrive {
         private bool isPrototype;
         private bool offsetRandom;
 
-        private static List<QueuedFrame> drawQueueAlpha = new List<QueuedFrame>();
-        private static List<QueuedFrame> drawQueueAdditive = new List<QueuedFrame>();
+        private static readonly List<QueuedFrame> drawQueueAlpha = new List<QueuedFrame>();
+        private static readonly List<QueuedFrame> drawQueueAdditive = new List<QueuedFrame>();
 
         /// <summary>
         /// Reads a sprite sheet prototype from a file.
@@ -248,18 +248,20 @@ namespace ShiftDrive {
                         drawQueueAdditive.Add(queuedFrame);
                         break;
                     case SpriteBlend.HalfBlend:
-                        //drawQueueAdditive.Add(queuedFrame);
                         queuedFrame.color.R = (byte)(color.R * (color.A / 255f));
                         queuedFrame.color.G = (byte)(color.G * (color.A / 255f));
                         queuedFrame.color.B = (byte)(color.B * (color.A / 255f));
                         queuedFrame.color.A /= 2;
-                        //queuedFrame.color *= .5f;
                         drawQueueAlpha.Add(queuedFrame);
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Renders all sprite sheets that have been queued using alpha blending.
+        /// </summary>
+        /// <param name="spriteBatch">The <see cref="SpriteBatch"/> to render with.</param>
         public static void RenderAlpha(SpriteBatch spriteBatch) {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             foreach (QueuedFrame frame in drawQueueAlpha)
@@ -268,6 +270,10 @@ namespace ShiftDrive {
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Renders all sprite sheets that have been queued using additive blending.
+        /// </summary>
+        /// <param name="spriteBatch">The <see cref="SpriteBatch"/> to render with.</param>
         public static void RenderAdditive(SpriteBatch spriteBatch) {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
             foreach (QueuedFrame frame in drawQueueAdditive)
@@ -276,6 +282,9 @@ namespace ShiftDrive {
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Draws a single texture using a <see cref="SpriteBatch"/>.
+        /// </summary>
         private static void DrawInternal(SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Color color, float rotation, float scale) {
             spriteBatch.Draw(
                 tex,
