@@ -106,7 +106,25 @@ namespace ShiftDrive {
         public bool IsAlly(Ship other) {
             return faction == other.faction;
         }
-        
+
+        protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
+            // resolve collision
+            base.OnCollision(other, normal, penetration);
+
+            // find the highest velocity involved in the collision
+            float highestVelocity = throttle * topSpeed * Math.Abs(penetration);
+            // if colliding with another ship, factor in that ship's speed
+            Ship otherShip = other as Ship;
+            if (otherShip != null) highestVelocity = Math.Max(highestVelocity, otherShip.throttle * otherShip.topSpeed * Math.Abs(penetration));
+            
+            TakeDamage(highestVelocity * SDGame.Inst.GetDeltaTime() * 2);
+
+            if (other.type == ObjectType.Asteroid) {
+                // reduce pushback
+                velocity *= 0.5f;
+            }
+        }
+
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
             
