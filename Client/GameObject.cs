@@ -229,6 +229,8 @@ namespace ShiftDrive {
             writer.Write((byte)type);
             writer.Write(position.X);
             writer.Write(position.Y);
+            writer.Write(velocity.X);
+            writer.Write(velocity.Y);
             writer.Write(facing);
             writer.Write((byte)sector);
             
@@ -245,6 +247,7 @@ namespace ShiftDrive {
         public virtual void Deserialize(BinaryReader reader) {
             type = (ObjectType)reader.ReadByte();
             position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
             

@@ -53,19 +53,7 @@ namespace ShiftDrive {
             // detonate
             base.Destroy();
         }
-
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
-            writer.Write(velocity.X);
-            writer.Write(velocity.Y);
-        }
-
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
-            velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-            lifetime = 0f;
-        }
-
+        
     }
 
 }
