@@ -23,6 +23,8 @@ namespace ShiftDrive {
         private readonly Logger loggerInst;
         private readonly DeveloperConsole console;
 
+        private float deltaTime;
+
         /// <summary>
         /// The currently active form object.
         /// </summary>
@@ -115,6 +117,7 @@ namespace ShiftDrive {
             // update viewport info
             GameWidth = GraphicsDevice.Viewport.Width;
             GameHeight = GraphicsDevice.Viewport.Height;
+            deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // gather user input
             Mouse.Update();
@@ -127,7 +130,7 @@ namespace ShiftDrive {
             if (NetClient.Connected) { // TODO && NetClient.SimRunning)
                 lock (NetClient.worldLock) {
                     foreach (GameObject gobj in NetClient.World.Objects.Values) {
-                        gobj.Update(NetClient.World, (float)gameTime.ElapsedGameTime.TotalSeconds);
+                        gobj.Update(NetClient.World, deltaTime);
                     }
                 }
             }
@@ -140,7 +143,7 @@ namespace ShiftDrive {
                 ActiveForm = new FormMainMenu();
             // update the active form
             ActiveForm.Update(gameTime);
-            console.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            console.Update(deltaTime);
 
             base.Update(gameTime);
         }
@@ -170,6 +173,13 @@ namespace ShiftDrive {
         /// <param name="error">Whether to draw the message in red or not.</param>
         public void Print(string message, bool error = false) {
             console.AddMessage(message, error);
+        }
+
+        /// <summary>
+        /// A public accessor for the delta time value.
+        /// </summary>
+        public float GetDeltaTime() {
+            return deltaTime;
         }
 
     }
