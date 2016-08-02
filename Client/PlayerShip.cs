@@ -44,9 +44,8 @@ namespace ShiftDrive {
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
+            if (destroyed) return;
             base.OnCollision(other, normal, penetration);
-            if (other.type == ObjectType.Asteroid)
-                velocity *= 0.5f;
         }
 
         public override void Serialize(BinaryWriter writer) {
