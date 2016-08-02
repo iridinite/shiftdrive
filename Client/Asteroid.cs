@@ -34,15 +34,15 @@ namespace ShiftDrive {
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
-            base.OnCollision(other, normal, penetration);
-
             // spin around!
             angularVelocity += (1f + penetration * 4f) * (float)(Utils.RNG.NextDouble() * 2.0 - 1.0);
 
             // asteroids shouldn't move so much if ships bump into them, because
             // they should look heavy and sluggish
-            if (other.type == ObjectType.AIShip || other.type == ObjectType.PlayerShip)
-                this.velocity *= 0.8f;
+            this.velocity += normal * penetration;
+            if (other.type != ObjectType.AIShip && other.type != ObjectType.PlayerShip) {
+                this.position += normal * penetration;
+            }
         }
 
         public override bool IsTerrain() {
