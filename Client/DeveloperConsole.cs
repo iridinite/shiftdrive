@@ -35,7 +35,7 @@ namespace ShiftDrive {
             ci.lifetime = Math.Min(5f + (text.Length * 0.05f), 30f);
             ci.opacity = 1f;
             ci.message = text; //Globals.WrapText(Globals.fontConsole, text, 800);
-            ci.height = (int)Assets.fontDefault.MeasureString(ci.message).Y;
+            ci.height = -1;
             ci.color = error ? Color.FromNonPremultiplied(255, 96, 96, 255) : Color.White;
             msgs.Add(ci);
         }
@@ -63,6 +63,8 @@ namespace ShiftDrive {
                 }
 
                 for (int i = 0; i < msgs.Count; i++) {
+                    if (msgs[i].height == -1)
+                        msgs[i].height = (int)Assets.fontDefault.MeasureString(msgs[i].message).Y;
                     spriteBatch.DrawString(Assets.fontDefault, msgs[i].message, new Vector2(9, y + 1), Color.Black * msgs[i].opacity);
                     spriteBatch.DrawString(Assets.fontDefault, msgs[i].message, new Vector2(8, y), msgs[i].color * msgs[i].opacity);
                     y += (msgs[i].height + 2); // (int)((msgs[i].height + 2) * msgs[i].opacity);
