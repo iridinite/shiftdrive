@@ -1,5 +1,3 @@
--- Player Ship - Light Cruiser
--- medium ship, slightly above average engines, below average offense
 return {
   nameshort = GetRandomShipId(),
   namefull = localize("ship_plr_lcruiser"),
@@ -10,6 +8,8 @@ return {
   shieldmax = 80,
   cargo = 4,
   bounding = 25,
+  
+  sprite = "ship/broadside",
   
   mounts = {
     {
@@ -70,7 +70,5 @@ return {
     require("weapons/autocannon"),
     require("weapons/autocannon"),
     require("weapons/autocannon")
-  },
-  
-  sprite = "ship/broadside"
+  }
 }
