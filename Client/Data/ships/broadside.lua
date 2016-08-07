@@ -1,13 +1,13 @@
 return {
   nameshort = GetRandomShipId(),
-  namefull = localize("ship_plr_lcruiser"),
+  namefull = localize("ship_broadside"),
   
   topspeed = 20,
   turnrate = 30,
   hullmax = 100,
   shieldmax = 80,
   cargo = 4,
-  bounding = 25,
+  bounding = 20,
   
   sprite = "ship/broadside",
   
