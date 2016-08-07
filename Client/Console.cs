@@ -29,9 +29,10 @@ namespace ShiftDrive {
             const float viewradius = 250f;
             Vector2 min = new Vector2(Player.position.X - viewradius, Player.position.Y - viewradius);
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
+
+            // start a sprite batch and keep it open so we can draw object name text
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), new Rectangle((int)Player.position.X, (int)Player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
-            spriteBatch.End();
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't bother drawing if outside window boundings
@@ -59,6 +60,8 @@ namespace ShiftDrive {
                         break;
                 }
             }
+
+            spriteBatch.End();
 
             // perform the queued object renders
             SpriteSheet.RenderAlpha(spriteBatch);
