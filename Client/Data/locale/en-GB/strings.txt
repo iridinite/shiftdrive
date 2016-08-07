@@ -72,6 +72,5 @@ weapon_autocannon_desc  = A rotary gun that rapidly fires bullets.
 weapon_railgun          = Railgun
 weapon_railgun_desc     = Launches a projectile at a fraction of lightspeed.
 
-ship_plr_lcruiser       = IASN Light Cruiser
-ship_plr_bship          = IASN Battleship
-ship_bulkcargo          = Bulk Cargo Transporter
+ship_broadside      = Broadside
+ship_mdfrigate      = IASN Medium Frigate
