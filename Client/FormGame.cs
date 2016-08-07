@@ -25,17 +25,23 @@ namespace ShiftDrive {
             hullDecline = 0f;
 
             consoleButtons = new List<Button>();
-            Button btnHelm = new Button(0, 3, 3, 100, 35, "HELM");
-            btnHelm.OnClick += BtnHelm_OnClick;
-            consoleButtons.Add(btnHelm);
-            Button btnWeap = new Button(0, 105, 3, 100, 35, "WEAP");
-            btnWeap.OnClick += BtnWeap_OnClick;
-            consoleButtons.Add(btnWeap);
-            Button btnLRS = new Button(0, 207, 3, 100, 35, "LRS");
-            btnLRS.OnClick += BtnLRS_OnClick;
-            consoleButtons.Add(btnLRS);
+            AddConsoleButton(0, 4, BtnHelm_OnClick); // settings
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
+                AddConsoleButton(1, -1, BtnHelm_OnClick);
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons))
+                AddConsoleButton(2, -1, BtnWeap_OnClick);
+            AddConsoleButton(6, -1, BtnLRS_OnClick); // debug LRS
 
             Console = new ConsoleHelm();
+        }
+
+        private void AddConsoleButton(int icon, int y, OnClickHandler onClick) {
+            // unspecified y means just place at the bottom of the list
+            if (y == -1) y = consoleButtons.Count * 40 + 4;
+            // create a new button and add it to the list
+            Button cbtn = new Button(0, 4, y, 36, 36, icon.ToString());
+            cbtn.OnClick += onClick;
+            consoleButtons.Add(cbtn);
         }
 
         private void BtnHelm_OnClick(Button sender) {
@@ -58,12 +64,12 @@ namespace ShiftDrive {
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-                spriteBatch.Draw(Assets.textures["ui/announcepanel"], new Rectangle(-490 + (consoleButtons.Count * 105), 0, 512, 64), null, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
-                spriteBatch.Draw(Assets.textures["ui/announcepanel"], new Rectangle(SDGame.Inst.GameWidth - 450, 0, 512, 64), Color.White);
+                spriteBatch.Draw(Assets.textures["ui/consolepanel"], new Rectangle(0, -496 + consoleButtons.Count * 40, 64, 512), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Assets.textures["ui/announcepanel"], new Rectangle(SDGame.Inst.GameWidth - 450, -20, 512, 64), Color.White);
                 spriteBatch.DrawString(Assets.fontDefault, "Sample announcement text", new Vector2(SDGame.Inst.GameWidth - 430, 12), Color.White);
 
                 // hull integrity bar
-                int hullbarx = MathHelper.Max((consoleButtons.Count * 105) + 40, SDGame.Inst.GameWidth / 2 - 350);
+                const int hullbarx = 64;
                 float hullFraction = player.hull / player.hullMax;
                 Color outlineColor = hullFraction <= 0.35f && hullFlicker >= 0.5f ? Color.Red : Color.White;
                 Color hullbarColor = hullFraction <= 0.35f ? Color.Red : hullFraction <= 0.7f ? Color.Orange : Color.Green;
