@@ -133,6 +133,13 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Returns true if this GameObject is a PlayerShip or AIShip.
+        /// </summary>
+        public bool IsShip() {
+            return type == ObjectType.AIShip || type == ObjectType.PlayerShip;
+        }
+
+        /// <summary>
         /// Pushes a table to the Lua stack that represents this object.
         /// </summary>
         /// <param name="L">A pointer to the Lua state.</param>
