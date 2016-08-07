@@ -115,8 +115,10 @@ namespace ShiftDrive {
             float highestVelocity = throttle * topSpeed * Math.Abs(penetration);
             // if colliding with another ship, factor in that ship's speed
             Ship otherShip = other as Ship;
-            if (otherShip != null) highestVelocity = Math.Max(highestVelocity, otherShip.throttle * otherShip.topSpeed * Math.Abs(penetration));
-            
+            if (otherShip != null)
+                highestVelocity = Math.Max(highestVelocity,
+                    otherShip.throttle * otherShip.topSpeed * Math.Abs(penetration));
+
             TakeDamage(highestVelocity * SDGame.Inst.GetDeltaTime() * 2);
 
             if (other.type == ObjectType.Asteroid) {
