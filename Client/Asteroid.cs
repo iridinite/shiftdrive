@@ -40,7 +40,7 @@ namespace ShiftDrive {
             // asteroids shouldn't move so much if ships bump into them, because
             // they should look heavy and sluggish
             this.velocity += normal * penetration;
-            if (other.type != ObjectType.AIShip && other.type != ObjectType.PlayerShip) {
+            if (!other.IsShip()) {
                 this.position += normal * penetration;
             }
         }
