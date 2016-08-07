@@ -21,7 +21,7 @@ namespace ShiftDrive {
             facing = Utils.RNG.Next(0, 360);
             spritename = "map/asteroid";
             color = Color.White;
-            bounding = 7f;
+            bounding = 8f;
         }
 
         public override void Update(GameState world, float deltaTime) {
