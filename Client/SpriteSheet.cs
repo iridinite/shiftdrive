@@ -20,7 +20,7 @@ namespace ShiftDrive {
         /// <summary>
         /// Specifies a style with which to render a sprite.
         /// </summary>
-        private enum SpriteBlend {
+        internal enum SpriteBlend {
             AlphaBlend,
             Additive,
             HalfBlend
@@ -29,7 +29,7 @@ namespace ShiftDrive {
         /// <summary>
         /// Represents a single frame in the animation.
         /// </summary>
-        private class SpriteFrame {
+        internal class SpriteFrame {
             public Texture2D texture;
             public SpriteBlend blend;
             public float wait;
@@ -53,11 +53,11 @@ namespace ShiftDrive {
         /// <summary>
         /// Represents a texture layer in a layered sprite.
         /// </summary>
-        private class SpriteLayer {
-            public readonly List<SpriteFrame> frames = new List<SpriteFrame>();
-            public float scale;
+        internal class SpriteLayer {
+            public List<SpriteFrame> frames = new List<SpriteFrame>();
             public float rotate;
             public float rotateSpeed;
+            public float scale;
 
             public int frameNo;
             public float frameTime;
