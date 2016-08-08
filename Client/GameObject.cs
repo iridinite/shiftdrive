@@ -286,11 +286,10 @@ namespace ShiftDrive {
             writer.Write(velocity.Y);
             writer.Write(facing);
             writer.Write((byte)sector);
-            
+            writer.Write(bounding);
+
             writer.Write(spritename);
             writer.Write(color.PackedValue);
-
-            writer.Write(bounding);
         }
 
         /// <summary>
@@ -303,13 +302,14 @@ namespace ShiftDrive {
             velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
-            
+            bounding = reader.ReadSingle();
+
             string oldsprite = spritename;
             spritename = reader.ReadString();
             if (sprite == null || !spritename.Equals(oldsprite, StringComparison.InvariantCulture))
                 sprite = Assets.GetSprite(spritename).Clone();
 
-            bounding = reader.ReadSingle();
+            color.PackedValue = reader.ReadUInt32();
         }
     }
     
