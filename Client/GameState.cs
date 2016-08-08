@@ -89,6 +89,9 @@ namespace ShiftDrive {
                         case ObjectType.Projectile:
                             obj = new Projectile();
                             break;
+                        case ObjectType.Particle:
+                            obj = new Particle();
+                            break;
                         default:
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }

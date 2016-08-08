@@ -19,7 +19,8 @@ namespace ShiftDrive {
         PlayerShip,
         Station,
         BlackHole,
-        Projectile
+        Projectile,
+        Particle
     }
     
     /// <summary>

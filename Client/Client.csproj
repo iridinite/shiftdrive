@@ -48,6 +48,7 @@
     <Compile Include="ConsoleWeapons.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="DeveloperConsole.cs" />
+    <Compile Include="Particle.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LuaAPI.cs" />
     <Compile Include="LuaState.cs" />
