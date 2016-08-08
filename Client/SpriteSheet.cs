@@ -236,6 +236,14 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Returns a specified <see cref="SpriteLayer"/> from this sheet.
+        /// </summary>
+        /// <param name="index">The layer index to look up.</param>
+        public SpriteLayer GetLayer(int index) {
+            return layers[index];
+        }
+
+        /// <summary>
         /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
         /// </summary>
         public void QueueDraw(Vector2 position, Color color, float rotation) {
