@@ -304,9 +304,10 @@ namespace ShiftDrive {
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
             
+            string oldsprite = spritename;
             spritename = reader.ReadString();
-            sprite = Assets.GetSprite(spritename).Clone();
-            color.PackedValue = reader.ReadUInt32();
+            if (sprite == null || !spritename.Equals(oldsprite, StringComparison.InvariantCulture))
+                sprite = Assets.GetSprite(spritename).Clone();
 
             bounding = reader.ReadSingle();
         }
