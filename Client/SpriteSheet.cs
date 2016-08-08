@@ -218,7 +218,17 @@ namespace ShiftDrive {
 
             SpriteSheet ret = new SpriteSheet();
             ret.isPrototype = false;
-            ret.layers = this.layers;
+            ret.layers = new List<SpriteLayer>();
+            foreach (SpriteLayer protlayer in layers) {
+                SpriteLayer clonelayer = new SpriteLayer();
+                clonelayer.frames = protlayer.frames;
+                clonelayer.frameTime = protlayer.frameTime;
+                clonelayer.frameNo = 0;
+                clonelayer.rotate = 0f;
+                clonelayer.rotateSpeed = protlayer.rotateSpeed;
+                clonelayer.scale = protlayer.scale;
+                ret.layers.Add(clonelayer);
+            }
             if (offsetRandom) // randomize offsets
                 foreach (SpriteLayer layer in ret.layers)
                     layer.frameTime = (float)Utils.RNG.NextDouble() * layer.frames[0].wait;
