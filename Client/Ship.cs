@@ -90,6 +90,8 @@ namespace ShiftDrive {
         }
 
         public override void TakeDamage(float damage) {
+            // only host can apply damage
+            if (!NetServer.IsHosting) return;
             // always retransmit
             changed = true;
             // apply damage to shields first, if possible
