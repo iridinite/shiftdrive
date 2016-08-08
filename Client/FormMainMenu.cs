@@ -76,22 +76,22 @@ namespace ShiftDrive {
             btnQuit.Close();
         }
 
-        private void btnConnect_Click(Button sender) {
+        private void btnConnect_Click(Control sender) {
             leaveAction = 0;
             CloseButtons();
         }
 
-        private void btnHost_OnClick(Button sender) {
+        private void btnHost_OnClick(Control sender) {
             leaveAction = 1;
             CloseButtons();
         }
 
-        private void btnOptions_OnClick(Button sender) {
+        private void btnOptions_OnClick(Control sender) {
             leaveAction = 2;
             CloseButtons();
         }
 
-        private void btnClose_Click(Button sender) {
+        private void btnClose_Click(Control sender) {
             leaveAction = 3;
             CloseButtons();
         }

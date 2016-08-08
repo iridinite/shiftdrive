@@ -44,15 +44,15 @@ namespace ShiftDrive {
             consoleButtons.Add(cbtn);
         }
 
-        private void BtnHelm_OnClick(Button sender) {
+        private void BtnHelm_OnClick(Control sender) {
             Console = new ConsoleHelm();
         }
 
-        private void BtnWeap_OnClick(Button sender) {
+        private void BtnWeap_OnClick(Control sender) {
             Console = new ConsoleWeapons();
         }
 
-        private void BtnLRS_OnClick(Button sender) {
+        private void BtnLRS_OnClick(Control sender) {
             Console = new ConsoleLrs();
         }
         

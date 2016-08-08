@@ -96,13 +96,13 @@ namespace ShiftDrive {
             btnDisconnect.Close();
         }
 
-        private void BtnDisconnect_OnClick(Button sender) {
+        private void BtnDisconnect_OnClick(Control sender) {
             leaveAction = 0;
             CloseAll();
             NetClient.Disconnect();
         }
 
-        private void BtnReady_OnClick(Button sender) {
+        private void BtnReady_OnClick(Control sender) {
             // toggle ready state and propagate to server
             isReady = !isReady;
             NetClient.Send(new Packet(PacketType.Ready, isReady));
@@ -112,23 +112,23 @@ namespace ShiftDrive {
             NetClient.Send(new Packet(PacketType.SelectRole, (byte)role));
         }
 
-        private void BtnHelm_OnClick(Button sender) {
+        private void BtnHelm_OnClick(Control sender) {
             ToggleRole(PlayerRole.Helm);
         }
 
-        private void BtnWeap_OnClick(Button sender) {
+        private void BtnWeap_OnClick(Control sender) {
             ToggleRole(PlayerRole.Weapons);
         }
 
-        private void BtnEngi_OnClick(Button sender) {
+        private void BtnEngi_OnClick(Control sender) {
             ToggleRole(PlayerRole.Engineering);
         }
 
-        private void BtnQuar_OnClick(Button sender) {
+        private void BtnQuar_OnClick(Control sender) {
             ToggleRole(PlayerRole.Quartermaster);
         }
 
-        private void BtnIntel_OnClick(Button sender) {
+        private void BtnIntel_OnClick(Control sender) {
             ToggleRole(PlayerRole.Intelligence);
         }
 

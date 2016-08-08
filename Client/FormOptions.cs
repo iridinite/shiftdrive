@@ -63,7 +63,7 @@ namespace ShiftDrive {
                 SDGame.Inst.ActiveForm = new FormMainMenu();
         }
 
-        private void btnCancel_Click(Button sender) {
+        private void btnCancel_Click(Control sender) {
             btn1.Close();
             btn2.Close();
             btn3.Close();

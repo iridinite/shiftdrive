@@ -67,7 +67,7 @@ namespace ShiftDrive {
             }
         }
 
-        private void btnConnect_Click(Button sender) {
+        private void btnConnect_Click(Control sender) {
             // TODO: remove this later. temp server creation for easy local testing
             ShiftDrive.NetServer.PrepareWorld();
             ShiftDrive.NetServer.Start();
@@ -79,7 +79,7 @@ namespace ShiftDrive {
             btnCancel.Close();
         }
 
-        private void btnCancel_Click(Button sender) {
+        private void btnCancel_Click(Control sender) {
             leaveAction = 0;
             btnConnect.Close();
             btnCancel.Close();

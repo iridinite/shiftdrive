@@ -156,7 +156,7 @@ namespace ShiftDrive {
             }
         }
 
-        private void BtnShiftShow_OnClick(Button sender) {
+        private void BtnShiftShow_OnClick(Control sender) {
             // toggle display of shift drive controls
             shiftConfirm = false;
             shiftPanelOpen = !shiftPanelOpen;
@@ -164,7 +164,7 @@ namespace ShiftDrive {
             btnShiftShow.Caption = shiftPanelOpen ? "<" : ">";
         }
 
-        private void BtnShiftConfirm_OnClick(Button sender) {
+        private void BtnShiftConfirm_OnClick(Control sender) {
             if (shiftConfirm) {
                 shiftPanelOpen = false;
                 shiftCharging = true;

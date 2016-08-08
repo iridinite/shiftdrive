@@ -51,13 +51,13 @@ namespace ShiftDrive {
             }
         }
 
-        private void btnConnect_Click(Button sender) {
+        private void btnConnect_Click(Control sender) {
             leaveAction = 0;
             btnQuit.Close();
             btnCancel.Close();
         }
 
-        private void btnCancel_Click(Button sender) {
+        private void btnCancel_Click(Control sender) {
             leaveAction = 1;
             btnQuit.Close();
             btnCancel.Close();

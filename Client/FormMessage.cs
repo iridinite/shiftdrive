@@ -42,7 +42,7 @@ namespace ShiftDrive {
             }
         }
         
-        private void btnCancel_Click(Button sender) {
+        private void btnCancel_Click(Control sender) {
             btnCancel.Close();
         }
         
