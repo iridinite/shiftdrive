@@ -42,7 +42,13 @@ namespace ShiftDrive {
 
         public bool changed;
 
-        private readonly lua_CFunction refLuaGet, refLuaSet;
+        private readonly lua_CFunction
+            refLuaGet,
+            refLuaSet,
+            refLuaTakeDamage,
+            refLuaDestroy,
+            refLuaIsShip,
+            refLuaIsTerrain;
         private bool destroyScheduled;
         private static uint nextId;
 
@@ -50,6 +56,10 @@ namespace ShiftDrive {
             id = ++nextId;
             refLuaGet = LuaGet;
             refLuaSet = LuaSet;
+            refLuaTakeDamage = clua_TakeDamage;
+            refLuaDestroy = clua_Destroy;
+            refLuaIsShip = clua_IsShip;
+            refLuaIsTerrain = clua_IsTerrain;
             changed = true;
             color = Color.White;
         }
@@ -163,6 +173,7 @@ namespace ShiftDrive {
             if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
             string key = LuaAPI.lua_tostring(L, 2);
             switch (key) {
+                // -- PROPERTIES --
                 case "id":
                     LuaAPI.lua_pushnumber(L, id);
                     break;
@@ -186,6 +197,21 @@ namespace ShiftDrive {
                 case "color":
                     LuaAPI.lua_pushnumber(L, color.PackedValue);
                     break;
+
+                // -- METHODS --
+                case "TakeDamage":
+                    LuaAPI.lua_pushcclosure(L, refLuaTakeDamage, 0);
+                    break;
+                case "Destroy":
+                    LuaAPI.lua_pushcclosure(L, refLuaDestroy, 0);
+                    break;
+                case "IsTerrain":
+                    LuaAPI.lua_pushcclosure(L, refLuaIsTerrain, 0);
+                    break;
+                case "IsShip":
+                    LuaAPI.lua_pushcclosure(L, refLuaIsShip, 0);
+                    break;
+
                 default:
                     LuaAPI.lua_pushstring(L, "attempt to read unknown field '" + key + "'");
                     LuaAPI.lua_error(L);
@@ -227,7 +253,27 @@ namespace ShiftDrive {
             changed = true;
             return 0;
         }
-        
+
+        private int clua_TakeDamage(IntPtr L) {
+            TakeDamage((int)LuaAPI.luaL_checknumber(L, 2));
+            return 0;
+        }
+
+        private int clua_Destroy(IntPtr L) {
+            Destroy();
+            return 0;
+        }
+
+        private int clua_IsShip(IntPtr L) {
+            LuaAPI.lua_pushboolean(L, IsShip() ? 1 : 0);
+            return 1;
+        }
+
+        private int clua_IsTerrain(IntPtr L) {
+            LuaAPI.lua_pushboolean(L, IsTerrain() ? 1 : 0);
+            return 1;
+        }
+
         /// <summary>
         /// Serializes the object as a byte array.
         /// </summary>
