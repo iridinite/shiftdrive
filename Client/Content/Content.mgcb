@@ -380,6 +380,9 @@
 #begin Textures/Map/blackhole.txt
 /copy:Textures/Map/blackhole.txt
 
+#begin Textures/Map/explosion.txt
+/copy:Textures/Map/explosion.txt
+
 #begin Textures/Ship/broadside.txt
 /copy:Textures/Ship/broadside.txt
 
@@ -397,6 +400,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/Map/nebula0.png
+
+#begin Textures/Map/explosion0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/explosion0.png
 
 #begin Textures/UI/consolepanel.png
 /importer:TextureImporter
