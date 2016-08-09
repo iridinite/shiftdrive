@@ -12,7 +12,7 @@ namespace ShiftDrive {
     internal class FormGame : IForm {
         public Console Console { get; set; }
 
-        private readonly List<Button> consoleButtons;
+        private readonly List<TextButton> consoleButtons;
         private float hullFlicker;
         private float hullPrevious;
         private float hullDeclineWait;
@@ -24,7 +24,7 @@ namespace ShiftDrive {
             hullDeclineWait = 0f;
             hullDecline = 0f;
 
-            consoleButtons = new List<Button>();
+            consoleButtons = new List<TextButton>();
             AddConsoleButton(0, 4, BtnHelm_OnClick); // settings
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
                 AddConsoleButton(1, -1, BtnHelm_OnClick);
@@ -39,7 +39,7 @@ namespace ShiftDrive {
             // unspecified y means just place at the bottom of the list
             if (y == -1) y = consoleButtons.Count * 40 + 4;
             // create a new button and add it to the list
-            Button cbtn = new Button(0, 4, y, 36, 36, icon.ToString());
+            TextButton cbtn = new TextButton(0, 4, y, 36, 36, icon.ToString());
             cbtn.OnClick += onClick;
             consoleButtons.Add(cbtn);
         }
@@ -80,7 +80,7 @@ namespace ShiftDrive {
                 spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 472, 34), Color.Black);
                 spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 470, 32), outlineColor);
 
-                foreach (Button b in consoleButtons)
+                foreach (TextButton b in consoleButtons)
                     b.Draw(spriteBatch);
                 
                 spriteBatch.End();
@@ -110,7 +110,7 @@ namespace ShiftDrive {
                 }
 
 
-                foreach (Button b in consoleButtons)
+                foreach (TextButton b in consoleButtons)
                     b.Update(gameTime);
             }
 

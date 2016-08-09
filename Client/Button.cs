@@ -8,35 +8,38 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Fires when the user clicks the associated <see cref="Control"/>.
+    /// </summary>
+    /// <param name="sender">The <see cref="Control"/> that initiated the event.</param>
     internal delegate void OnClickHandler(Control sender);
 
     /// <summary>
-    /// Represents an interactive text button.
+    /// Represents an interactive button.
     /// </summary>
-    internal sealed class Button : Control {
-        public string Caption { get; set; }
+    internal abstract class Button : Control {
+
         public bool Enabled { get; set; }
         public bool CancelSound { get; set; }
 
-        private int EffY { get { return y + ((height - EffHeight) / 2); } }
-        private int EffHeight { get { return (int)(height * expand); } }
+        protected int EffY { get { return y + ((height - EffHeight) / 2); } }
+        protected int EffHeight { get { return (int)(height * expand); } }
 
         public bool IsClosed { get { return closing && expand <= 0f; } }
 
         public event OnClickHandler OnClick;
 
-        private int state;
-        private readonly int order;
-        private float expand, expandDelay;
-        private bool closing, opening;
+        protected int state;
+        protected readonly int order;
+        protected float expand, expandDelay;
+        protected bool closing, opening;
 
-        public Button(int order, int x, int y, int width, int height, string caption) {
+        protected Button(int order, int x, int y, int width, int height) {
             // x = -1 means that the button should be centered
             this.x = x == -1 ? (SDGame.Inst.GameWidth / 2 - width / 2) : x;
             this.y = y;
             this.width = width;
             this.height = height;
-            this.Caption = caption;
             this.order = order;
             Enabled = true;
             CancelSound = false;
@@ -46,7 +49,6 @@ namespace ShiftDrive {
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (expand <= .1f) return;
-
             Texture2D txButton = Assets.textures["ui/button"];
 
             spriteBatch.Draw(txButton, new Rectangle(x, EffY, 8, 8), new Rectangle(state * 24, 0, 8, 8), Color.White); // top left
@@ -60,12 +62,6 @@ namespace ShiftDrive {
             spriteBatch.Draw(txButton, new Rectangle(x, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24, 16, 8, 8), Color.White); // bottom left
             spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY + EffHeight - 8, width - 16, 8), new Rectangle(state * 24 + 8, 16, 8, 8), Color.White); // bottom middle
             spriteBatch.Draw(txButton, new Rectangle(x + width - 8, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24 + 16, 16, 8, 8), Color.White); // bottom right
-
-            if (expand >= 1f) {
-                int textOffset = (state == 2) ? 7 : 4;
-                Vector2 txtSize = Assets.fontDefault.MeasureString(Caption);
-                spriteBatch.DrawString(Assets.fontDefault, Caption, new Vector2((int)(x + (width / 2) - (txtSize.X / 2)), (int)(y + (height / 2) - (txtSize.Y / 2) + textOffset)), Color.Black);
-            }
         }
 
         public override void Update(GameTime gameTime) {
@@ -142,7 +138,7 @@ namespace ShiftDrive {
             expand = 1f;
             expandDelay = order * 0.05f;
         }
-        
+
     }
 
 }

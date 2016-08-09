@@ -10,14 +10,14 @@ namespace ShiftDrive {
 
     internal class FormMessage : IForm {
         
-        private readonly Button btnCancel;
+        private readonly TextButton btnCancel;
         private readonly string message;
 
         public FormMessage(string message) {
             // store the message
             this.message = message;
             // create UI controls
-            btnCancel = new Button(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Utils.LocaleGet("returntomenu"));
+            btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Utils.LocaleGet("returntomenu"));
             btnCancel.OnClick += btnCancel_Click;
         }
 

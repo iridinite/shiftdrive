@@ -10,14 +10,14 @@ namespace ShiftDrive {
 
     internal sealed class FormConfirmExit : IForm {
         
-        private readonly Button btnQuit, btnCancel;
+        private readonly TextButton btnQuit, btnCancel;
         private int leaveAction;
         
         public FormConfirmExit() {
             // create UI controls
-            btnQuit = new Button(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_yes"));
+            btnQuit = new TextButton(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_yes"));
             btnQuit.OnClick += btnConnect_Click;
-            btnCancel = new Button(1, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_no"));
+            btnCancel = new TextButton(1, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_no"));
             btnCancel.CancelSound = true;
             btnCancel.OnClick += btnCancel_Click;
         }

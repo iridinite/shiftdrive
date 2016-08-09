@@ -10,28 +10,28 @@ namespace ShiftDrive {
 
     internal class FormLobby : IForm {
 
-        private readonly Button btnHelm, btnWeap, btnEngi, btnQuar, btnIntel, btnReady, btnDisconnect;
+        private readonly TextButton btnHelm, btnWeap, btnEngi, btnQuar, btnIntel, btnReady, btnDisconnect;
         private int leaveAction;
         private bool isReady;
 
         public FormLobby() {
             int cx = SDGame.Inst.GameWidth / 2;
             int cy = SDGame.Inst.GameHeight / 2;
-            btnHelm = new Button(1, cx - 80, cy - 150, 200, 40, Utils.LocaleGet("console_helm"));
+            btnHelm = new TextButton(1, cx - 80, cy - 150, 200, 40, Utils.LocaleGet("console_helm"));
             btnHelm.OnClick += BtnHelm_OnClick;
-            btnWeap = new Button(2, cx - 80, cy - 100, 200, 40, Utils.LocaleGet("console_wep"));
+            btnWeap = new TextButton(2, cx - 80, cy - 100, 200, 40, Utils.LocaleGet("console_wep"));
             btnWeap.OnClick += BtnWeap_OnClick;
-            btnEngi = new Button(3, cx - 80, cy - 50, 200, 40, Utils.LocaleGet("console_eng"));
+            btnEngi = new TextButton(3, cx - 80, cy - 50, 200, 40, Utils.LocaleGet("console_eng"));
             btnEngi.OnClick += BtnEngi_OnClick;
-            btnQuar = new Button(4, cx - 80, cy, 200, 40, Utils.LocaleGet("console_quar"));
+            btnQuar = new TextButton(4, cx - 80, cy, 200, 40, Utils.LocaleGet("console_quar"));
             btnQuar.OnClick += BtnQuar_OnClick;
-            btnIntel = new Button(5, cx - 80, cy + 50, 200, 40, Utils.LocaleGet("console_intel"));
+            btnIntel = new TextButton(5, cx - 80, cy + 50, 200, 40, Utils.LocaleGet("console_intel"));
             btnIntel.OnClick += BtnIntel_OnClick;
 
-            btnDisconnect = new Button(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("disconnect"));
+            btnDisconnect = new TextButton(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("disconnect"));
             btnDisconnect.CancelSound = true;
             btnDisconnect.OnClick += BtnDisconnect_OnClick;
-            btnReady = new Button(6, SDGame.Inst.GameWidth - 220, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("ready"));
+            btnReady = new TextButton(6, SDGame.Inst.GameWidth - 220, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("ready"));
             btnReady.OnClick += BtnReady_OnClick;
 
             isReady = false;

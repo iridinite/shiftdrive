@@ -11,7 +11,7 @@ namespace ShiftDrive {
     internal class FormConnect : IForm {
 
         private readonly TextField txtIP;
-        private readonly Button btnConnect, btnCancel;
+        private readonly TextButton btnConnect, btnCancel;
         private int leaveAction;
 
         private string connectErrorMsg;
@@ -20,9 +20,9 @@ namespace ShiftDrive {
             // create UI controls
             txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, SDGame.Inst.GameHeight / 2 + 50, 250);
             txtIP.text = "localhost";
-            btnConnect = new Button(0, -1, SDGame.Inst.GameHeight / 2 + 110, 250, 40, Utils.LocaleGet("connect"));
+            btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 110, 250, 40, Utils.LocaleGet("connect"));
             btnConnect.OnClick += btnConnect_Click;
-            btnCancel = new Button(1, -1, SDGame.Inst.GameHeight / 2 + 160, 250, 40, Utils.LocaleGet("cancel"));
+            btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 160, 250, 40, Utils.LocaleGet("cancel"));
             btnCancel.CancelSound = true;
             btnCancel.OnClick += btnCancel_Click;
         }

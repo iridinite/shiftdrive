@@ -12,7 +12,7 @@ namespace ShiftDrive {
 
     internal sealed class ConsoleHelm : Console {
 
-        private readonly Button
+        private readonly TextButton
             btnShiftShow,
             btnShiftConfirm,
             btnShiftAbort;
@@ -42,12 +42,12 @@ namespace ShiftDrive {
             txtShiftDist = new TextField(20, 170, 100);
             txtShiftDir = new TextField(20, 220, 100);
 
-            btnShiftShow = new Button(1, 16, 100, 30, 30, ">");
+            btnShiftShow = new TextButton(1, 16, 100, 30, 30, ">");
             btnShiftShow.OnClick += BtnShiftShow_OnClick;
-            btnShiftConfirm = new Button(1, 170, 215, 100, 35, "Jump");
+            btnShiftConfirm = new TextButton(1, 170, 215, 100, 35, "Jump");
             btnShiftConfirm.OnClick += BtnShiftConfirm_OnClick;
             btnShiftConfirm.Enabled = false;
-            btnShiftAbort = new Button(1, 200, 200, 100, 35, "Abort");
+            btnShiftAbort = new TextButton(1, 200, 200, 100, 35, "Abort");
         }
 
         public override void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
