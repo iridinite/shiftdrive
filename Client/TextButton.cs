@@ -8,8 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
-    internal delegate void OnClickHandler(Control sender);
-
     /// <summary>
     /// Represents an interactive text button.
     /// </summary>
