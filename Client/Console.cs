@@ -36,7 +36,7 @@ namespace ShiftDrive {
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't bother drawing if outside window boundings
-                if (Vector2.DistanceSquared(Player.position, obj.position) > 300f * 300f)
+                if (Vector2.DistanceSquared(Player.position, obj.position) > 350f * 350f)
                     continue;
                 // calculate screen coordinates for this object
                 float xrel = (obj.position.X - min.X) / (max.X - min.X) * SDGame.Inst.GameWidth;
