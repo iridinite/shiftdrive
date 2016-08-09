@@ -62,12 +62,12 @@ namespace ShiftDrive {
                     y -= (int)(msgs[0].height * (1f - msgs[0].opacity));
                 }
 
-                for (int i = 0; i < msgs.Count; i++) {
-                    if (msgs[i].height == -1)
-                        msgs[i].height = (int)Assets.fontDefault.MeasureString(msgs[i].message).Y;
-                    spriteBatch.DrawString(Assets.fontDefault, msgs[i].message, new Vector2(9, y + 1), Color.Black * msgs[i].opacity);
-                    spriteBatch.DrawString(Assets.fontDefault, msgs[i].message, new Vector2(8, y), msgs[i].color * msgs[i].opacity);
-                    y += (msgs[i].height + 2); // (int)((msgs[i].height + 2) * msgs[i].opacity);
+                foreach (ConsoleItem msg in msgs) {
+                    if (msg.height == -1)
+                        msg.height = (int)Assets.fontDefault.MeasureString(msg.message).Y;
+                    spriteBatch.DrawString(Assets.fontDefault, msg.message, new Vector2(9, y + 1), Color.Black * msg.opacity);
+                    spriteBatch.DrawString(Assets.fontDefault, msg.message, new Vector2(8, y), msg.color * msg.opacity);
+                    y += (msg.height + 2); // (int)((msgs[i].height + 2) * msgs[i].opacity);
                 }
 
                 // make sure we don't get crazy overflows
