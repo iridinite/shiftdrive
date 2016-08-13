@@ -34,8 +34,8 @@ namespace ShiftDrive {
             this.lifetime = 0f;
         }
 
-        public override void Update(GameState world, float deltaTime) {
-            base.Update(world, deltaTime);
+        public override void Update(float deltaTime) {
+            base.Update(deltaTime);
 
             // move forward
             lifetime += deltaTime;
