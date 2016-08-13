@@ -12,15 +12,15 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class BlackHole : NamedObject {
 
-        public BlackHole() {
+        public BlackHole(GameState world) : base(world) {
             type = ObjectType.BlackHole;
             facing = 0f;
             spritename = "map/blackhole";
             bounding = 0f; // no bounding sphere; Update handles gravity pull
         }
 
-        public override void Update(GameState world, float deltaTime) {
-            base.Update(world, deltaTime);
+        public override void Update(float deltaTime) {
+            base.Update(deltaTime);
 
             // simulate gravitational pull
             foreach (GameObject gobj in world.Objects.Values) {

@@ -16,7 +16,7 @@ namespace ShiftDrive {
         public string namefull;
         public string desc;
 
-        protected NamedObject() {
+        protected NamedObject(GameState world) : base(world) {
             spritename = "ui/rect";
             nameshort = "OBJ";
             namefull = "Object";

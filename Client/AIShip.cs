@@ -19,7 +19,7 @@ namespace ShiftDrive {
         private float travelRandTime;
         private Vector2 travelDest;
 
-        public AIShip() {
+        public AIShip(GameState world) : base(world) {
             brain = new List<AITask>();
             brain.Add(AITask.TravelDestination);
             brain.Add(AITask.TravelRandomize);
@@ -27,7 +27,7 @@ namespace ShiftDrive {
             type = ObjectType.AIShip;
         }
 
-        public override void Update(GameState world, float deltaTime) {
+        public override void Update(float deltaTime) {
             // walk through the AI tasks
             foreach (AITask task in brain) {
                 switch (task) {
@@ -61,7 +61,7 @@ namespace ShiftDrive {
                 }
             }
 
-            base.Update(world, deltaTime);
+            base.Update(deltaTime);
         }
 
     }

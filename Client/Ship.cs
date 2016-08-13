@@ -36,7 +36,7 @@ namespace ShiftDrive {
 
         private bool needRetransmit;
 
-        protected Ship() {
+        protected Ship(GameState world) : base(world) {
             needRetransmit = true;
             hull = 100f;
             hullMax = 100f;
@@ -48,8 +48,8 @@ namespace ShiftDrive {
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
         }
 
-        public override void Update(GameState world, float deltaTime) {
-            base.Update(world, deltaTime);
+        public override void Update(float deltaTime) {
+            base.Update(deltaTime);
             velocity = Vector2.Zero;
 
             // apply throttle velocity based on the ship's facing

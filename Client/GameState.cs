@@ -75,22 +75,22 @@ namespace ShiftDrive {
                     GameObject obj;
                     switch (objtype) {
                         case ObjectType.PlayerShip:
-                            obj = new PlayerShip();
+                            obj = new PlayerShip(this);
                             break;
                         case ObjectType.AIShip:
-                            obj = new AIShip();
+                            obj = new AIShip(this);
                             break;
                         case ObjectType.Asteroid:
-                            obj = new Asteroid();
+                            obj = new Asteroid(this);
                             break;
                         case ObjectType.BlackHole:
-                            obj = new BlackHole();
+                            obj = new BlackHole(this);
                             break;
                         case ObjectType.Projectile:
-                            obj = new Projectile();
+                            obj = new Projectile(this);
                             break;
                         case ObjectType.Particle:
-                            obj = new Particle();
+                            obj = new Particle(this);
                             break;
                         default:
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");

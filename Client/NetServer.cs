@@ -20,7 +20,6 @@ namespace ShiftDrive {
 
     internal static class NetServer {
         internal static GameState world { get; private set; }
-        internal static bool IsHosting { get; private set; }
         
         private static Host socket;
         private static LuaState lua;
@@ -62,7 +61,6 @@ namespace ShiftDrive {
             socket.OnError += Socket_OnError;
             socket.MaxClients = 100;
             socket.Start();
-            IsHosting = true;
         }
 
         public static void Update(GameTime gameTime) {
@@ -74,7 +72,7 @@ namespace ShiftDrive {
             IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
             foreach (uint key in keys) {
                 GameObject gobj = world.Objects[key];
-                gobj.Update(world, (float)gameTime.ElapsedGameTime.TotalSeconds);
+                gobj.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
             // decrement countdown timer
@@ -96,7 +94,6 @@ namespace ShiftDrive {
             SDGame.Logger.Log("Stopping server and closing Lua state.");
             lua.Destroy();
             socket.Stop();
-            IsHosting = false;
         }
 
         public static void AddObject(GameObject obj) {

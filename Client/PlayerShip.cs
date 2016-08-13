@@ -22,13 +22,13 @@ namespace ShiftDrive {
         
         private bool destroyed;
 
-        public PlayerShip() {
+        public PlayerShip(GameState world) : base(world) {
             type = ObjectType.PlayerShip;
             destroyed = false;
         }
 
-        public override void Update(GameState world, float deltaTime) {
-            base.Update(world, deltaTime);
+        public override void Update(float deltaTime) {
+            base.Update(deltaTime);
 
             // ship operation and throttle eats up energy
             ConsumeFuel(deltaTime * 0.004f);

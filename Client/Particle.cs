@@ -24,7 +24,7 @@ namespace ShiftDrive {
         public Color colorstart;
         public Color colorend;
 
-        public Particle() {
+        public Particle(GameState world) : base(world) {
             type = ObjectType.Particle;
             life = 0f;
             lifemax = 0f;
@@ -36,8 +36,8 @@ namespace ShiftDrive {
             colorend = Color.White;
         }
         
-        public override void Update(GameState world, float deltaTime) {
-            base.Update(world, deltaTime);
+        public override void Update(float deltaTime) {
+            base.Update(deltaTime);
 
             // update sprite color. this should also be done on the server because sprite
             // color is re-transmitted with the GameObject. not updating it on the server

@@ -130,7 +130,7 @@ namespace ShiftDrive {
             if (NetClient.Connected) { // TODO && NetClient.SimRunning)
                 lock (NetClient.worldLock) {
                     foreach (GameObject gobj in NetClient.World.Objects.Values) {
-                        gobj.Update(NetClient.World, deltaTime);
+                        gobj.Update(deltaTime);
                     }
                 }
             }

@@ -243,17 +243,17 @@ namespace ShiftDrive {
             // -- Named Objects --
             if (objtype.Equals("player", StringComparison.InvariantCultureIgnoreCase)) {
                 // Player Ship
-                PlayerShip newship = new PlayerShip();
+                PlayerShip newship = new PlayerShip(NetServer.world);
                 newobj = newship;
 
             } else if (objtype.Equals("ship", StringComparison.InvariantCultureIgnoreCase)) {
                 // NPC Ship
-                AIShip newship = new AIShip();
+                AIShip newship = new AIShip(NetServer.world);
                 newobj = newship;
 
             } else if (objtype.Equals("blackhole", StringComparison.InvariantCultureIgnoreCase)) {
                 // Black Hole
-                newobj = new BlackHole();
+                newobj = new BlackHole(NetServer.world);
 
             // -- Nameless Objects --
             } else if (objtype.Equals("asteroid", StringComparison.InvariantCultureIgnoreCase)) {
@@ -273,7 +273,7 @@ namespace ShiftDrive {
                 // now that we parsed the Lua table's info, we can create the objects
                 Vector2 increment = (end - start) / (count - 1);
                 for (int i = 0; i < count; i++) {
-                    Asteroid rock = new Asteroid();
+                    Asteroid rock = new Asteroid(NetServer.world);
                     rock.position = start + (increment * i) + // base movement along the start-end line, plus random range
                                     new Vector2(Utils.RNG.Next(range * 2) - range, Utils.RNG.Next(range * 2) - range);
                     NetServer.AddObject(rock);

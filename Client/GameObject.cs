@@ -42,6 +42,7 @@ namespace ShiftDrive {
         public float bounding;
 
         public bool changed;
+        protected readonly GameState world;
 
         private readonly lua_CFunction
             refLuaGet,
@@ -50,10 +51,12 @@ namespace ShiftDrive {
             refLuaDestroy,
             refLuaIsShip,
             refLuaIsTerrain;
+
         private bool destroyScheduled;
         private static uint nextId;
 
-        protected GameObject() {
+        protected GameObject(GameState world) {
+            this.world = world;
             id = ++nextId;
             refLuaGet = LuaGet;
             refLuaSet = LuaSet;
@@ -68,9 +71,8 @@ namespace ShiftDrive {
         /// <summary>
         /// Updates this object.
         /// </summary>
-        /// <param name="world">A reference to the <see cref="GameState"/> that this object is in.</param>
         /// <param name="deltaTime">The number of seconds that passed since the previous update.</param>
-        public virtual void Update(GameState world, float deltaTime) {
+        public virtual void Update(float deltaTime) {
             // handle collision with objects
             if (bounding > 0f) {
                 foreach (GameObject obj in world.Objects.Values) {

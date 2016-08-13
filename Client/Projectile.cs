@@ -17,12 +17,12 @@ namespace ShiftDrive {
         public float lifetime;
         public byte faction;
 
-        public Projectile() {
+        public Projectile(GameState world) : base(world) {
             type = ObjectType.Projectile;
             color = Color.White;
         }
 
-        public Projectile(string spritename, Vector2 position, float facing, float speed, byte faction) : this() {
+        public Projectile(GameState world, string spritename, Vector2 position, float facing, float speed, byte faction) : this(world) {
             this.spritename = spritename;
             //this.sprite = Assets.GetTexture(spritename);
             this.position = position;
