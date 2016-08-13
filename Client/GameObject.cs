@@ -138,6 +138,8 @@ namespace ShiftDrive {
         /// once the update cycle has been completed.
         /// </summary>
         public virtual void Destroy() {
+            if (!world.IsServer)
+                throw new InvalidOperationException("Cannot destroy objects client-side");
             destroyScheduled = true;
         }
 
