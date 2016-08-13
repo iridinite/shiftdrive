@@ -3,6 +3,7 @@
 ** (C) Mika Molenkamp, 2016.
 */
 
+using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 
@@ -76,6 +77,40 @@ namespace ShiftDrive {
             scaleend = reader.ReadSingle();
             rotatespeed = reader.ReadSingle();
             rotateoffset = reader.ReadSingle();
+        }
+
+        public static void CreateExplosion(GameState world, Vector2 position) {
+            if (!world.IsServer)
+                throw new InvalidOperationException("Cannot create objects on client");
+
+            // several fast moving small particles
+            for (int i = 0; i < 20; i++) {
+                Particle p = new Particle(NetServer.world);
+                p.spritename = "map/explosion";
+                p.lifemax = 5f;
+                p.colorend = Color.Transparent;
+                p.rotateoffset = Utils.RandomFloat(0, MathHelper.TwoPi);
+                p.rotatespeed = Utils.RandomFloat(-1f, 1f);
+                p.scalestart = Utils.RandomFloat(0.1f, 0.25f) + (i * 0.02f);
+                p.scaleend = p.scalestart + Utils.RandomFloat(1.0f, 1.5f);
+                p.position = position;
+                p.velocity = new Vector2(Utils.RandomFloat(-30f, 30f), Utils.RandomFloat(-30, 30f));
+                world.Objects.Add(p.id, p);
+            }
+            // a few large particles that stay near the center
+            for (int i = 0; i < 5; i++) {
+                Particle p = new Particle(NetServer.world);
+                p.spritename = "map/explosion";
+                p.lifemax = 4f;
+                p.colorend = Color.Transparent;
+                p.rotateoffset = Utils.RandomFloat(0, MathHelper.TwoPi);
+                p.rotatespeed = Utils.RandomFloat(-2f, 2f);
+                p.scalestart = Utils.RandomFloat(0.75f, 1.25f);
+                p.scaleend = p.scalestart + Utils.RandomFloat(0.5f, 1.0f);
+                p.position = position;
+                p.velocity = new Vector2(Utils.RandomFloat(-10f, 10f), Utils.RandomFloat(-10, 10f));
+                world.Objects.Add(p.id, p);
+            }
         }
 
     }
