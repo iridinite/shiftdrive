@@ -48,6 +48,15 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Returns a random floating point number in the specified range.
+        /// </summary>
+        /// <param name="min">The inclusive lower bound.</param>
+        /// <param name="max">The exclusive upper bound.</param>
+        public static float RandomFloat(float min, float max) {
+            return (float)RNG.NextDouble() * (max - min) + min;
+        }
+
+        /// <summary>
         /// Draws the game title at the specified height, along with version info in the corner.
         /// </summary>
         public static void DrawTitle(SpriteBatch spriteBatch, float y) {
