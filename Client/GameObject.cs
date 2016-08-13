@@ -4,9 +4,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
     
@@ -75,7 +76,9 @@ namespace ShiftDrive {
         public virtual void Update(float deltaTime) {
             // handle collision with objects
             if (bounding > 0f) {
-                foreach (GameObject obj in world.Objects.Values) {
+                IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
+                foreach (uint key in keys) {
+                    GameObject obj = world.Objects[key];
                     if (obj.id == this.id)
                         continue; // don't collide with self
                     if (obj.bounding <= 0f)
