@@ -104,6 +104,11 @@ namespace ShiftDrive {
             if (hull <= 0f) Destroy();
         }
 
+        public override void Destroy() {
+            base.Destroy();
+            Particle.CreateExplosion(NetServer.world, position);
+        }
+
         public bool IsAlly(Ship other) {
             return faction == other.faction;
         }
