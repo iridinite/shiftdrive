@@ -3,7 +3,6 @@
 ** (C) Mika Molenkamp, 2016.
 */
 
-using System.Security.Policy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -31,7 +30,6 @@ namespace ShiftDrive {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Assets.textures["ui/rect"], trigger, Color.AliceBlue);
             if (!visible) return;
 
             Texture2D tex = Assets.textures["ui/tooltip"];
