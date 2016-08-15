@@ -33,6 +33,30 @@ namespace ShiftDrive {
             // ship operation and throttle eats up energy
             ConsumeFuel(deltaTime * 0.004f);
             ConsumeFuel(throttle * deltaTime * 0.0083333f);
+
+            // ship state announcements
+            if (world.IsServer) {
+                // hull integrity warnings
+                float hullFraction = hull / hullMax;
+                if (hullFraction <= 0.25f)
+                    NetServer.PublishAnnouncement(AnnouncementId.Hull25, null);
+                else if (hullFraction <= 0.5f)
+                    NetServer.PublishAnnouncement(AnnouncementId.Hull50, null);
+                else if (hullFraction <= 0.75f)
+                    NetServer.PublishAnnouncement(AnnouncementId.Hull75, null);
+
+                // fuel reserves warnings
+                if (fuel < 1f)
+                    NetServer.PublishAnnouncement(AnnouncementId.FuelCritical, null);
+                else if (fuel < 3f)
+                    NetServer.PublishAnnouncement(AnnouncementId.FuelLow, null);
+
+                // shield strength warnings
+                if (shieldActive && shield <= 0f)
+                    NetServer.PublishAnnouncement(AnnouncementId.ShieldDown, null);
+                else if (shieldActive && shield / shieldMax <= 0.25f)
+                    NetServer.PublishAnnouncement(AnnouncementId.ShieldLow, null);
+            }
         }
 
         public override void Destroy() {

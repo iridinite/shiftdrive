@@ -36,6 +36,10 @@ namespace ShiftDrive {
                 gobj.position += pulldir * pullpower * pullpower * deltaTime * 40f;
                 gobj.changed = true;
 
+                // notify player ship
+                if (pullpower >= 0.1f && gobj.type == ObjectType.PlayerShip && world.IsServer)
+                    NetServer.PublishAnnouncement(AnnouncementId.BlackHole, null);
+
                 // objects that are too close to the center are damaged
                 if (pullpower >= 0.35f) gobj.TakeDamage(pullpower * pullpower * deltaTime * 10f);
 
