@@ -34,7 +34,7 @@ namespace ShiftDrive {
             base.Draw(spriteBatch);
             if (expand < 1f) return;
 
-            int textOffset = (state == 2) ? 4 : 0;
+            int textOffset = (state == 2) ? 2 : 0;
             spriteBatch.Draw(image,
                 new Rectangle(
                     (int)(x + width / 2 - imageSize.X / 2),
