@@ -82,6 +82,7 @@ namespace ShiftDrive {
             Assets.fontDefault = Content.Load<SpriteFont>("Fonts/Default");
             Assets.fontDefault.LineSpacing = 20;
             Assets.fontBold = Content.Load<SpriteFont>("Fonts/Bold");
+            Assets.fontTooltip = Content.Load<SpriteFont>("Fonts/Tooltip");
             
             DirectoryInfo dir = new DirectoryInfo("Content/Textures/");
             foreach (FileInfo file in dir.GetFiles("*.xnb", SearchOption.AllDirectories)) {
