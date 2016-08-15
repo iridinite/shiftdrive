@@ -34,6 +34,8 @@ namespace ShiftDrive {
         protected float expand, expandDelay;
         protected bool closing, opening;
 
+        private Tooltip tooltip;
+
         protected Button(int order, int x, int y, int width, int height) {
             // x = -1 means that the button should be centered
             this.x = x == -1 ? (SDGame.Inst.GameWidth / 2 - width / 2) : x;
@@ -44,6 +46,7 @@ namespace ShiftDrive {
             Enabled = true;
             CancelSound = false;
             state = 0;
+            tooltip = null;
             Open();
         }
 
@@ -62,6 +65,8 @@ namespace ShiftDrive {
             spriteBatch.Draw(txButton, new Rectangle(x, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24, 16, 8, 8), Color.White); // bottom left
             spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY + EffHeight - 8, width - 16, 8), new Rectangle(state * 24 + 8, 16, 8, 8), Color.White); // bottom middle
             spriteBatch.Draw(txButton, new Rectangle(x + width - 8, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24 + 16, 16, 8, 8), Color.White); // bottom right
+
+            tooltip?.Draw(spriteBatch);
         }
 
         public override void Update(GameTime gameTime) {
@@ -95,6 +100,9 @@ namespace ShiftDrive {
             // do not respond to user input while animating
             if (closing || expand < 1f)
                 return;
+
+            // update tooltip position and visibility
+            tooltip?.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             switch (state) {
                 case 0: // normal
@@ -137,6 +145,10 @@ namespace ShiftDrive {
             opening = false;
             expand = 1f;
             expandDelay = order * 0.05f;
+        }
+
+        public void SetTooltip(string text) {
+            tooltip = new Tooltip(new Rectangle(x, y, width, height), text);
         }
 
     }
