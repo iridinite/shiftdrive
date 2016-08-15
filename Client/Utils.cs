@@ -4,7 +4,9 @@
 */
 
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Iridinite.Localization;
@@ -54,6 +56,40 @@ namespace ShiftDrive {
         /// <param name="max">The exclusive upper bound.</param>
         public static float RandomFloat(float min, float max) {
             return (float)RNG.NextDouble() * (max - min) + min;
+        }
+
+        /// <summary>
+        /// Word-wraps a string so that it will not overflow a box of the specified width.
+        /// </summary>
+        /// <param name="font">A <see cref="SpriteFont"/> to reference for measurement.</param>
+        /// <param name="text">The text to wrap.</param>
+        /// <param name="width">The line-wrap edge, in pixels.</param>
+        /// <returns></returns>
+        public static string WrapText(SpriteFont font, string text, float width) {
+            StringBuilder result = new StringBuilder();
+            string[] lines = text.Replace("\x0D", "").Split('\x0A'); // strip \r, split on \n
+
+            for (int i = 0; i < lines.Length; i++) {
+                // add words until overflow, then line-break
+                string line = lines[i];
+                string totalline = "";
+                string[] words = line.Split(' ');
+                foreach (string word in words) {
+                    if (font.MeasureString(totalline + word).X > width) {
+                        result.AppendLine(totalline);
+                        totalline = "";
+                    }
+                    totalline += word + " ";
+                }
+                // don't leave off the last line
+                if (totalline.Length > 0)
+                    result.Append(totalline);
+                // add line breaks in between, but not on the last line
+                if (i < lines.Length)
+                    result.AppendLine();
+            }
+
+            return result.ToString();
         }
 
         /// <summary>
