@@ -78,6 +78,7 @@
     <Compile Include="Console.cs" />
     <Compile Include="ConsoleHelm.cs" />
     <Compile Include="ConsoleLrs.cs" />
+    <Compile Include="Tooltip.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Skybox.cs" />
     <Compile Include="IForm.cs" />
