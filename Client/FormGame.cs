@@ -25,28 +25,29 @@ namespace ShiftDrive {
             hullDecline = 0f;
 
             consoleButtons = new List<Button>();
-            AddConsoleButton(0, 4, BtnHelm_OnClick); // settings
+            AddConsoleButton(0, 4, BtnHelm_OnClick, Utils.LocaleGet("console_settings")); // settings
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
-                AddConsoleButton(1, -1, BtnHelm_OnClick);
+                AddConsoleButton(1, -1, BtnHelm_OnClick, Utils.LocaleGet("console_helm"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons))
-                AddConsoleButton(2, -1, BtnWeap_OnClick);
+                AddConsoleButton(2, -1, BtnWeap_OnClick, Utils.LocaleGet("console_wep"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Engineering))
-                AddConsoleButton(3, -1, BtnWeap_OnClick);
+                AddConsoleButton(3, -1, BtnWeap_OnClick, Utils.LocaleGet("console_eng"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster))
-                AddConsoleButton(4, -1, BtnWeap_OnClick);
+                AddConsoleButton(4, -1, BtnWeap_OnClick, Utils.LocaleGet("console_quar"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence))
-                AddConsoleButton(5, -1, BtnWeap_OnClick);
-            AddConsoleButton(6, -1, BtnLRS_OnClick); // debug LRS
+                AddConsoleButton(5, -1, BtnWeap_OnClick, Utils.LocaleGet("console_intel"));
+            AddConsoleButton(6, -1, BtnLRS_OnClick, Utils.LocaleGet("console_lrs")); // debug LRS
 
             Console = new ConsoleHelm();
         }
 
-        private void AddConsoleButton(int icon, int y, OnClickHandler onClick) {
+        private void AddConsoleButton(int icon, int y, OnClickHandler onClick, string tooltip) {
             // unspecified y means just place at the bottom of the list
             if (y == -1) y = consoleButtons.Count * 40 + 4;
             // create a new button and add it to the list
             ImageButton cbtn = new ImageButton(0, 4, y, 36, 36, Assets.textures["ui/consolebuttons"], Color.Black);
             cbtn.SetSourceRect(new Rectangle(icon * 32, 0, 32, 32));
+            cbtn.SetTooltip(tooltip);
             cbtn.OnClick += onClick;
             consoleButtons.Add(cbtn);
         }
