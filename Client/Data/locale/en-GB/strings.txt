@@ -31,6 +31,7 @@ err_connlost            = Lost connection to server.
 err_comm                = Communication error:
 err_unknownpacket       = Unrecognized packet type in packet header.
 err_unknownobject       = Unrecognized object type in game update.
+err_unknownannounce     = Unrecognized announcement ID.
 err_version             = The server is running an incompatible game version.
 
 console_helm            = Helmsman

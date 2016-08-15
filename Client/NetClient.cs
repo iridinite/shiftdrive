@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Text;
 
 namespace ShiftDrive {
 
@@ -25,6 +26,8 @@ namespace ShiftDrive {
         private static bool expectShutdown;
 
         internal static readonly object worldLock = new object();
+
+        public static event Action<string> Announcement;
 
         public static void Disconnect() {
             expectShutdown = true;
@@ -139,6 +142,32 @@ namespace ShiftDrive {
 
                     case PacketType.EnterGame:
                         SDGame.Inst.ActiveForm = new FormGame();
+                        break;
+
+                    case PacketType.Announcement:
+                        string announce = null;
+                        AnnouncementId id = (AnnouncementId)packet.Payload[0];
+                        switch (id) {
+                            case AnnouncementId.Custom:
+                                byte[] custombuf = new byte[packet.Payload.Length - 1];
+                                Buffer.BlockCopy(packet.Payload, 1, custombuf, 0, custombuf.Length);
+                                announce = Encoding.UTF8.GetString(custombuf);
+                                break;
+                            case AnnouncementId.FuelLow: announce = Utils.LocaleGet("announce_fuellow"); break;
+                            case AnnouncementId.FuelCritical: announce = Utils.LocaleGet("announce_fuelcrit"); break;
+                            case AnnouncementId.Hull75: announce = Utils.LocaleGet("announce_hull75"); break;
+                            case AnnouncementId.Hull50: announce = Utils.LocaleGet("announce_hull50"); break;
+                            case AnnouncementId.Hull25: announce = Utils.LocaleGet("announce_hull25"); break;
+                            case AnnouncementId.BlackHole: announce = Utils.LocaleGet("announce_blackhole"); break;
+                            case AnnouncementId.ShieldLow: announce = Utils.LocaleGet("announce_shieldlow"); break;
+                            case AnnouncementId.ShieldDown: announce = Utils.LocaleGet("announce_shielddown"); break;
+                            case AnnouncementId.ShieldUp: announce = Utils.LocaleGet("announce_shieldup"); break;
+                            case AnnouncementId.ShiftInitialize: announce = Utils.LocaleGet("announce_shiftinit"); break;
+                            case AnnouncementId.ShiftCharged: announce = Utils.LocaleGet("announce_shiftsoon"); break;
+                            default:
+                                throw new InvalidDataException(Utils.LocaleGet("err_unknownannounce"));
+                        }
+                        Announcement?.Invoke(announce);
                         break;
 
                     default:

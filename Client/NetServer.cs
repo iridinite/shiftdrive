@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Iridinite.Networking;
 
@@ -25,6 +26,7 @@ namespace ShiftDrive {
         private static LuaState lua;
 
         private static Dictionary<int, NetPlayer> players;
+        private static Dictionary<AnnouncementId, float> announceCooldown;
 
         private static float heartbeatMax;
         private static float heartbeatTimer;
@@ -47,6 +49,7 @@ namespace ShiftDrive {
         public static void Start() {
             heartbeatMax = 0.1f;
             heartbeatTimer = 0f;
+            announceCooldown = new Dictionary<AnnouncementId, float>();
 
             if (socket != null && socket.Listening)
                 Stop();
@@ -69,14 +72,21 @@ namespace ShiftDrive {
 
             // update all gameobjects. use a backwards loop because some
             // objects may be scheduled for deletion and thus change the list order
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
             foreach (uint key in keys) {
                 GameObject gobj = world.Objects[key];
-                gobj.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                gobj.Update(dt);
+            }
+
+            // update announcement cooldowns
+            var announceKeys = announceCooldown.Keys.OrderBy(a => a);
+            foreach (var key in announceKeys) {
+                if (announceCooldown[key] > 0f) announceCooldown[key] -= dt;
             }
 
             // decrement countdown timer
-            heartbeatTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            heartbeatTimer -= dt;
             if (heartbeatTimer > 0f) return;
 
             heartbeatTimer = heartbeatMax;
@@ -165,6 +175,31 @@ namespace ShiftDrive {
             socket.Broadcast(gspacket.Bytes);
         }
 
+        public static void PublishAnnouncement(AnnouncementId id, string customText) {
+            // with the exception of custom announcement, don't spam them
+            if (id != AnnouncementId.Custom && announceCooldown.ContainsKey(id) && announceCooldown[id] > 0f) return;
+            announceCooldown[id] = 30f;
+
+            Packet ap;
+            if (id == AnnouncementId.Custom) {
+                // custom announcement -> include custom text in packet
+                if (String.IsNullOrEmpty(customText))
+                    throw new ArgumentNullException(nameof(customText));
+                // create a buffer with the Custom identifier, followed by the string
+                int strbytes = Encoding.UTF8.GetByteCount(customText);
+                byte[] announceBuf = new byte[strbytes + 1];
+                announceBuf[0] = (byte)id;
+                Buffer.BlockCopy(Encoding.UTF8.GetBytes(customText), 0, announceBuf, 1, strbytes);
+                ap = new Packet(PacketType.Announcement, announceBuf);
+
+            } else {
+                // predefined announce, only need to send ID
+                ap = new Packet(PacketType.Announcement, (byte)id);
+            }
+
+            socket.Broadcast(ap.Bytes);
+        }
+        
         private static void Socket_OnDataReceived(int clientID, byte[] packetbytes) {
             try {
                 // find the client associated with the client id

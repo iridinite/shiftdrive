@@ -9,6 +9,9 @@ using System.IO.Compression;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Describes the function of a packet.
+    /// </summary>
     internal enum PacketType {
         Handshake = 1,
         LobbyState = 2,
@@ -37,6 +40,24 @@ namespace ShiftDrive {
         IntelSend = 20,
         IntelShopInfo = 21,
         IntelShopBuy = 22
+    }
+
+    /// <summary>
+    /// Identifies a particular kind of announcement.
+    /// </summary>
+    internal enum AnnouncementId {
+        Custom,
+        FuelLow,
+        FuelCritical,
+        BlackHole,
+        ShieldLow,
+        ShieldDown,
+        ShieldUp,
+        ShiftInitialize,
+        ShiftCharged,
+        Hull75,
+        Hull50,
+        Hull25
     }
 
     /// <summary>

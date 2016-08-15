@@ -18,11 +18,19 @@ namespace ShiftDrive {
         private float hullDeclineWait;
         private float hullDecline;
 
+        private string announceText;
+        private float announceHoldTime;
+
         public FormGame() {
             hullFlicker = 0f;
             hullPrevious = 0f;
             hullDeclineWait = 0f;
             hullDecline = 0f;
+            announceHoldTime = 0f;
+            announceText = "";
+
+            // subscribe to networking events
+            NetClient.Announcement += NetClient_Announcement;
 
             consoleButtons = new List<Button>();
             AddConsoleButton(0, 4, BtnHelm_OnClick, Utils.LocaleGet("console_settings")); // settings
@@ -39,6 +47,11 @@ namespace ShiftDrive {
             AddConsoleButton(6, -1, BtnLRS_OnClick, Utils.LocaleGet("console_lrs")); // debug LRS
 
             Console = new ConsoleHelm();
+        }
+
+        private void NetClient_Announcement(string text) {
+            announceHoldTime = 10f;
+            announceText = text;
         }
 
         private void AddConsoleButton(int icon, int y, OnClickHandler onClick, string tooltip) {
@@ -74,7 +87,7 @@ namespace ShiftDrive {
 
                 spriteBatch.Draw(Assets.textures["ui/consolepanel"], new Rectangle(0, -496 + consoleButtons.Count * 40, 64, 512), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
                 spriteBatch.Draw(Assets.textures["ui/announcepanel"], new Rectangle(SDGame.Inst.GameWidth - 450, -20, 512, 64), Color.White);
-                spriteBatch.DrawString(Assets.fontDefault, "Sample announcement text", new Vector2(SDGame.Inst.GameWidth - 430, 12), Color.White);
+                spriteBatch.DrawString(Assets.fontDefault, announceText, new Vector2(SDGame.Inst.GameWidth - 430, 12), Color.White);
 
                 // hull integrity bar
                 const int hullbarx = 64;
@@ -117,7 +130,12 @@ namespace ShiftDrive {
                         hullDecline = MathHelper.Max(player.hull, hullDecline - dt * player.hullMax * 0.2f);
                 }
 
+                // animate announcement text
+                announceHoldTime -= dt;
+                if (announceHoldTime < 0f)
+                    announceText = "";
 
+                // update the console buttons
                 foreach (Button b in consoleButtons)
                     b.Update(gameTime);
             }
