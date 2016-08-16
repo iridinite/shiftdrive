@@ -35,10 +35,10 @@ namespace ShiftDrive {
             Utils.DrawTitle(spriteBatch);
 
             if (btnCancel.IsClosed) {
-                spriteBatch.DrawString(Assets.fontBold, Utils.LocaleGet("connecting"), new Vector2(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Utils.LocaleGet("connecting")).X / 2, SDGame.Inst.GameHeight / 2f), Color.White);
+                spriteBatch.DrawString(Assets.fontBold, Utils.LocaleGet("connecting"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Utils.LocaleGet("connecting")).X / 2), SDGame.Inst.GameHeight / 2f), Color.White);
 
             } else {
-                spriteBatch.DrawString(Assets.fontBold, Utils.LocaleGet("menu_connect"), new Vector2(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Utils.LocaleGet("menu_connect")).X / 2, SDGame.Inst.GameHeight / 2f - 100), Color.White);
+                spriteBatch.DrawString(Assets.fontBold, Utils.LocaleGet("menu_connect"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Utils.LocaleGet("menu_connect")).X / 2), SDGame.Inst.GameHeight / 2f - 100), Color.White);
                 if (connectErrorMsg != null) {
                     // if we had a connection error, draw the error text
                     spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("err_connfailed"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(Utils.LocaleGet("err_connfailed")).X / 2), SDGame.Inst.GameHeight / 2f - 50), Color.White);
