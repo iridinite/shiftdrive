@@ -32,6 +32,7 @@ namespace ShiftDrive {
         private static float heartbeatTimer;
         
         public static void PrepareWorld() {
+            GameObject.ResetIds();
             world = new GameState();
             world.IsServer = true;
 

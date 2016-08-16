@@ -318,6 +318,14 @@ namespace ShiftDrive {
 
             color.PackedValue = reader.ReadUInt32();
         }
+
+        /// <summary>
+        /// Resets the sequence of object ID numbers.
+        /// </summary>
+        public static void ResetIds() {
+            nextId = 0U;
+        }
+
     }
     
 }
