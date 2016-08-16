@@ -22,12 +22,12 @@ namespace ShiftDrive {
             // draw map icons for all game objects
             spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle((int)gridPos.X, (int)gridPos.Y, gridSize, gridSize), Color.DarkOliveGreen);
             foreach (GameObject obj in NetClient.World.Objects.Values) {
-                spriteBatch.Draw(Assets.textures["ui/rect"], gridPos + new Vector2(gridSize * (obj.position.X / 1000f), gridSize * (obj.position.Y / 1000f)), null, obj.color, MathHelper.ToRadians(obj.facing), new Vector2(16, 16), 0.5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Assets.textures["ui/rect"], gridPos + new Vector2(gridSize * (obj.position.X / NetServer.MAPSIZE), gridSize * (obj.position.Y / NetServer.MAPSIZE)), null, obj.color, MathHelper.ToRadians(obj.facing), new Vector2(16, 16), 0.5f, SpriteEffects.None, 0f);
             }
 
             // draw info underneath mouse cursor
-            int mouseMapX = (int)((Mouse.X - gridPos.X) / gridSize * 1000f);
-            int mouseMapY = (int)((Mouse.Y - gridPos.Y) / gridSize * 1000f);
+            int mouseMapX = (int)((Mouse.X - gridPos.X) / gridSize * NetServer.MAPSIZE);
+            int mouseMapY = (int)((Mouse.Y - gridPos.Y) / gridSize * NetServer.MAPSIZE);
             spriteBatch.DrawString(Assets.fontDefault, "POS " + mouseMapX + ", " + mouseMapY, new Vector2(Mouse.X, Mouse.Y + 25), Color.LightYellow);
             spriteBatch.DrawString(Assets.fontDefault, "DIR " +
                 (int)Utils.CalculateBearing(new Vector2(Player.position.X, Player.position.Y),

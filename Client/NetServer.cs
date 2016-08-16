@@ -21,6 +21,8 @@ namespace ShiftDrive {
 
     internal static class NetServer {
         internal static GameState world { get; private set; }
+
+        public const float MAPSIZE = 1000f;
         
         private static Host socket;
         private static LuaState lua;
