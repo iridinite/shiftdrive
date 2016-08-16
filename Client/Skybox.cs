@@ -14,12 +14,7 @@ namespace ShiftDrive {
     internal static class Skybox {
 
         private static float rotation;
-        private static bool idleRotation;
-
-        public static void SetIdleRotation(bool enabled) {
-            idleRotation = enabled;
-        }
-
+        
         public static void Draw(GraphicsDevice graphicsDevice) {
             // Use the unlit shader to render a skybox.
             Effect fx = Assets.fxUnlit; // shortcut
@@ -38,7 +33,6 @@ namespace ShiftDrive {
         }
 
         public static void Update(GameTime gameTime) {
-            if (!idleRotation) return;
             rotation += (float)(gameTime.ElapsedGameTime.TotalSeconds * 0.04);
             while (rotation >= MathHelper.TwoPi) rotation -= MathHelper.TwoPi;
         }

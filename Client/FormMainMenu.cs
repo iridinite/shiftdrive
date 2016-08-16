@@ -15,7 +15,6 @@ namespace ShiftDrive {
 
         public FormMainMenu() {
             // create UI controls
-            Skybox.SetIdleRotation(true);
             btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 100, 260, 40, Utils.LocaleGet("menu_connect"));
             btnConnect.OnClick += btnConnect_Click;
             btnHost = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 150, 260, 40, Utils.LocaleGet("menu_host"));
