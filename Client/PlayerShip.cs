@@ -21,6 +21,7 @@ namespace ShiftDrive {
         public float fuel;
         
         private bool destroyed;
+        private int hullWarningShown;
 
         public PlayerShip(GameState world) : base(world) {
             type = ObjectType.PlayerShip;
@@ -38,12 +39,19 @@ namespace ShiftDrive {
             if (world.IsServer) {
                 // hull integrity warnings
                 float hullFraction = hull / hullMax;
-                if (hullFraction <= 0.25f)
+                if (hullFraction <= 0.25f && hullWarningShown < 3) {
                     NetServer.PublishAnnouncement(AnnouncementId.Hull25, null);
-                else if (hullFraction <= 0.5f)
+                    hullWarningShown = 3;
+                } else if (hullFraction <= 0.5f && hullWarningShown < 2) {
                     NetServer.PublishAnnouncement(AnnouncementId.Hull50, null);
-                else if (hullFraction <= 0.75f)
+                    hullWarningShown = 2;
+                } else if (hullFraction <= 0.75f && hullWarningShown < 1) {
                     NetServer.PublishAnnouncement(AnnouncementId.Hull75, null);
+                    hullWarningShown = 1;
+                } else if (hullFraction > 0.75f) {
+                    // reset warnings if above 75%
+                    hullWarningShown = 0;
+                }
 
                 // fuel reserves warnings
                 if (fuel < 1f)
