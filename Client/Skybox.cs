@@ -23,8 +23,8 @@ namespace ShiftDrive {
         public static void Draw(GraphicsDevice graphicsDevice) {
             // Use the unlit shader to render a skybox.
             Effect fx = Assets.fxUnlit; // shortcut
-            fx.Parameters["WVP"].SetValue(Matrix.CreateRotationY(rotation) *
-                                          Matrix.CreateLookAt(new Vector3(0f, -0.2f, 2f), new Vector3(0, 0, 0),
+            fx.Parameters["WVP"].SetValue(Matrix.CreateRotationY(rotation) * Matrix.CreateRotationZ(rotation) *
+                                          Matrix.CreateLookAt(new Vector3(0f, -0.25f, 2f), new Vector3(0, 0, 0),
                                               Vector3.Up) * SDGame.Inst.Projection);
             fx.Parameters["ModelTexture"].SetValue(Assets.textures["ui/skybox"]);
             foreach (ModelMesh mesh in Assets.mdlSkybox.Meshes) {
@@ -39,7 +39,7 @@ namespace ShiftDrive {
 
         public static void Update(GameTime gameTime) {
             if (!idleRotation) return;
-            rotation += (float)(gameTime.ElapsedGameTime.TotalSeconds * 0.05);
+            rotation += (float)(gameTime.ElapsedGameTime.TotalSeconds * 0.04);
             while (rotation >= MathHelper.TwoPi) rotation -= MathHelper.TwoPi;
         }
 
