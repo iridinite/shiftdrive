@@ -30,7 +30,7 @@ namespace ShiftDrive {
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            Utils.DrawTitle(spriteBatch, -100f);
+            Utils.DrawTitle(spriteBatch);
 
             if (btnCancel.IsClosed) {
                 SDGame.Inst.ActiveForm = new FormMainMenu();
@@ -50,6 +50,7 @@ namespace ShiftDrive {
 
         public void Update(GameTime gameTime) {
             Skybox.Update(gameTime);
+            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, -100f);
 
             btn1.Update(gameTime);
             btn2.Update(gameTime);

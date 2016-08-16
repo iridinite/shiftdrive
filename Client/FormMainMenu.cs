@@ -32,7 +32,7 @@ namespace ShiftDrive {
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            Utils.DrawTitle(spriteBatch, 0f);
+            Utils.DrawTitle(spriteBatch);
 
             btnConnect.Draw(spriteBatch);
             btnHost.Draw(spriteBatch);
@@ -44,7 +44,8 @@ namespace ShiftDrive {
 
         public void Update(GameTime gameTime) {
             Skybox.Update(gameTime);
-            
+            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, 0f);
+
             btnConnect.Update(gameTime);
             btnHost.Update(gameTime);
             btnOptions.Update(gameTime);

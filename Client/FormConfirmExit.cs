@@ -27,7 +27,7 @@ namespace ShiftDrive {
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            Utils.DrawTitle(spriteBatch, 0f);
+            Utils.DrawTitle(spriteBatch);
 
             spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("confirmexit"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(Utils.LocaleGet("confirmexit")).X / 2f), SDGame.Inst.GameHeight / 2f), Color.White);
             btnQuit.Draw(spriteBatch);
@@ -38,6 +38,7 @@ namespace ShiftDrive {
 
         public void Update(GameTime gameTime) {
             Skybox.Update(gameTime);
+            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, 0f);
             
             btnQuit.Update(gameTime);
             btnCancel.Update(gameTime);
