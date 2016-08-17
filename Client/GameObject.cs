@@ -80,16 +80,16 @@ namespace ShiftDrive {
         public virtual void Update(float deltaTime) {
             // handle collision with objects
             if (bounding > 0f) {
-                IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
-                foreach (uint key in keys) {
-                    GameObject obj = world.Objects[key];
+                var possibleCollisions = world.QueryGrid(this);
+                foreach (GameObject obj in possibleCollisions) {
                     if (obj.id == this.id)
                         continue; // don't collide with self
-                    if (obj.bounding <= 0f)
-                        continue; // don't collide with bounding-less objects
+                    if ((obj.layer & this.layermask) == 0)
+                        continue; // do we collide with the layer the other object is on?
 
                     float dist = Vector2.DistanceSquared(obj.position, this.position);
-                    if (dist > Math.Pow(obj.bounding + this.bounding, 2))
+                    float totalbound = obj.bounding + this.bounding;
+                    if (dist > totalbound * totalbound)
                         continue; // bounding sphere check
 
                     // calculate contact information
