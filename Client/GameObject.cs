@@ -40,6 +40,7 @@ namespace ShiftDrive {
         public SpriteSheet sprite;
         public Color color;
 
+        public float damping;
         public float bounding;
         public CollisionLayer layer;
         public CollisionLayer layermask;
@@ -69,6 +70,7 @@ namespace ShiftDrive {
             refLuaIsTerrain = clua_IsTerrain;
             changed = true;
             color = Color.White;
+            damping = 1.0f;
             layer = CollisionLayer.Default;
             layermask = CollisionLayer.All;
         }
@@ -102,7 +104,7 @@ namespace ShiftDrive {
 
             // integrate velocity into position
             position += velocity * deltaTime;
-            velocity *= (float)Math.Pow(0.8f, deltaTime);
+            velocity *= (float)Math.Pow(damping, deltaTime);
 
             // animate the object sprite
             if (!world.IsServer) sprite.Update(deltaTime);
@@ -298,6 +300,7 @@ namespace ShiftDrive {
             writer.Write(facing);
             writer.Write((byte)sector);
             writer.Write(bounding);
+            writer.Write(damping);
 
             writer.Write(spritename);
             writer.Write(color.PackedValue);
@@ -314,6 +317,7 @@ namespace ShiftDrive {
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
             bounding = reader.ReadSingle();
+            damping = reader.ReadSingle();
 
             string oldsprite = spritename;
             spritename = reader.ReadString();

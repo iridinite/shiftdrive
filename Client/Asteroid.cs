@@ -22,6 +22,7 @@ namespace ShiftDrive {
             spritename = "map/asteroid";
             color = Color.White;
             bounding = 8f;
+            damping = 0.85f;
             layer = CollisionLayer.Asteroid;
             layermask = CollisionLayer.Asteroid | CollisionLayer.Ship;
         }

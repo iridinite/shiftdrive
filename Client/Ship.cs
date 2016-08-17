@@ -43,6 +43,7 @@ namespace ShiftDrive {
             shield = 100f;
             shieldMax = 100f;
             shieldActive = false;
+            damping = 0.75f;
             mountsNum = 0;
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
