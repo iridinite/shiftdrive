@@ -86,6 +86,9 @@ namespace ShiftDrive {
                     // compile the string as a Lua chunk
                     if (LuaAPI.luaL_loadstringex(L, script, scriptname) != 0) {
                         SDGame.Logger.LogError($"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
+#if DEBUG
+                        System.Diagnostics.Debugger.Break();
+#endif
                         break;
                     }
                     // insert the compiled Lua function into the table and obtain a reference integer
