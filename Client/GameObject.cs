@@ -41,6 +41,8 @@ namespace ShiftDrive {
         public Color color;
 
         public float bounding;
+        public CollisionLayer layer;
+        public CollisionLayer layermask;
 
         public bool changed;
         protected readonly GameState world;
@@ -67,6 +69,8 @@ namespace ShiftDrive {
             refLuaIsTerrain = clua_IsTerrain;
             changed = true;
             color = Color.White;
+            layer = CollisionLayer.Default;
+            layermask = CollisionLayer.All;
         }
 
         /// <summary>

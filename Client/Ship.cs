@@ -46,6 +46,8 @@ namespace ShiftDrive {
             mountsNum = 0;
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
+            layer = CollisionLayer.Ship;
+            layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
         }
 
         public override void Update(float deltaTime) {

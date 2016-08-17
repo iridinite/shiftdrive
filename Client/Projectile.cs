@@ -20,6 +20,9 @@ namespace ShiftDrive {
         public Projectile(GameState world) : base(world) {
             type = ObjectType.Projectile;
             color = Color.White;
+            bounding = 1f;
+            layer = CollisionLayer.Projectile;
+            layermask = CollisionLayer.Ship | CollisionLayer.Asteroid;
         }
 
         public Projectile(GameState world, string spritename, Vector2 position, float facing, float speed, byte faction) : this(world) {
