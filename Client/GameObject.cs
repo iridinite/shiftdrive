@@ -245,12 +245,14 @@ namespace ShiftDrive {
                 case "position":
                     // position is a two-element table {x, y}
                     position = LuaAPI.lua_tovec2(L, 3);
+                    world.ReinsertGrid(this);
                     break;
                 case "facing":
                     facing = (float)LuaAPI.luaL_checknumber(L, 3);
                     break;
                 case "bounding":
                     bounding = (float)LuaAPI.luaL_checknumber(L, 3);
+                    world.ReinsertGrid(this);
                     break;
                 case "sprite":
                     spritename = LuaAPI.luaL_checkstring(L, 3);
