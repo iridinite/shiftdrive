@@ -1,6 +1,6 @@
 return {
-  name = localize("weapon_autocannon"),
-  desc = localize("weapon_autocannon_desc"),
+  name = localize("weap_autocannon"),
+  desc = localize("weap_autocannon_desc"),
   mount = Mount.SMALL,
   draw = 0.025,
   weapontype = WeaponType.PROJECTILE,
