@@ -304,9 +304,11 @@ namespace ShiftDrive {
         /// Draws a single texture using a <see cref="SpriteBatch"/>.
         /// </summary>
         private static void DrawInternal(SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Color color, float rotation, float scale) {
+            // at 1080p resolution, draw sprites at 100% scale. if resolution goes lower, downscale the
+            // sprites appropriately, so the final image retains the same sense of scale
             spriteBatch.Draw(
                 tex,
-                position * (SDGame.Inst.GameWidth / 1280f),
+                position,
                 null,
                 color,
                 rotation,
