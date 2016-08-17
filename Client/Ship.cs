@@ -219,6 +219,9 @@ namespace ShiftDrive {
                 case "turnrate":
                     LuaAPI.lua_pushnumber(L, turnRate);
                     break;
+                case "faction":
+                    LuaAPI.lua_pushnumber(L, faction);
+                    break;
                 default:
                     return base.LuaGet(L);
             }
@@ -251,6 +254,10 @@ namespace ShiftDrive {
                     break;
                 case "turnrate":
                     turnRate = (float)LuaAPI.luaL_checknumber(L, 3);
+                    needRetransmit = true;
+                    break;
+                case "faction":
+                    faction = (byte)LuaAPI.luaL_checknumber(L, 3);
                     needRetransmit = true;
                     break;
                 case "mounts":
