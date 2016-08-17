@@ -18,10 +18,13 @@ namespace ShiftDrive {
         public float damage;
         public byte faction;
 
+        private bool damageApplied;
+
         public Projectile(GameState world) : base(world) {
             type = ObjectType.Projectile;
             color = Color.White;
             bounding = 1f;
+            damageApplied = false;
             layer = CollisionLayer.Projectile;
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid;
         }
@@ -53,12 +56,15 @@ namespace ShiftDrive {
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
+            // cannot hit stuff twice
+            if (damageApplied) return;
             // ignore hits on friendly ships
             if (other.IsShip()) {
                 Ship othership = other as Ship;
                 if (othership?.faction == this.faction) return;
             }
             // apply damage to whatever we hit
+            damageApplied = true;
             other.TakeDamage(damage);
             this.Destroy();
         }
