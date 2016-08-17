@@ -93,7 +93,6 @@ namespace ShiftDrive {
         }
 
         public override void TakeDamage(float damage) {
-            if (!world.IsServer) return;
             // always retransmit
             changed = true;
             // apply damage to shields first, if possible
@@ -104,7 +103,7 @@ namespace ShiftDrive {
             // otherwise, apply damage to hull
             hull = MathHelper.Clamp(hull - damage, 0f, hullMax);
             // zero hull = ship destruction
-            if (hull <= 0f) Destroy();
+            if (hull <= 0f && world.IsServer) Destroy();
         }
 
         public override void Destroy() {
