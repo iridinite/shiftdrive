@@ -32,7 +32,7 @@ return {
     }
   },
   weapons = {
-    require("weapons/burstlaser"),
+    require("weapons/plasmacannon"),
     require("weapons/autocannon"),
     require("weapons/autocannon")
   }
