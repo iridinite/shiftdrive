@@ -130,6 +130,7 @@ namespace ShiftDrive {
             // update client objects; movement prediction removes the jarred look
             if (NetClient.Connected) { // TODO && NetClient.SimRunning)
                 lock (NetClient.worldLock) {
+                    NetClient.World.UpdateGrid();
                     foreach (GameObject gobj in NetClient.World.Objects.Values) {
                         gobj.Update(deltaTime);
                     }

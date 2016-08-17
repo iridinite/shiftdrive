@@ -276,7 +276,7 @@ namespace ShiftDrive {
                     Asteroid rock = new Asteroid(NetServer.world);
                     rock.position = start + (increment * i) + // base movement along the start-end line, plus random range
                                     new Vector2(Utils.RNG.Next(range * 2) - range, Utils.RNG.Next(range * 2) - range);
-                    NetServer.AddObject(rock);
+                    NetServer.world.AddObject(rock);
                 }
                 return 0;
 
@@ -288,7 +288,7 @@ namespace ShiftDrive {
 
             // in the case of a named object, make sure to push it to Lua and the server state
             // nameless object creations will create several instances, so don't bother returning just one
-            NetServer.AddObject(newobj);
+            NetServer.world.AddObject(newobj);
             newobj.PushToLua(L);
 
             return 1;

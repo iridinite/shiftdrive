@@ -82,6 +82,9 @@ namespace ShiftDrive {
                 gobj.Update(dt);
             }
 
+            // update collision grid
+            world.UpdateGrid();
+
             // update announcement cooldowns
             var announceKeys = announceCooldown.Keys.OrderBy(a => a);
             foreach (var key in announceKeys) {
@@ -107,10 +110,6 @@ namespace ShiftDrive {
             SDGame.Logger.Log("Stopping server and closing Lua state.");
             lua.Destroy();
             socket.Stop();
-        }
-
-        public static void AddObject(GameObject obj) {
-            world.Objects.Add(obj.id, obj);
         }
 
         private static void Socket_OnServerStart() {

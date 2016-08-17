@@ -13,8 +13,15 @@ namespace ShiftDrive {
 
         public readonly Dictionary<uint, GameObject> Objects;
         public bool IsServer;
-        
+
+        private CollisionGrid grid;
         private uint cachedPlayerShipId;
+
+        public GameState() {
+            Objects = new Dictionary<uint, GameObject>();
+            grid = new CollisionGrid();
+            cachedPlayerShipId = 0;
+        }
 
         /// <summary>
         /// Returns the player ship object. Currently does not support multiple player ships.
@@ -30,9 +37,34 @@ namespace ShiftDrive {
             return null;
         }
 
-        public GameState() {
-            Objects = new Dictionary<uint, GameObject>();
-            cachedPlayerShipId = 0;
+        /// <summary>
+        /// Inserts an object into this GameState.
+        /// </summary>
+        public void AddObject(GameObject obj) {
+            Objects.Add(obj.id, obj);
+            if (obj.bounding > 0f) grid.Insert(obj);
+        }
+
+        /// <summary>
+        /// Queries this GameState's CollisionGrid.
+        /// </summary>
+        public List<GameObject> QueryGrid(GameObject obj) {
+            return grid.Query(obj);
+        }
+
+        /// <summary>
+        /// Removes the specified GameObject from the grid if present, and inserts it.
+        /// </summary>
+        public void ReinsertGrid(GameObject obj) {
+            grid.Remove(obj);
+            grid.Insert(obj);
+        }
+
+        /// <summary>
+        /// Updates the CollisionGrid.
+        /// </summary>
+        public void UpdateGrid() {
+            grid.Update();
         }
 
         public void Serialize(BinaryWriter writer) {
@@ -64,6 +96,7 @@ namespace ShiftDrive {
 
                 // set flag means a deleted object
                 if (reader.ReadBoolean()) {
+                    if (Objects.ContainsKey(objid)) grid.Remove(Objects[objid]);
                     Objects.Remove(objid);
                     continue;
                 }
@@ -97,7 +130,7 @@ namespace ShiftDrive {
                     }
                     obj.Deserialize(reader);
                     obj.id = objid;
-                    Objects.Add(objid, obj);
+                    AddObject(obj);
                 }
                 else {
                     // update this object with info from the stream
