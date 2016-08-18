@@ -17,7 +17,8 @@ namespace ShiftDrive {
         public static SpriteFont
             fontDefault,
             fontBold,
-            fontTooltip;
+            fontTooltip,
+            fontQuote;
         
         public static readonly Dictionary<string, Texture2D>
             textures = new Dictionary<string, Texture2D>();
