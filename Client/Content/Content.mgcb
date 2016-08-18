@@ -566,3 +566,9 @@
 #begin Textures/Projectile/plasma.txt
 /copy:Textures/Projectile/plasma.txt
 
+#begin Fonts/Quote.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Quote.spritefont
+
