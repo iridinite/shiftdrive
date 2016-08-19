@@ -18,6 +18,9 @@ namespace ShiftDrive {
         private float hullDeclineWait;
         private float hullDecline;
 
+        private float gameOverTime;
+        private float gameOverFade;
+
         private string announceText;
         private float announceHoldTime;
 
@@ -27,6 +30,8 @@ namespace ShiftDrive {
             hullDeclineWait = 0f;
             hullDecline = 0f;
             announceHoldTime = 0f;
+            gameOverTime = 4f;
+            gameOverFade = 0f;
             announceText = "";
 
             // subscribe to networking events
@@ -104,6 +109,10 @@ namespace ShiftDrive {
                 foreach (Button b in consoleButtons)
                     b.Draw(spriteBatch);
                 
+                // black overlay when fading out
+                if (gameOverFade > 0f)
+                    spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.Black * gameOverFade);
+
                 spriteBatch.End();
             }
         }
@@ -111,8 +120,6 @@ namespace ShiftDrive {
         public void Update(GameTime gameTime) {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             lock (NetClient.worldLock) {
-                Console.Update(gameTime);
-
                 // show and animate negative changes to hull integrity.
                 PlayerShip player = NetClient.World.GetPlayerShip();
                 if (player.hull > hullDecline) { // no animation for upped hull
@@ -135,9 +142,19 @@ namespace ShiftDrive {
                 if (announceHoldTime < 0f)
                     announceText = "";
 
-                // update the console buttons
-                foreach (Button b in consoleButtons)
-                    b.Update(gameTime);
+                // switch to game-over screen upon ship destruction
+                if (player.destroyed) {
+                    gameOverTime -= dt;
+                    if (gameOverTime <= 2f) gameOverFade += dt / 2f;
+                    if (gameOverTime <= 0f) SDGame.Inst.ActiveForm = new FormGameOver();
+
+                } else { // only process input when we're still alive
+                    // update the console buttons
+                    foreach (Button b in consoleButtons)
+                        b.Update(gameTime);
+                    // and update the console itself
+                    Console.Update(gameTime);
+                }
             }
 
             hullFlicker += dt;
