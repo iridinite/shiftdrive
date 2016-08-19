@@ -3,6 +3,8 @@
 ** (C) Mika Molenkamp, 2016.
 */
 
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
@@ -23,7 +25,9 @@ namespace ShiftDrive {
             base.Update(deltaTime);
 
             // simulate gravitational pull
-            foreach (GameObject gobj in world.Objects.Values) {
+            IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
+            foreach (uint key in keys) {
+                GameObject gobj = world.Objects[key];
                 // black holes don't affect themselves...
                 if (gobj.type == ObjectType.BlackHole) continue;
 
