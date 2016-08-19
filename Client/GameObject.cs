@@ -86,6 +86,8 @@ namespace ShiftDrive {
                 foreach (GameObject obj in possibleCollisions) {
                     if (obj.id == this.id)
                         continue; // don't collide with self
+                    if (obj.bounding <= 0f)
+                        continue; // don't collide with objects with no bounding sphere
                     if ((obj.layer & this.layermask) == 0)
                         continue; // do we collide with the layer the other object is on?
 
