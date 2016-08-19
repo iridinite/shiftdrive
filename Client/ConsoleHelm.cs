@@ -123,14 +123,18 @@ namespace ShiftDrive {
                 glowVisible = true;
             }
 
-            // replicate throttle input to server
+            // throttle input
+            float oldThrottle = targetThrottle;
             if (KeyInput.GetHeld(Keys.W)) {
                 targetThrottle += (float)gameTime.ElapsedGameTime.TotalSeconds;
             } else if (KeyInput.GetHeld(Keys.S)) {
                 targetThrottle -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             targetThrottle = MathHelper.Clamp(targetThrottle, 0f, 1f);
-            NetClient.Send(new Packet(PacketType.HelmThrottle, BitConverter.GetBytes(targetThrottle)));
+
+            // replicate throttle input to server, but avoid clogging bandwidth
+            if (Math.Abs(oldThrottle - targetThrottle) > 0.01f)
+                NetClient.Send(new Packet(PacketType.HelmThrottle, BitConverter.GetBytes(targetThrottle)));
 
             // temp shfit charge
             if (shiftCharging) {
