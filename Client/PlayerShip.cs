@@ -20,7 +20,9 @@ namespace ShiftDrive {
         // Integer part is fuel cell count, decimal part is reservoir.
         public float fuel;
         
-        private bool destroyed;
+        // indicates that the ship has been destroyed (not scheduled for deletion)
+        public bool destroyed;
+
         private int hullWarningShown;
 
         public PlayerShip(GameState world) : base(world) {
@@ -29,6 +31,10 @@ namespace ShiftDrive {
         }
 
         public override void Update(float deltaTime) {
+            // force stand-still if destroyed
+            if (destroyed) return;
+
+            // base update: throttle, steering, weapons
             base.Update(deltaTime);
 
             // ship operation and throttle eats up energy
@@ -70,9 +76,11 @@ namespace ShiftDrive {
         public override void Destroy() {
             // override because we do not want player ships to be scheduled for deletion,
             // that would cause null ref exceptions on the clients.
+            if (destroyed || !world.IsServer) return;
             destroyed = true;
             hull = 0f;
             throttle = 0f;
+            Particle.CreateExplosion(NetServer.world, position);
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {

@@ -46,6 +46,13 @@ namespace ShiftDrive {
                 // draw the object
                 switch (obj.type) {
                     case ObjectType.PlayerShip:
+                        // if player ship is destroyed, don't draw it
+                        // (special case for player because we don't want to actually delete the object)
+                        PlayerShip player = obj as PlayerShip;
+                        Debug.Assert(player != null);
+                        if (player.destroyed) break;
+                        goto default;
+
                     case ObjectType.AIShip:
                         // don't draw the name for the local player ship
                         if (obj.id == Player.id) goto default;
