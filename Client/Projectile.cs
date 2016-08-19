@@ -68,7 +68,19 @@ namespace ShiftDrive {
             other.TakeDamage(damage);
             this.Destroy();
         }
-        
+
+        public override void Serialize(BinaryWriter writer) {
+            base.Serialize(writer);
+            writer.Write(damage);
+            writer.Write(faction);
+        }
+
+        public override void Deserialize(BinaryReader reader) {
+            base.Deserialize(reader);
+            damage = reader.ReadSingle();
+            faction = reader.ReadByte();
+        }
+
     }
 
 }
