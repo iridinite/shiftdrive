@@ -97,7 +97,7 @@ namespace ShiftDrive {
             changed = true;
             // apply damage to shields first, if possible
             if (shieldActive && shield > 0f) {
-                shield -= MathHelper.Clamp(shield - damage, 0f, shieldMax);
+                shield = MathHelper.Clamp(shield - damage, 0f, shieldMax);
                 return;
             }
             // otherwise, apply damage to hull
