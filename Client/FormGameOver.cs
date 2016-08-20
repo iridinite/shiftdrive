@@ -35,7 +35,7 @@ namespace ShiftDrive {
             // note: each line is transformed to uppercase. this could be hardcoded into the
             // string table, but seeing as this one-time operation is cheap and proper-case
             // improves the table's readability, I'm opting to do it here instead.
-            int quoteNum = Utils.RNG.Next(1, 8);
+            int quoteNum = Utils.RNG.Next(1, 7);
             quoteAuthor = Utils.LocaleGet("deathquote_" + quoteNum + "b").ToUpperInvariant();
             quoteLines = new List<string>(3);
             // split the full quote line into words
