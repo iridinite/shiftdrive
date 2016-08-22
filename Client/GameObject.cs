@@ -194,11 +194,11 @@ namespace ShiftDrive {
                     break;
                 case "position":
                     // position is a two-element table {x, y}
-                    LuaAPI.lua_createtable(L, 2, 0);
+                    // use the 'vec2' function in util.lua to create a vector
+                    LuaAPI.lua_getglobal(L, "vec2");
                     LuaAPI.lua_pushnumber(L, position.X);
-                    LuaAPI.lua_rawseti(L, -2, 1);
                     LuaAPI.lua_pushnumber(L, position.Y);
-                    LuaAPI.lua_rawseti(L, -2, 2);
+                    LuaAPI.lua_call(L, 2, 1);
                     break;
                 case "facing":
                     LuaAPI.lua_pushnumber(L, facing);
