@@ -29,6 +29,23 @@ function GetRandomShipId()
   return chartbl[math.random(#chartbl)] .. tostring(math.random(10, 99))
 end
 
+function vec2(x, y)
+  -- generate an array with a metatable so components can be easily
+  -- set using 'x' and 'y' meta-variables.
+  -- beware that this function is called directly from C# (GameObject.LuaGet)
+  return setmetatable({x or 0, y or x or 0}, {
+      __index = function(t, k)
+        if k == "x" then return rawget(t, 1) end
+        if k == "y" then return rawget(t, 2) end
+        return nil
+      end,
+      __newindex = function(t, k, v)
+        if k == "x" then rawset(t, 1, v) end
+        if k == "y" then rawset(t, 2, v) end
+      end
+    }
+  )
+end
 
 -- Color table: helper for constructing packed XNA color structs
 Color = {}
