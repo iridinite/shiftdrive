@@ -164,7 +164,10 @@ namespace ShiftDrive {
             // transfer control to Lua
             if (LuaAPI.lua_pcall(L, nargs, nresults, 1) != 0) {
                 // error handler: lua_errorhandler should have appended a stack trace to the error message
-                throw new LuaException("Lua error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  "));
+                string errmsg = "Lua error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  ");
+                LuaAPI.lua_remove(L, 1); // pop error handler
+                LuaAPI.lua_pop(L, 1); // pop error string
+                throw new LuaException(errmsg);
             }
 
             // pop the error handler
