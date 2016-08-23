@@ -17,11 +17,13 @@ namespace ShiftDrive {
         internal readonly IntPtr L;
 
         private readonly Dictionary<string, int> compiledfns;
+        private readonly Dictionary<int, int> events;
         private readonly List<lua_CFunction> bigHeapODelegates;
         private lua_CFunction paniccallback, errhandlerfn;
 
         public LuaState() {
             compiledfns = new Dictionary<string, int>();
+            events = new Dictionary<int, int>();
             bigHeapODelegates = new List<lua_CFunction>();
 
             paniccallback = new lua_CFunction(clua_panic);
@@ -49,6 +51,7 @@ namespace ShiftDrive {
             RegisterFunction("lshift", clua_lshift);
             RegisterFunction("rshift", clua_rshift);
 
+            RegisterFunction("Event", clua_event);
             RegisterFunction("Create", clua_create);
             RegisterFunction("GetObjectByName", clua_getObjectByName);
             RegisterFunction("GetObjectById", clua_getObjectById);
@@ -168,6 +171,42 @@ namespace ShiftDrive {
             LuaAPI.lua_remove(L, 1);
         }
 
+        public void RunEvents() {
+            // pull up the events table
+            LuaAPI.lua_getregistry(L, "events");
+            if (LuaAPI.lua_type(L, -1) != LuaAPI.LUA_TTABLE) {
+                // if it doesn't exist, there's nothing for us to do
+                LuaAPI.lua_pop(L, 1);
+                return;
+            }
+            // iterate through the list of events
+            foreach (var pair in events) {
+                try {
+                    // first find the conditional function and run it
+                    LuaAPI.lua_rawgeti(L, -1, pair.Key);
+                    Call(0, 1);
+                    if (LuaAPI.lua_toboolean(L, -1) == 1) {
+                        // the condition evaluates to true, so run the action
+                        LuaAPI.lua_pop(L, 1);
+                        LuaAPI.lua_rawgeti(L, -1, pair.Value);
+                        Call(0, 0);
+                    } else {
+                        // just pop the boolean result
+                        LuaAPI.lua_pop(L, 1);
+                    }
+
+                } catch (LuaException e) {
+                    // remove the failing event from the list. make sure to break out
+                    // because we're modifying the collection of events
+                    SDGame.Logger.LogError("Event Error: " + e.Message);
+                    events.Remove(pair.Key);
+                    break;
+                }
+            }
+            // remove the registry table
+            LuaAPI.lua_pop(L, 1);
+        }
+
         private int clua_panic(IntPtr L) {
             Logger.WriteExceptionReport(new ApplicationException("Lua Panic! Error in unprotected environment: " + LuaAPI.lua_tostring(L, -1)));
             // I don't know if the string should be popped or not. Then again, it probably doesn't really matter
@@ -224,6 +263,33 @@ namespace ShiftDrive {
         private int clua_phrase(IntPtr L) {
             LuaAPI.lua_pushstring(L, Utils.LocalePhrase(LuaAPI.luaL_checkstring(L, 1)));
             return 1;
+        }
+
+        private int clua_event(IntPtr L) {
+            // expect two function arguments
+            LuaAPI.luaL_checktype(L, 1, LuaAPI.LUA_TFUNCTION);
+            LuaAPI.luaL_checktype(L, 2, LuaAPI.LUA_TFUNCTION);
+
+            // pull up the event registry table, create if it doesn't exist
+            LuaAPI.lua_getregistry(L, "events");
+            if (LuaAPI.lua_type(L, -1) != LuaAPI.LUA_TTABLE) {
+                LuaAPI.lua_pop(L, 1); // get rid of the faux events table
+                LuaAPI.lua_createtable(L, 0, 0); // create a new table
+            }
+
+            // push copies of the two passed functions on top of the stack
+            LuaAPI.lua_pushvalue(L, 2);
+            LuaAPI.lua_pushvalue(L, 1);
+            // then assign them reference numbers and pop the copies
+            int refCond = LuaAPI.luaL_ref(L, -3);
+            int refActn = LuaAPI.luaL_ref(L, -2);
+
+            // save the registry table
+            LuaAPI.lua_setregistry(L, "events");
+
+            // keep the reference integers around
+            events.Add(refCond, refActn);
+            return 0;
         }
 
         private int clua_create(IntPtr L) {

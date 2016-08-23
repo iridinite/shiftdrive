@@ -100,6 +100,9 @@ namespace ShiftDrive {
                 if (announceCooldown[key] > 0f) announceCooldown[key] -= dt;
             }
 
+            // run Lua events
+            lua.RunEvents();
+
             // decrement countdown timer
             heartbeatTimer -= dt;
             if (heartbeatTimer > 0f) return;
