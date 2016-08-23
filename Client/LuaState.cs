@@ -84,21 +84,13 @@ namespace ShiftDrive {
                     string scriptname = file.FullName.Substring(dir.FullName.Length + 1);
                     scriptname = scriptname.Substring(0, scriptname.Length - file.Extension.Length).Replace('\\', '/');
                     // compile the string as a Lua chunk
-                    if (LuaAPI.luaL_loadstringex(L, script, scriptname) != 0) {
-                        SDGame.Logger.LogError($"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
-#if DEBUG
-                        System.Diagnostics.Debugger.Break();
-#endif
-                        break;
-                    }
+                    if (LuaAPI.luaL_loadstringex(L, script, scriptname) != 0)
+                        throw new LuaException($"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
                     // insert the compiled Lua function into the table and obtain a reference integer
                     compiledfns.Add(scriptname, LuaAPI.luaL_ref(L, -2));
                     
-                } catch (Exception e) {
-                    SDGame.Logger.LogError($"I/O error occurred while compiling {file.Name}: {e}");
-#if DEBUG
-                    System.Diagnostics.Debugger.Break();
-#endif
+                } catch (IOException e) {
+                    throw new LuaException($"I/O error occurred while compiling {file.Name}: {e}");
                 }
             }
             // save the table of compiled functions into the Lua registry
@@ -122,10 +114,9 @@ namespace ShiftDrive {
         }
 
         public void LoadFile(string filename) {
-            if (!compiledfns.ContainsKey(filename)) {
-                SDGame.Logger.LogError(LuaAPI.lua_getwhere(L, 0) + "no such script exists '" + filename + "'");
-                return;
-            }
+            if (!compiledfns.ContainsKey(filename))
+                throw new LuaException(LuaAPI.lua_getwhere(L, 0) + "no such script exists '" + filename + "'");
+
             LuaAPI.lua_getregistry(L, "precompiled");
             LuaAPI.lua_rawgeti(L, -1, compiledfns[filename]);
             LuaAPI.lua_insert(L, -2);
@@ -169,9 +160,7 @@ namespace ShiftDrive {
             // transfer control to Lua
             if (LuaAPI.lua_pcall(L, nargs, nresults, 1) != 0) {
                 // error handler: lua_errorhandler should have appended a stack trace to the error message
-                if (LuaAPI.lua_isstring(L, -1) == 1)
-                    SDGame.Logger.LogError("Lua error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  "));
-                LuaAPI.lua_pop(L, 1);
+                throw new LuaException("Lua error: " + LuaAPI.lua_tostring(L, -1).Replace("\t", "  "));
             }
 
             // pop the error handler
@@ -184,10 +173,7 @@ namespace ShiftDrive {
             // because if Lua panics then the game will crash as soon as we return from this handler anyway.
 
             //lua_pop(state, 1); // pop the error message from the stack
-#if DEBUG
-            System.Diagnostics.Debugger.Break();
-#endif
-            return 0;
+            throw new LuaException("Lua panic: " + LuaAPI.lua_tostring(L, -1));
         }
 
         private int lua_errorhandler(IntPtr L) {
