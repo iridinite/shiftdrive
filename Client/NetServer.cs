@@ -33,20 +33,29 @@ namespace ShiftDrive {
         private static float heartbeatMax;
         private static float heartbeatTimer;
         
-        public static void PrepareWorld() {
+        public static bool PrepareWorld() {
             GameObject.ResetIds();
             world = new GameState();
             world.IsServer = true;
 
-            SDGame.Logger.Log("Initializing Lua state...");
-            lua = new LuaState();
-            lua.Precompile();
-            SDGame.Logger.Log("Precompilation finished.");
-            lua.LoadFile("main");
-            lua.Call(0, 0);
-            lua.LoadFile("scenarios/siege");
-            lua.Call(0, 0);
-            SDGame.Logger.Log("Scripts ran successfully.");
+            try {
+                SDGame.Logger.Log("Initializing Lua state...");
+                lua = new LuaState();
+                lua.Precompile();
+                SDGame.Logger.Log("Precompilation finished.");
+                lua.LoadFile("main");
+                lua.Call(0, 0);
+                lua.LoadFile("scenarios/siege");
+                lua.Call(0, 0);
+                SDGame.Logger.Log("Scripts ran successfully.");
+                return true;
+
+            } catch (LuaException e) {
+                SDGame.Logger.LogError("Script execution failed.");
+                SDGame.Logger.LogError(e.ToString());
+                SDGame.Inst.ActiveForm = new FormMessage(e.ToString());
+                return false;
+            }
         }
 
         public static void Start() {
