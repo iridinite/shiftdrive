@@ -127,24 +127,25 @@ namespace ShiftDrive {
         internal string StackDump() {
             StringBuilder sb = new StringBuilder();
             int top = LuaAPI.lua_gettop(L);
-            sb.Append(">> Stack dump:  ");
-            sb.AppendLine(top.ToString() + " items");
+            sb.Append(">> Stack dump (");
+            sb.Append(top.ToString() + " items): ");
 
-            for (int i = 0; i < top; i++) {
+            for (int i = 1; i <= top; i++) {
                 switch (LuaAPI.lua_type(L, i)) {
                     case LuaAPI.LUA_TSTRING:
-                        sb.AppendLine("string: \"" + LuaAPI.lua_tostring(L, i) + "\"");
+                        sb.Append("string: \"" + LuaAPI.lua_tostring(L, i) + "\"");
                         break;
                     case LuaAPI.LUA_TBOOLEAN:
-                        sb.AppendLine("boolean: " + (LuaAPI.lua_toboolean(L, i) == 1 ? "true" : "false"));
+                        sb.Append("boolean: " + (LuaAPI.lua_toboolean(L, i) == 1 ? "true" : "false"));
                         break;
                     case LuaAPI.LUA_TNUMBER:
-                        sb.AppendLine("number: " + LuaAPI.lua_tonumber(L, i).ToString());
+                        sb.Append("number: " + LuaAPI.lua_tonumber(L, i).ToString());
                         break;
                     default:
-                        sb.AppendLine(LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i)));
+                        sb.Append(LuaAPI.lua_typename(L, LuaAPI.lua_type(L, i)));
                         break;
                 }
+                sb.Append(", ");
             }
 
             sb.AppendLine("<< End stack");
