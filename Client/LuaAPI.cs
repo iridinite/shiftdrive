@@ -9,8 +9,23 @@ using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents a C# function that is intended to be called from Lua.
+    /// </summary>
+    /// <param name="L">A pointer to the Lua state.</param>
     public delegate int lua_CFunction(IntPtr L);
 
+    /// <summary>
+    /// Represents an error that occurs during a Lua-related operation.
+    /// </summary>
+    internal class LuaException : Exception {
+        public LuaException() : base() {}
+        public LuaException(string message) : base(message) {}
+    }
+
+    /// <summary>
+    /// A container class for P/Invoke Lua API functions.
+    /// </summary>
     internal static class LuaAPI {
 
         private const string LIBNAME = "lua.dll";
