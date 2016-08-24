@@ -154,6 +154,10 @@ namespace ShiftDrive {
             sb.AppendLine("<< End stack");
             return sb.ToString();
         }
+
+        internal int GetEventCount() {
+            return events.Count;
+        }
 #endif
 
         public void Call(int nargs, int nresults) {

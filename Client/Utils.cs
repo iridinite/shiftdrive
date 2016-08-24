@@ -143,6 +143,39 @@ namespace ShiftDrive {
             return loc.GetPhrase(key);
         }
 
+#if DEBUG
+        public static StringBuilder GetDebugInfo() {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Debug info panel - press F3 to close");
+            sb.AppendLine();
+
+            sb.AppendLine("-- SERVER --");
+            if (NetServer.IsListening()) {
+                sb.AppendLine($"Connections: {NetServer.GetPlayerCount()}");
+                sb.AppendLine($"GameObjects: {NetServer.world.Objects.Count}");
+                sb.AppendLine($"Heartbeat: {NetServer.GetHeartbeatTime() * 1000f:F1} ms");
+                sb.AppendLine($"Lua: {NetServer.GetLuaTop()} stack / {NetServer.GetLuaMemory():F1} kB");
+                sb.AppendLine($"Events: {NetServer.GetEventCount()}");
+            } else {
+                sb.AppendLine("not running");
+            }
+            sb.AppendLine();
+
+            sb.AppendLine("-- CLIENT --");
+            if (NetClient.Connected) {
+                sb.AppendLine($"Sim Running: {NetClient.SimRunning}");
+                sb.AppendLine($"Players: {NetClient.PlayerCount}");
+                sb.AppendLine($"Own Roles: {(int)NetClient.MyRoles}");
+                sb.AppendLine($"Taken Roles: {(int)NetClient.TakenRoles}");
+                sb.AppendLine($"GameObjects: {NetClient.World.Objects.Count}");
+            } else {
+                sb.AppendLine("disconnected");
+            }
+
+            return sb;
+        }
+#endif
+
     }
     
 }

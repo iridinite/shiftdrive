@@ -5,9 +5,11 @@
 
 using System;
 using System.IO;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ShiftDrive {
 
@@ -24,6 +26,10 @@ namespace ShiftDrive {
         private readonly DeveloperConsole console;
 
         private float deltaTime;
+
+#if DEBUG
+        private bool debugPanelShown = false;
+#endif
 
         /// <summary>
         /// The currently active form object.
@@ -148,6 +154,12 @@ namespace ShiftDrive {
             ActiveForm.Update(gameTime);
             console.Update(deltaTime);
 
+#if DEBUG
+            // toggle debug tools with F3
+            if (KeyInput.GetDown(Keys.F3))
+                debugPanelShown = !debugPanelShown;
+#endif
+
             base.Update(gameTime);
         }
         
@@ -157,6 +169,17 @@ namespace ShiftDrive {
             // active form should draw its contents
             if (ActiveForm != null)
                 ActiveForm.Draw(GraphicsDevice, spriteBatch);
+
+#if DEBUG
+            // draw debug tools
+            if (debugPanelShown) {
+                int dbgPanelX = GameWidth - 400;
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(dbgPanelX, 0, 400, GameHeight), Color.Black * 0.6f);
+                spriteBatch.DrawString(Assets.fontTooltip, Utils.GetDebugInfo(), new Vector2(dbgPanelX + 10, 10), Color.White);
+                spriteBatch.End();
+            }
+#endif
 
             // draw the developer console text
             console.Draw(spriteBatch);

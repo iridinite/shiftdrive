@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -123,6 +124,38 @@ namespace ShiftDrive {
             lua.Destroy();
             socket.Stop();
         }
+
+        public static bool IsListening() {
+            return socket != null && socket.Listening;
+        }
+
+        public static int GetPlayerCount() {
+            return players.Count;
+        }
+
+#if DEBUG
+        public static float GetHeartbeatTime() {
+            return heartbeatMax;
+        }
+
+        public static int GetEventCount() {
+            return lua.GetEventCount();
+        }
+
+        public static int GetLuaTop() {
+            return LuaAPI.lua_gettop(lua.L);
+        }
+
+        public static float GetLuaMemory() {
+            LuaAPI.lua_getglobal(lua.L, "collectgarbage");
+            LuaAPI.lua_pushstring(lua.L, "count");
+            LuaAPI.lua_call(lua.L, 1, 1);
+
+            float result = (float)LuaAPI.lua_tonumber(lua.L, -1);
+            LuaAPI.lua_pop(lua.L, 1);
+            return result;
+        }
+#endif
 
         private static void Socket_OnServerStart() {
             SDGame.Logger.Log("Server socket started.");
