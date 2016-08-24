@@ -14,7 +14,6 @@ namespace ShiftDrive {
     internal sealed class ConsoleWeapons : Console {
 
         public override void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            graphicsDevice.Clear(Color.Black);
             DrawLocalArea(spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);

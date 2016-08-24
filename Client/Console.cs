@@ -14,6 +14,9 @@ namespace ShiftDrive {
     /// Represents a ship station view to be rendered in <seealso cref="FormGame"/>.
     /// </summary>
     internal abstract class Console {
+
+        private RenderTarget2D rtAreaHud;
+
         public abstract void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch);
         
         /// <summary>
@@ -30,9 +33,15 @@ namespace ShiftDrive {
             Vector2 min = new Vector2(Player.position.X - viewradius, Player.position.Y - viewradius);
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
 
+            // prepare the area HUD render target
+            GraphicsDevice graphicsDevice = spriteBatch.GraphicsDevice;
+            if (rtAreaHud == null || rtAreaHud.IsDisposed || rtAreaHud.IsContentLost)
+                rtAreaHud = new RenderTarget2D(graphicsDevice, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+            graphicsDevice.SetRenderTarget(rtAreaHud);
+            graphicsDevice.Clear(Color.Transparent);
+
             // start a sprite batch and keep it open so we can draw object name text
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-            spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), new Rectangle((int)Player.position.X, (int)Player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't bother drawing if outside window boundings
@@ -59,6 +68,7 @@ namespace ShiftDrive {
                         // draw ship name above it
                         Ship shipobj = obj as Ship;
                         Debug.Assert(shipobj != null);
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, new Vector2(screenpos.X + 2, screenpos.Y - 28) - Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f, Color.Black);
                         spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, new Vector2(screenpos.X, screenpos.Y - 30) - Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f, shipobj.color);
                         goto default;
 
@@ -67,15 +77,25 @@ namespace ShiftDrive {
                         break;
                 }
             }
+            // we're done drawing text and health bars
+            spriteBatch.End();
 
+            // switch to back buffer and start putting everything together
+            graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.Clear(Color.Black);
+            
+            // draw background
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
+            spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), new Rectangle((int)Player.position.X, (int)Player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
             spriteBatch.End();
 
             // perform the queued object renders
             SpriteSheet.RenderAlpha(spriteBatch);
             SpriteSheet.RenderAdditive(spriteBatch);
 
-            // draw a radar ring
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
+            // draw render target and a radar ring
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            spriteBatch.Draw(rtAreaHud, new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
             spriteBatch.Draw(Assets.textures["ui/radar"], new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f), null, Color.White, 0f, new Vector2(256, 256), 1f, SpriteEffects.None, 0f);
             spriteBatch.End();
         }
