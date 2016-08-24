@@ -115,6 +115,15 @@ namespace ShiftDrive {
             return faction == other.faction;
         }
 
+        public bool IsNeutral() {
+            return faction == 0;
+        }
+
+        public Color GetFactionColor(Ship observer) {
+            if (IsNeutral()) return Color.CornflowerBlue;
+            return IsAlly(observer) ? Color.LightGreen : Color.Red;
+        }
+
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
             // resolve collision
             base.OnCollision(other, normal, penetration);
