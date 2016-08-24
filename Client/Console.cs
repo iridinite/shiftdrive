@@ -63,8 +63,6 @@ namespace ShiftDrive {
                         goto default;
 
                     case ObjectType.AIShip:
-                        // don't draw the name for the local player ship
-                        if (obj.id == Player.id) goto default;
                         // draw ship name above it
                         Ship shipobj = obj as Ship;
                         Debug.Assert(shipobj != null);
