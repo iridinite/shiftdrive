@@ -66,8 +66,15 @@ namespace ShiftDrive {
                         // draw ship name above it
                         Ship shipobj = obj as Ship;
                         Debug.Assert(shipobj != null);
-                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, new Vector2(screenpos.X + 2, screenpos.Y - 28) - Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f, Color.Black);
-                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, new Vector2(screenpos.X, screenpos.Y - 30) - Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f, shipobj.color);
+                        int hullBarWidth = (int)(shipobj.hull / shipobj.hullMax * 72f);
+                        Vector2 textpos = new Vector2(screenpos.X, screenpos.Y - 55) -
+                                          Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f;
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(-1, -1), Color.Black);
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(1, -1), Color.Black);
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(-1, 1), Color.Black);
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(1, 1), Color.Black);
+                        spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos, shipobj.GetFactionColor(Player));
+                        spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle((int)screenpos.X - hullBarWidth / 2, (int)screenpos.Y - 45, hullBarWidth, 8), shipobj.GetFactionColor(Player));
                         goto default;
 
                     default:
