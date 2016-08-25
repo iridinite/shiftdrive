@@ -170,7 +170,7 @@ namespace ShiftDrive {
         private static void Socket_OnClientConnect(int clientID) {
             // add an entry for this new client into the player table
             NetPlayer newplr = new NetPlayer();
-            newplr.roles = 0;
+            newplr.roles = (PlayerRole)(-1);
             newplr.ready = false;
             newplr.authorized = false;
             players.Add(clientID, newplr);
