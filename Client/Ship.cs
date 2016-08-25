@@ -107,8 +107,9 @@ namespace ShiftDrive {
         }
 
         public override void Destroy() {
+            if (!IsDestroyScheduled())
+                Particle.CreateExplosion(NetServer.world, position);
             base.Destroy();
-            Particle.CreateExplosion(NetServer.world, position);
         }
 
         public bool IsAlly(Ship other) {
