@@ -70,9 +70,10 @@ namespace ShiftDrive {
 
         private void btnConnect_Click(Control sender) {
             // TODO: remove this later. temp server creation for easy local testing
-            if (!ShiftDrive.NetServer.PrepareWorld())
+            if (NetServer.Active) NetServer.Stop();
+            if (!NetServer.PrepareWorld())
                 return;
-            ShiftDrive.NetServer.Start();
+            NetServer.Start();
             // connect to the remote server
             NetClient.Connect(txtIP.text, ConnectResult);
             // hide UI

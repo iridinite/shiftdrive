@@ -22,6 +22,7 @@ namespace ShiftDrive {
 
     internal static class NetServer {
         internal static GameState world { get; private set; }
+        internal static bool Active { get { return socket != null && socket.Listening; } }
 
         public const float MAPSIZE = 1000f;
         
@@ -60,13 +61,12 @@ namespace ShiftDrive {
         }
 
         public static void Start() {
+            Debug.Assert(!Active);
+
             heartbeatMax = 0.1f;
             heartbeatTimer = 0f;
             announceCooldown = new Dictionary<AnnouncementId, float>();
-
-            if (socket != null && socket.Listening)
-                Stop();
-
+            
             SDGame.Logger.Log("Starting server...");
             socket = new Host();
             socket.OnClientConnect += Socket_OnClientConnect;
@@ -122,6 +122,7 @@ namespace ShiftDrive {
         public static void Stop() {
             SDGame.Logger.Log("Stopping server and closing Lua state.");
             lua.Destroy();
+            lua = null;
             socket.Stop();
         }
 
