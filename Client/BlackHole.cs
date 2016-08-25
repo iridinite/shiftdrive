@@ -31,6 +31,9 @@ namespace ShiftDrive {
                 // black holes don't affect themselves...
                 if (gobj.type == ObjectType.BlackHole) continue;
 
+                // exclude objects that have no physics
+                if (gobj.layermask == 0 || gobj.bounding <= 0f) continue;
+
                 // objects closer than 140 units are affected by the grav pull
                 if (!(Vector2.DistanceSquared(gobj.position, this.position) < 19600)) continue;
 
