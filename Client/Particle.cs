@@ -86,33 +86,41 @@ namespace ShiftDrive {
             if (!world.IsServer)
                 throw new InvalidOperationException("Cannot create objects on client");
 
+            // shockwave
+            Particle wave = new Particle(NetServer.world);
+            wave.spritename = "map/shockwave";
+            wave.lifemax = 2f;
+            wave.colorstart = Color.White * 2f;
+            wave.colorend = Color.Transparent;
+            wave.position = position;
+            wave.scalestart = 0.2f;
+            wave.scaleend = 5f;
+            world.AddObject(wave);
+
+            // large flare in the center
+            Particle flare = new Particle(NetServer.world);
+            flare.spritename = "map/flare";
+            flare.lifemax = 1.5f;
+            flare.colorstart = Color.White * 2f;
+            flare.colorend = Color.Transparent;
+            flare.position = position;
+            flare.scalestart = 1.0f;
+            flare.scaleend = 3.0f;
+            world.AddObject(flare);
+
             // several fast moving small particles
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 32; i++) {
                 Particle p = new Particle(NetServer.world);
                 p.spritename = "map/explosion";
                 p.lifemax = 5f;
                 p.colorend = Color.Transparent;
                 p.rotateoffset = Utils.RandomFloat(0, MathHelper.TwoPi);
-                p.rotatespeed = Utils.RandomFloat(-1f, 1f);
-                p.scalestart = Utils.RandomFloat(0.1f, 0.25f) + (i * 0.02f);
-                p.scaleend = p.scalestart + Utils.RandomFloat(1.0f, 1.5f);
-                p.position = position;
-                p.velocity = new Vector2(Utils.RandomFloat(-30f, 30f), Utils.RandomFloat(-30, 30f));
-                world.Objects.Add(p.id, p);
-            }
-            // a few large particles that stay near the center
-            for (int i = 0; i < 5; i++) {
-                Particle p = new Particle(NetServer.world);
-                p.spritename = "map/explosion";
-                p.lifemax = 4f;
-                p.colorend = Color.Transparent;
-                p.rotateoffset = Utils.RandomFloat(0, MathHelper.TwoPi);
                 p.rotatespeed = Utils.RandomFloat(-2f, 2f);
-                p.scalestart = Utils.RandomFloat(0.75f, 1.25f);
+                p.scalestart = Utils.RandomFloat(0.25f, 0.4f) + (i * 0.02f);
                 p.scaleend = p.scalestart + Utils.RandomFloat(0.5f, 1.0f);
                 p.position = position;
-                p.velocity = new Vector2(Utils.RandomFloat(-10f, 10f), Utils.RandomFloat(-10, 10f));
-                world.Objects.Add(p.id, p);
+                p.velocity = new Vector2(Utils.RandomFloat(-16f, 16f), Utils.RandomFloat(-16f, 16f));
+                world.AddObject(p);
             }
         }
 
