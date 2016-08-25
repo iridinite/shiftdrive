@@ -33,8 +33,11 @@ namespace ShiftDrive {
             scaleend = 1f;
             rotatespeed = 0f;
             rotateoffset = 0f;
+            bounding = 0f;
             colorstart = Color.White;
             colorend = Color.White;
+            layer = 0;
+            layermask = 0;
         }
         
         public override void Update(float deltaTime) {
