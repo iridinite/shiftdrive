@@ -153,7 +153,7 @@ namespace ShiftDrive {
         /// <summary>
         /// Returns a value indicating whether this object is scheduled for deletion.
         /// </summary>
-        public bool ShouldDestroy() {
+        public bool IsDestroyScheduled() {
             return destroyScheduled;
         }
 

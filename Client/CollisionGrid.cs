@@ -35,7 +35,7 @@ namespace ShiftDrive {
                     for (int i = grid[x, y].Count - 1; i >= 0; i--) {
                         GameObject obj = grid[x, y][i];
                         // remove objects that have been scheduled for deletion
-                        if (obj.ShouldDestroy()) {
+                        if (obj.IsDestroyScheduled()) {
                             grid[x, y].RemoveAt(i);
                             continue;
                         }

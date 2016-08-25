@@ -115,7 +115,7 @@ namespace ShiftDrive {
             // broadcast to clients as being deleted
             foreach (uint key in keys) {
                 GameObject gobj = world.Objects[key];
-                if (gobj.ShouldDestroy()) world.Objects.Remove(key);
+                if (gobj.IsDestroyScheduled()) world.Objects.Remove(key);
             }
         }
         

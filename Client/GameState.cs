@@ -71,7 +71,7 @@ namespace ShiftDrive {
             // write serialized objects that have changed
             foreach (var pair in Objects) {
                 GameObject obj = pair.Value;
-                if (obj.ShouldDestroy()) {
+                if (obj.IsDestroyScheduled()) {
                     writer.Write(pair.Value.id);
                     writer.Write(true);
 
