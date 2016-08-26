@@ -68,9 +68,28 @@ namespace ShiftDrive {
             // apply maneuver: find whether turning left or right is fastest
             float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
             facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
+            
+            // server-side stuff
+            if (world.IsServer) {
+                // spawn engine flare particles
+                if (throttle > 0f) {
+                    foreach (Vector2 flarepos in flares) {
+                        float relangle = Utils.CalculateBearing(Vector2.Zero, flarepos);
+                        Particle flare = new Particle(NetServer.world);
+                        flare.lifemax = 1f;
+                        flare.spritename = "map/engineflare";
+                        flare.colorend = Color.Transparent;
+                        flare.facing = facing;
+                        flare.position = position +  new Vector2(
+                            flarepos.Length() * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
+                            flarepos.Length() * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
 
-            // fire ze missiles
-            if (world.IsServer) { // only fire projectiles on the server
+                        NetServer.world.AddObject(flare);
+                    }
+                }
+
+                // fire weapons
+                // TODO: rework
                 for (int i = 0; i < mountsNum; i++) {
                     // update mount point position
                     if (mounts[i] == null) continue;
@@ -88,7 +107,7 @@ namespace ShiftDrive {
 
                     wep.Charge = 0f;
                     float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                    //NetServer.AddObject(new Projectile(wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, this.faction));
+                    NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage, this.faction));
                 }
             }
 
