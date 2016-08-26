@@ -131,6 +131,15 @@ namespace ShiftDrive {
             this.velocity += normal * penetration;
         }
 
+#if DEBUG
+        /// <summary>
+        /// Returns the identifier that will be used for the next network object.
+        /// </summary>
+        public static uint GetNextId() {
+            return nextId;
+        }
+#endif
+
         /// <summary>
         /// Specifies whether this object counts as terrain.
         /// Terrain objects are only sent once to clients, saving bandwidth.
