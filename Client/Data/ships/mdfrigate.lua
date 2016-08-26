@@ -31,6 +31,9 @@ return {
       size = Mount.SMALL
     }
   },
+  flares = {
+    {-8, -15}
+  },
   weapons = {
     require("weapons/plasmacannon"),
     require("weapons/autocannon"),

@@ -17,6 +17,7 @@ function CreateShip(prototype, enttype)
   
   ent.mounts = prototype.mounts or {}
   ent.weapons = prototype.weapons or {}
+  ent.flares = prototype.flares or {}
   
   return ent
 end
