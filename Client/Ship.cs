@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 
@@ -28,6 +29,7 @@ namespace ShiftDrive {
         public byte mountsNum;
         public WeaponMount[] mounts;
         public Weapon[] weapons;
+        public List<Vector2> flares;
 
         public float throttle;
         public float steering;
@@ -47,6 +49,7 @@ namespace ShiftDrive {
             mountsNum = 0;
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
+            flares = new List<Vector2>();
             layer = CollisionLayer.Ship;
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
         }
@@ -174,6 +177,12 @@ namespace ShiftDrive {
                 }
             }
 
+            writer.Write((byte)flares.Count);
+            for (int i = 0; i < flares.Count; i++) {
+                writer.Write(flares[i].X);
+                writer.Write(flares[i].Y);
+            }
+
             writer.Write(faction);
         }
 
@@ -202,6 +211,11 @@ namespace ShiftDrive {
                     weapons[i] = null;
                 }
             }
+
+            int flaresCount = reader.ReadByte();
+            flares.Clear();
+            for (int i = 0; i < flaresCount; i++)
+                flares.Add(new Vector2(reader.ReadSingle(), reader.ReadSingle()));
 
             faction = reader.ReadByte();
         }
@@ -267,6 +281,21 @@ namespace ShiftDrive {
                     break;
                 case "faction":
                     faction = (byte)LuaAPI.luaL_checknumber(L, 3);
+                    needRetransmit = true;
+                    break;
+                case "flares":
+                    // table of engine flare points
+                    for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                        LuaAPI.lua_rawgeti(L, 3, i + 1);
+                        if (LuaAPI.lua_type(L, 4) == LuaAPI.LUA_TNIL)
+                            break;
+                        if (LuaAPI.lua_type(L, 4) != LuaAPI.LUA_TTABLE) {
+                            LuaAPI.lua_pushstring(L, "expected tables in flares list");
+                            LuaAPI.lua_error(L);
+                        }
+                        flares.Add(LuaAPI.lua_tovec2(L, 4));
+                        LuaAPI.lua_pop(L, 1);
+                    }
                     needRetransmit = true;
                     break;
                 case "mounts":
