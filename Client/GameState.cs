@@ -113,6 +113,9 @@ namespace ShiftDrive {
                         case ObjectType.AIShip:
                             obj = new AIShip(this);
                             break;
+                        case ObjectType.Station:
+                            obj = new SpaceStation(this);
+                            break;
                         case ObjectType.Asteroid:
                             obj = new Asteroid(this);
                             break;
