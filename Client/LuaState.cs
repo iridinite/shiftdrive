@@ -314,6 +314,10 @@ namespace ShiftDrive {
                 AIShip newship = new AIShip(NetServer.world);
                 newobj = newship;
 
+            } else if (objtype.Equals("station", StringComparison.InvariantCultureIgnoreCase)) {
+                // Space Station
+                newobj = new SpaceStation(NetServer.world);
+
             } else if (objtype.Equals("blackhole", StringComparison.InvariantCultureIgnoreCase)) {
                 // Black Hole
                 newobj = new BlackHole(NetServer.world);
