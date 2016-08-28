@@ -33,6 +33,7 @@ namespace ShiftDrive {
         public Vector2 velocity;
         public float facing;
         public byte sector;
+        public byte zorder;
 
         public string spritename;
         public SpriteSheet sprite;
@@ -69,6 +70,7 @@ namespace ShiftDrive {
             changed = true;
             color = Color.White;
             damping = 1.0f;
+            zorder = 127;
             layer = CollisionLayer.Default;
             layermask = CollisionLayer.All;
         }
@@ -310,6 +312,7 @@ namespace ShiftDrive {
             writer.Write(velocity.Y);
             writer.Write(facing);
             writer.Write((byte)sector);
+            writer.Write(zorder);
             writer.Write(bounding);
             writer.Write(damping);
 
@@ -327,6 +330,7 @@ namespace ShiftDrive {
             velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             facing = reader.ReadSingle();
             sector = reader.ReadByte();
+            zorder = reader.ReadByte();
             bounding = reader.ReadSingle();
             damping = reader.ReadSingle();
 
