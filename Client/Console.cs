@@ -78,7 +78,7 @@ namespace ShiftDrive {
                         goto default;
 
                     default:
-                        obj.sprite.QueueDraw(screenpos, obj.color, MathHelper.ToRadians(obj.facing));
+                        obj.sprite.QueueDraw(screenpos, obj.color, MathHelper.ToRadians(obj.facing), (float)obj.zorder / byte.MaxValue);
                         break;
                 }
             }
