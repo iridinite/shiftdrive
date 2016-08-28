@@ -35,8 +35,21 @@ namespace ShiftDrive {
 
                 // draw weapon details
                 int chargeWidth = (int)(128 * (wep.Charge / wep.ChargeTime));
-                spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, chargeWidth, 16), new Rectangle(0, 0, chargeWidth, 16), Color.LightGoldenrodYellow);
-                spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, 128, 16), new Rectangle(0, 16, 128, 16), Color.White);
+                if (wep.ChargeTime > 0.5f || wep.Ammo == AmmoType.None) {
+                    // for weapons with a long charge, draw a charge bar
+                    spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, chargeWidth, 16), new Rectangle(0, 0, chargeWidth, 16), Color.LightGoldenrodYellow);
+                    spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, 128, 16), new Rectangle(0, 16, 128, 16), Color.White);
+                } else {
+                    // for rapid fire weapons, a charge bar is pointless, so draw ammo tally instead
+                    //int ammoInClip = wep.AmmoLeft - (wep.AmmoLeft / wep.AmmoPerClip - 1) * wep.AmmoPerClip;
+                    spriteBatch.DrawString(Assets.fontTooltip, wep.AmmoLeft + " / " + wep.AmmoPerClip, new Vector2(weaponCurrentX + 16, SDGame.Inst.GameHeight - 32), wep.AmmoLeft == 0 ? Color.Orange : Color.White);
+                    spriteBatch.DrawString(Assets.fontTooltip, "x " + wep.AmmoClipsLeft, new Vector2(weaponCurrentX + 110, SDGame.Inst.GameHeight - 32), wep.AmmoClipsMax == 0 ? Color.Orange : Color.White);
+                    // alert text for reloading / out of ammo
+                    if (wep.AmmoLeft == 0 && wep.ReloadProgress > 0f)
+                        spriteBatch.DrawString(Assets.fontTooltip, Utils.LocaleGet("reloading"), new Vector2(weaponCurrentX + 24, SDGame.Inst.GameHeight - 16), Color.Orange);
+                    else if (wep.AmmoLeft == 0 && wep.AmmoClipsLeft == 0)
+                        spriteBatch.DrawString(Assets.fontTooltip, Utils.LocaleGet("outofammo"), new Vector2(weaponCurrentX + 24, SDGame.Inst.GameHeight - 16), Color.Orange);
+                }
                 spriteBatch.DrawString(Assets.fontTooltip, wep.Name, new Vector2(weaponCurrentX + 9, SDGame.Inst.GameHeight - 51), Color.Black);
                 spriteBatch.DrawString(Assets.fontTooltip, wep.Name, new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.White);
             }
