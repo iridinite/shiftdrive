@@ -70,6 +70,47 @@ namespace ShiftDrive {
             float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
             facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
             
+
+            // update weapon charge / ammo states
+            for (int i = 0; i < mountsNum; i++) {
+                Weapon wep = weapons[i];
+                if (wep == null) continue;
+                
+                // out-of-ammo processing
+                if (wep.Ammo != AmmoType.None && wep.AmmoLeft < wep.AmmoPerShot) {
+                    // need ammo reserve
+                    if (wep.AmmoClipsLeft < 1)
+                        continue;
+
+                    // begin reloading
+                    if (wep.ReloadProgress < wep.ReloadTime) {
+                        wep.ReloadProgress += deltaTime;
+                        continue;
+                    }
+                    wep.ReloadProgress = 0f;
+                    wep.AmmoLeft = wep.AmmoPerClip;
+                    wep.AmmoClipsLeft--;
+                }
+                
+                // increment charge
+                wep.Charge += deltaTime;
+                if (wep.Charge < wep.ChargeTime) continue;
+                wep.Charge = 0f;
+
+                // remove ammo for this shot
+                if (wep.Ammo != AmmoType.None)
+                    wep.AmmoLeft -= wep.AmmoPerShot;
+                
+                // if running on server, fire the weapon
+                if (!world.IsServer) continue;
+                float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
+                NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite,
+                    position + mounts[i].Position,
+                    Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
+                    this.faction));
+            }
+
+
             // server-side stuff
             if (world.IsServer) {
                 // spawn engine flare particles
@@ -89,39 +130,14 @@ namespace ShiftDrive {
                     }
                 }
 
-                // fire weapons
-                // TODO: rework
+                // update mount point position
                 for (int i = 0; i < mountsNum; i++) {
-                    // update mount point position
                     if (mounts[i] == null) continue;
                     float relangle = Utils.CalculateBearing(Vector2.Zero, mounts[i].Offset);
 
                     mounts[i].Position = new Vector2(
                         mounts[i].OffsetMag * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
                         mounts[i].OffsetMag * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
-
-                    // update weapon charges
-                    if (weapons[i] == null) continue;
-                    Weapon wep = weapons[i];
-                    wep.Charge += deltaTime;
-                    if (wep.Charge < wep.ChargeTime) continue;
-
-                    wep.Charge = 0f;
-                    float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                    NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite,
-                        position + mounts[i].Position,
-                        Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
-                        this.faction));
-                }
-
-            } else {
-                // some client-side processing: advance charge bars on client as well
-                for (int i = 0; i < mountsNum; i++) {
-                    Weapon wep = weapons[i];
-                    if (wep == null) continue;
-
-                    wep.Charge += deltaTime;
-                    if (wep.Charge >= wep.ChargeTime) wep.Charge = 0f;
                 }
             }
 
