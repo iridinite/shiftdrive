@@ -48,6 +48,7 @@
     <Compile Include="CollisionLayer.cs" />
     <Compile Include="FormGameOver.cs" />
     <Compile Include="ImageButton.cs" />
+    <Compile Include="SpaceStation.cs" />
     <Compile Include="TextButton.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConsoleWeapons.cs" />
