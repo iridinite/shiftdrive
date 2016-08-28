@@ -26,7 +26,7 @@ namespace ShiftDrive {
             bounding = 1f;
             damageApplied = false;
             layer = CollisionLayer.Projectile;
-            layermask = CollisionLayer.Ship | CollisionLayer.Asteroid;
+            layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Station;
         }
 
         public Projectile(GameState world, string spritename, Vector2 position, float facing, float speed, float damage,

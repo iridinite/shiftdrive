@@ -11,7 +11,9 @@ namespace ShiftDrive {
 
         public SpaceStation(GameState world) : base(world) {
             type = ObjectType.Station;
-            bounding = 0f;
+            bounding = 20f;
+            layer = CollisionLayer.Station;
+            layermask = CollisionLayer.None;
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
