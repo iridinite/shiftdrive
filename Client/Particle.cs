@@ -36,8 +36,8 @@ namespace ShiftDrive {
             bounding = 0f;
             colorstart = Color.White;
             colorend = Color.White;
-            layer = 0;
-            layermask = 0;
+            layer = CollisionLayer.None;
+            layermask = CollisionLayer.None;
         }
         
         public override void Update(float deltaTime) {
