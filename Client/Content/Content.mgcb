@@ -368,6 +368,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Ship/mdfrigate1.png
 
+#begin Textures/Ship/station0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Ship/station0.png
+
 #begin Textures/Map/mine.txt
 /copy:Textures/Map/mine.txt
 
@@ -394,6 +406,9 @@
 
 #begin Textures/Ship/mdfrigate.txt
 /copy:Textures/Ship/mdfrigate.txt
+
+#begin Textures/Ship/station.txt
+/copy:Textures/Ship/station.txt
 
 #begin Textures/Map/nebula0.png
 /importer:TextureImporter
