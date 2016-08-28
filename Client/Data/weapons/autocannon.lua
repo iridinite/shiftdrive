@@ -10,7 +10,9 @@ return {
   damagetype = DamageType.KINETIC,
   damage = 0.15,
   chargetime = 0.1,
-  ammotype = AmmoType.NONE,
-  ammoperclip = 200,
-  ammoclips = 10
+  ammotype = AmmoType.BULLET,
+  ammouse = 1,
+  ammoclip = 80,
+  ammomax = 15,
+  reloadtime = 2
 }
