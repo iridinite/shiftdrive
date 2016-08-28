@@ -81,7 +81,7 @@ namespace ShiftDrive {
                         flare.spritename = "map/engineflare";
                         flare.colorend = Color.Transparent;
                         flare.facing = facing;
-                        flare.position = position +  new Vector2(
+                        flare.position = position + new Vector2(
                             flarepos.Length() * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
                             flarepos.Length() * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
 
@@ -108,7 +108,20 @@ namespace ShiftDrive {
 
                     wep.Charge = 0f;
                     float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                    NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite, position + mounts[i].Position, Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage, this.faction));
+                    NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite,
+                        position + mounts[i].Position,
+                        Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
+                        this.faction));
+                }
+
+            } else {
+                // some client-side processing: advance charge bars on client as well
+                for (int i = 0; i < mountsNum; i++) {
+                    Weapon wep = weapons[i];
+                    if (wep == null) continue;
+
+                    wep.Charge += deltaTime;
+                    if (wep.Charge >= wep.ChargeTime) wep.Charge = 0f;
                 }
             }
 
@@ -171,22 +184,33 @@ namespace ShiftDrive {
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
             
+            // hull and shield status
             writer.Write(hull);
             writer.Write(shield);
             writer.Write(shieldActive);
 
+            // movement
             writer.Write(throttle);
             writer.Write(steering);
 
+            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                // weapon charge states
+                writer.Write(weapons[i] != null ? weapons[i].Charge : 0f);
+            }
+
+            // we should not serialize data about the ship that isn't
+            // going to change often
             writer.Write(needRetransmit);
             if (!needRetransmit) return;
             needRetransmit = false;
 
+            // stats
             writer.Write(hullMax);
             writer.Write(shieldMax);
             writer.Write(topSpeed);
             writer.Write(turnRate);
 
+            // mounts and weapons data
             writer.Write(mountsNum);
             for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                 if (weapons[i] != null) {
@@ -197,12 +221,14 @@ namespace ShiftDrive {
                 }
             }
 
+            // engine flare positions
             writer.Write((byte)flares.Count);
             for (int i = 0; i < flares.Count; i++) {
                 writer.Write(flares[i].X);
                 writer.Write(flares[i].Y);
             }
 
+            // combat faction
             writer.Write(faction);
         }
 
@@ -215,6 +241,11 @@ namespace ShiftDrive {
 
             throttle = reader.ReadSingle();
             steering = reader.ReadSingle();
+
+            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                float charge = reader.ReadSingle();
+                if (weapons[i] != null) weapons[i].Charge = charge;
+            }
 
             if (!reader.ReadBoolean()) return;
 
