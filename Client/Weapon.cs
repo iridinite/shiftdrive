@@ -67,7 +67,13 @@ namespace ShiftDrive {
         public float ProjSpread;
 
         public AmmoType Ammo;
-        public int AmmoUsed;
+        public int AmmoPerShot;
+        public int AmmoPerClip;
+        public int AmmoClipsMax;
+        public int AmmoLeft;
+        public int AmmoClipsLeft;
+        public float ReloadTime;
+        public float ReloadProgress;
 
         public static Weapon FromLua(IntPtr L, int tableidx) {
             LuaAPI.luaL_checktype(L, tableidx, LuaAPI.LUA_TTABLE);
@@ -90,10 +96,18 @@ namespace ShiftDrive {
             }
 
             ret.Ammo = (AmmoType)LuaAPI.luaH_gettableint(L, tableidx, "ammotype");
-            ret.AmmoUsed = ret.Ammo == AmmoType.None ? 0 : LuaAPI.luaH_gettableint(L, tableidx, "ammousage");
+            if (ret.Ammo != AmmoType.None) {
+                ret.AmmoPerShot = LuaAPI.luaH_gettableint(L, tableidx, "ammouse");
+                ret.AmmoPerClip = LuaAPI.luaH_gettableint(L, tableidx, "ammoclip");
+                ret.AmmoClipsMax = LuaAPI.luaH_gettableint(L, tableidx, "ammomax");
+                ret.ReloadTime = LuaAPI.luaH_gettablefloat(L, tableidx, "reloadtime");
+            }
 
             ret.Powered = false;
+            ret.AmmoLeft = ret.AmmoPerClip;
+            ret.AmmoClipsLeft = ret.AmmoClipsMax;
             ret.Charge = 0f;
+            ret.ReloadProgress = 0f;
             return ret;
         }
 
@@ -108,7 +122,13 @@ namespace ShiftDrive {
             ret.ChargeTime = reader.ReadSingle();
             ret.Charge = reader.ReadSingle();
             ret.Ammo = (AmmoType)reader.ReadByte();
-            ret.AmmoUsed = reader.ReadByte();
+            ret.AmmoPerShot = reader.ReadByte();
+            ret.AmmoPerClip = reader.ReadUInt16();
+            ret.AmmoLeft = reader.ReadUInt16();
+            ret.AmmoClipsMax = reader.ReadUInt16();
+            ret.AmmoClipsLeft = reader.ReadUInt16();
+            ret.ReloadTime = reader.ReadSingle();
+            ret.ReloadProgress = reader.ReadSingle();
             return ret;
         }
 
@@ -122,7 +142,13 @@ namespace ShiftDrive {
             writer.Write(ChargeTime);
             writer.Write(Charge);
             writer.Write((byte)Ammo);
-            writer.Write((byte)AmmoUsed);
+            writer.Write((byte)AmmoPerShot);
+            writer.Write((ushort)AmmoPerClip);
+            writer.Write((ushort)AmmoLeft);
+            writer.Write((ushort)AmmoClipsMax);
+            writer.Write((ushort)AmmoClipsLeft);
+            writer.Write(ReloadTime);
+            writer.Write(ReloadProgress);
         }
         
     }
