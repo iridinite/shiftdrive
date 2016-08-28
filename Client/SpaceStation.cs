@@ -11,6 +11,7 @@ namespace ShiftDrive {
 
         public SpaceStation(GameState world) : base(world) {
             type = ObjectType.Station;
+            zorder = 220;
             bounding = 20f;
             layer = CollisionLayer.Station;
             layermask = CollisionLayer.None;

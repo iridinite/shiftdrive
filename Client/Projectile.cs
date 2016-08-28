@@ -25,6 +25,7 @@ namespace ShiftDrive {
             color = Color.White;
             bounding = 1f;
             damageApplied = false;
+            zorder = 32;
             layer = CollisionLayer.Projectile;
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Station;
         }

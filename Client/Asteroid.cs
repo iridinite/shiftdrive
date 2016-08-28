@@ -23,6 +23,7 @@ namespace ShiftDrive {
             color = Color.White;
             bounding = 8f;
             damping = 0.85f;
+            zorder = 96;
             layer = CollisionLayer.Asteroid;
             layermask = CollisionLayer.Asteroid | CollisionLayer.Ship;
         }

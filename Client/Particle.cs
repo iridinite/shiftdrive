@@ -36,6 +36,7 @@ namespace ShiftDrive {
             bounding = 0f;
             colorstart = Color.White;
             colorend = Color.White;
+            zorder = 16;
             layer = CollisionLayer.None;
             layermask = CollisionLayer.None;
         }

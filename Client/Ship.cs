@@ -50,6 +50,7 @@ namespace ShiftDrive {
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
             flares = new List<Vector2>();
+            zorder = 128;
             layer = CollisionLayer.Ship;
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
         }

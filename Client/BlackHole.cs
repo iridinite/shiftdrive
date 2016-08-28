@@ -19,6 +19,7 @@ namespace ShiftDrive {
             facing = 0f;
             spritename = "map/blackhole";
             bounding = 0f; // no bounding sphere; Update handles gravity pull
+            zorder = 250;
         }
 
         public override void Update(float deltaTime) {
