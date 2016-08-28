@@ -75,6 +75,8 @@ deathquote_6a           = Start by doing what's necessary; then do what's possib
 deathquote_6b           = Francis of Assisi
 
 no_weapon               = No weapon loaded.
+reloading               = RELOADING
+outofammo               = OUT OF AMMO
 weap_autocannon         = Autocannon
 weap_autocannon_desc    = A rotary gun that rapidly fires bullets.
 weap_plasmacannon       = Plasma Cannon
