@@ -218,6 +218,9 @@ namespace ShiftDrive {
                 case "sprite":
                     LuaAPI.lua_pushstring(L, spritename);
                     break;
+                case "zorder":
+                    LuaAPI.lua_pushnumber(L, zorder);
+                    break;
                 case "color":
                     LuaAPI.lua_pushnumber(L, color.PackedValue);
                     break;
@@ -267,6 +270,9 @@ namespace ShiftDrive {
                     break;
                 case "sprite":
                     spritename = LuaAPI.luaL_checkstring(L, 3);
+                    break;
+                case "zorder":
+                    zorder = (byte)LuaAPI.luaL_checknumber(L, 3);
                     break;
                 case "color":
                     color.PackedValue = (uint)LuaAPI.luaL_checknumber(L, 3);
