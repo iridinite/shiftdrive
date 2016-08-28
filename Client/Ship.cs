@@ -193,9 +193,15 @@ namespace ShiftDrive {
             writer.Write(throttle);
             writer.Write(steering);
 
+            // mounts and weapons data
+            writer.Write(mountsNum);
             for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                // weapon charge states
-                writer.Write(weapons[i] != null ? weapons[i].Charge : 0f);
+                if (weapons[i] != null) {
+                    writer.Write((byte)1);
+                    weapons[i].Serialize(writer);
+                } else {
+                    writer.Write((byte)0);
+                }
             }
 
             // we should not serialize data about the ship that isn't
@@ -209,17 +215,6 @@ namespace ShiftDrive {
             writer.Write(shieldMax);
             writer.Write(topSpeed);
             writer.Write(turnRate);
-
-            // mounts and weapons data
-            writer.Write(mountsNum);
-            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                if (weapons[i] != null) {
-                    writer.Write((byte)1);
-                    weapons[i].Serialize(writer);
-                } else {
-                    writer.Write((byte)0);
-                }
-            }
 
             // engine flare positions
             writer.Write((byte)flares.Count);
@@ -242,18 +237,6 @@ namespace ShiftDrive {
             throttle = reader.ReadSingle();
             steering = reader.ReadSingle();
 
-            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                float charge = reader.ReadSingle();
-                if (weapons[i] != null) weapons[i].Charge = charge;
-            }
-
-            if (!reader.ReadBoolean()) return;
-
-            hullMax = reader.ReadSingle();
-            shieldMax = reader.ReadSingle();
-            topSpeed = reader.ReadSingle();
-            turnRate = reader.ReadSingle();
-
             mountsNum = reader.ReadByte();
             for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                 if (reader.ReadByte() == 1) {
@@ -262,6 +245,13 @@ namespace ShiftDrive {
                     weapons[i] = null;
                 }
             }
+
+            if (!reader.ReadBoolean()) return;
+
+            hullMax = reader.ReadSingle();
+            shieldMax = reader.ReadSingle();
+            topSpeed = reader.ReadSingle();
+            turnRate = reader.ReadSingle();
 
             int flaresCount = reader.ReadByte();
             flares.Clear();
