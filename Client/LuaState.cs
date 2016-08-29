@@ -180,6 +180,7 @@ namespace ShiftDrive {
 
         public void RunEvents() {
             // pull up the events table
+            LuaAPI.lua_settop(L, 0);
             LuaAPI.lua_getregistry(L, "events");
             if (LuaAPI.lua_type(L, -1) != LuaAPI.LUA_TTABLE) {
                 // if it doesn't exist, there's nothing for us to do
@@ -206,6 +207,10 @@ namespace ShiftDrive {
                     // remove the failing event from the list. make sure to break out
                     // because we're modifying the collection of events
                     SDGame.Logger.LogError("Event Error: " + e.Message);
+                    LuaAPI.lua_settop(L, 1);
+                    LuaAPI.luaL_unref(L, -1, pair.Key);
+                    LuaAPI.luaL_unref(L, -1, pair.Value);
+                    LuaAPI.lua_pop(L, 1);
                     events.Remove(pair.Key);
                     break;
                 }
