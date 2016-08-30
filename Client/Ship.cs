@@ -122,6 +122,7 @@ namespace ShiftDrive {
                         flare.spritename = "map/engineflare";
                         flare.colorend = Color.Transparent;
                         flare.facing = facing;
+                        flare.zorder = 160;
                         flare.position = position + new Vector2(
                             flarepos.Length() * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
                             flarepos.Length() * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
