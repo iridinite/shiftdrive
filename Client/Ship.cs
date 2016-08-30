@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Xna.Framework;
 
@@ -108,6 +109,13 @@ namespace ShiftDrive {
                     position + mounts[i].Position,
                     Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
                     this.faction));
+
+                // consume fuel for weapon fire
+                if (this.type == ObjectType.PlayerShip) {
+                    PlayerShip plr = this as PlayerShip;
+                    Debug.Assert(plr != null);
+                    plr.ConsumeFuel(wep.PowerDraw);
+                }
             }
 
 
