@@ -48,7 +48,7 @@ namespace ShiftDrive {
             public Vector2 position;
             public float rotation;
             public float scale;
-            public float zorder;
+            public byte zorder;
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace ShiftDrive {
         /// <summary>
         /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
         /// </summary>
-        public void QueueDraw(Vector2 position, Color color, float rotation, float zorder) {
+        public void QueueDraw(Vector2 position, Color color, float rotation, byte zorder) {
             if (isPrototype) return;
 
             foreach (SpriteLayer layer in layers) {
@@ -285,7 +285,7 @@ namespace ShiftDrive {
         public static void RenderAlpha(SpriteBatch spriteBatch) {
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp);
             foreach (QueuedFrame frame in drawQueueAlpha)
-                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale, frame.zorder);
+                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale, (float)frame.zorder / byte.MaxValue);
             drawQueueAlpha.Clear();
             spriteBatch.End();
         }
@@ -297,7 +297,7 @@ namespace ShiftDrive {
         public static void RenderAdditive(SpriteBatch spriteBatch) {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
             foreach (QueuedFrame frame in drawQueueAdditive)
-                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale, frame.zorder);
+                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale, (float)frame.zorder / byte.MaxValue);
             drawQueueAdditive.Clear();
             spriteBatch.End();
         }
