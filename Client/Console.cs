@@ -78,7 +78,7 @@ namespace ShiftDrive {
                         goto default;
 
                     default:
-                        obj.sprite.QueueDraw(screenpos, obj.color, MathHelper.ToRadians(obj.facing), obj.zorder);
+                        SpriteQueue.QueueSprite(obj.sprite, screenpos, obj.color, MathHelper.ToRadians(obj.facing), obj.zorder);
                         break;
                 }
             }
@@ -95,8 +95,8 @@ namespace ShiftDrive {
             spriteBatch.End();
 
             // perform the queued object renders
-            SpriteSheet.RenderAlpha(spriteBatch);
-            SpriteSheet.RenderAdditive(spriteBatch);
+            SpriteQueue.RenderAlpha(spriteBatch);
+            SpriteQueue.RenderAdditive(spriteBatch);
 
             // draw render target and a radar ring
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);

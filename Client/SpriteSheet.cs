@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
@@ -36,22 +35,6 @@ namespace ShiftDrive {
         }
 
         /// <summary>
-        /// Represents a sprite frame that is queued for rendering.
-        /// </summary>
-        /// <remarks>
-        /// This type is a struct so QueueDraw below can abuse the value
-        /// copying behaviour of structs.
-        /// </remarks>
-        private struct QueuedFrame {
-            public Texture2D texture;
-            public Color color;
-            public Vector2 position;
-            public float rotation;
-            public float scale;
-            public byte zorder;
-        }
-
-        /// <summary>
         /// Represents a texture layer in a layered sprite.
         /// </summary>
         internal class SpriteLayer {
@@ -64,12 +47,9 @@ namespace ShiftDrive {
             public float frameTime;
         }
 
-        private List<SpriteLayer> layers = new List<SpriteLayer>();
-        private bool isPrototype;
+        public List<SpriteLayer> layers = new List<SpriteLayer>();
+        public bool isPrototype;
         private bool offsetRandom;
-
-        private static readonly List<QueuedFrame> drawQueueAlpha = new List<QueuedFrame>();
-        private static readonly List<QueuedFrame> drawQueueAdditive = new List<QueuedFrame>();
 
         /// <summary>
         /// Reads a sprite sheet prototype from a file.
@@ -242,82 +222,6 @@ namespace ShiftDrive {
         /// <param name="index">The layer index to look up.</param>
         public SpriteLayer GetLayer(int index) {
             return layers[index];
-        }
-
-        /// <summary>
-        /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
-        /// </summary>
-        public void QueueDraw(Vector2 position, Color color, float rotation, byte zorder) {
-            if (isPrototype) return;
-
-            foreach (SpriteLayer layer in layers) {
-                SpriteFrame currentFrame = layer.frames[layer.frameNo];
-                QueuedFrame queuedFrame = new QueuedFrame();
-                queuedFrame.texture = currentFrame.texture;
-                queuedFrame.position = position;
-                queuedFrame.rotation = layer.rotate + rotation;
-                queuedFrame.scale = layer.scale;
-                queuedFrame.color = color;
-                queuedFrame.zorder = zorder;
-
-                switch (currentFrame.blend) {
-                    case SpriteBlend.AlphaBlend:
-                        drawQueueAlpha.Add(queuedFrame);
-                        break;
-                    case SpriteBlend.Additive:
-                        drawQueueAdditive.Add(queuedFrame);
-                        break;
-                    case SpriteBlend.HalfBlend:
-                        queuedFrame.color.R = (byte)(color.R * (color.A / 255f));
-                        queuedFrame.color.G = (byte)(color.G * (color.A / 255f));
-                        queuedFrame.color.B = (byte)(color.B * (color.A / 255f));
-                        queuedFrame.color.A /= 2;
-                        drawQueueAlpha.Add(queuedFrame);
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Renders all sprite sheets that have been queued using alpha blending.
-        /// </summary>
-        /// <param name="spriteBatch">The <see cref="SpriteBatch"/> to render with.</param>
-        public static void RenderAlpha(SpriteBatch spriteBatch) {
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp);
-            foreach (QueuedFrame frame in drawQueueAlpha)
-                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale, (float)frame.zorder / byte.MaxValue);
-            drawQueueAlpha.Clear();
-            spriteBatch.End();
-        }
-
-        /// <summary>
-        /// Renders all sprite sheets that have been queued using additive blending.
-        /// </summary>
-        /// <param name="spriteBatch">The <see cref="SpriteBatch"/> to render with.</param>
-        public static void RenderAdditive(SpriteBatch spriteBatch) {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp);
-            foreach (QueuedFrame frame in drawQueueAdditive)
-                DrawInternal(spriteBatch, frame.texture, frame.position, frame.color, frame.rotation, frame.scale, (float)frame.zorder / byte.MaxValue);
-            drawQueueAdditive.Clear();
-            spriteBatch.End();
-        }
-
-        /// <summary>
-        /// Draws a single texture using a <see cref="SpriteBatch"/>.
-        /// </summary>
-        private static void DrawInternal(SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Color color, float rotation, float scale, float zorder) {
-            // at 1080p resolution, draw sprites at 100% scale. if resolution goes lower, downscale the
-            // sprites appropriately, so the final image retains the same sense of scale
-            spriteBatch.Draw(
-                tex,
-                position,
-                null,
-                color,
-                rotation,
-                new Vector2(tex.Width * .5f, tex.Height * .5f),
-                SDGame.Inst.GameWidth / 1920f * scale,
-                SpriteEffects.None,
-                zorder);
         }
 
         /// <summary>
