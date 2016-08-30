@@ -55,6 +55,7 @@ namespace ShiftDrive {
             RegisterFunction("Create", clua_create);
             RegisterFunction("GetObjectByName", clua_getObjectByName);
             RegisterFunction("GetObjectById", clua_getObjectById);
+            RegisterFunction("GetPlayerShip", clua_getPlayer);
 
             if (LuaAPI.lua_gettop(L) != 0) {
                 LuaAPI.lua_pushstring(L, "unbalanced stack after Lua state initialization");
@@ -390,6 +391,15 @@ namespace ShiftDrive {
             }
             // no result found, return nil
             LuaAPI.lua_pushnil(L);
+            return 1;
+        }
+
+        private int clua_getPlayer(IntPtr L) {
+            PlayerShip plr = NetServer.world.GetPlayerShip();
+            if (plr == null)
+                LuaAPI.lua_pushnil(L);
+            else
+                plr.PushToLua(L);
             return 1;
         }
 
