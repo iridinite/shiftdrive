@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 
@@ -23,10 +24,13 @@ namespace ShiftDrive {
         // indicates that the ship has been destroyed (not scheduled for deletion)
         public bool destroyed;
 
+        public List<uint> targets;
+
         private int hullWarningShown;
 
         public PlayerShip(GameState world) : base(world) {
             type = ObjectType.PlayerShip;
+            targets = new List<uint>();
             destroyed = false;
         }
 
