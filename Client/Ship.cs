@@ -80,7 +80,7 @@ namespace ShiftDrive {
                 // out-of-ammo processing
                 if (wep.Ammo != AmmoType.None && wep.AmmoLeft < wep.AmmoPerShot) {
                     // need ammo reserve
-                    if (wep.AmmoClipsLeft < 1)
+                    if (wep.AmmoClipsLeft < 1 && wep.Ammo != AmmoType.Dummy)
                         continue;
 
                     // begin reloading
@@ -90,7 +90,9 @@ namespace ShiftDrive {
                     }
                     wep.ReloadProgress = 0f;
                     wep.AmmoLeft = wep.AmmoPerClip;
-                    wep.AmmoClipsLeft--;
+                    if (this.type == ObjectType.PlayerShip && // AI ships have unlimited clips
+                        wep.Ammo != AmmoType.Dummy) // dummy ammo has no clips
+                        wep.AmmoClipsLeft--;
                 }
                 
                 // increment charge
