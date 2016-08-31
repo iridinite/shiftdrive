@@ -200,7 +200,9 @@ namespace ShiftDrive {
                 highestVelocity = Math.Max(highestVelocity,
                     otherShip.throttle * otherShip.topSpeed * Math.Abs(penetration));
 
-            TakeDamage(highestVelocity * SDGame.Inst.GetDeltaTime() * 2);
+            // cap damage and apply
+            float damage = Math.Min(highestVelocity * SDGame.Inst.GetDeltaTime() * 2, 0.25f);
+            TakeDamage(damage);
 
             if (other.type == ObjectType.Asteroid) {
                 // reduce pushback
