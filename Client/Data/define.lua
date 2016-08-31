@@ -11,10 +11,11 @@ DamageType = {
 
 AmmoType = {
   NONE = 0,
-  MISSILE = 1,
-  EMP = 2,
-  MINE = 3,
-  BULLET = 4
+  DUMMY = 1,
+  MISSILE = 2,
+  EMP = 3,
+  MINE = 4,
+  BULLET = 5
 }
 
 Mount = {

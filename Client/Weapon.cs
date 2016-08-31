@@ -39,9 +39,11 @@ namespace ShiftDrive {
     /// </remarks>
     internal enum AmmoType {
         None = 0,
-        Missile = 1,
-        EMP = 2,
-        Mine = 3
+        Dummy = 1,
+        Missile = 2,
+        EMP = 3,
+        Mine = 4,
+        Bullet = 5
     }
 
     /// <summary>
