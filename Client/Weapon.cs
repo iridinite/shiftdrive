@@ -101,7 +101,7 @@ namespace ShiftDrive {
             if (ret.Ammo != AmmoType.None) {
                 ret.AmmoPerShot = LuaAPI.luaH_gettableint(L, tableidx, "ammouse");
                 ret.AmmoPerClip = LuaAPI.luaH_gettableint(L, tableidx, "ammoclip");
-                ret.AmmoClipsMax = LuaAPI.luaH_gettableint(L, tableidx, "ammomax");
+                ret.AmmoClipsMax = ret.Ammo == AmmoType.Dummy ? 0 : LuaAPI.luaH_gettableint(L, tableidx, "ammomax");
                 ret.ReloadTime = LuaAPI.luaH_gettablefloat(L, tableidx, "reloadtime");
             }
 
