@@ -29,7 +29,7 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="spriteBatch">A SpriteBatch to render with. SpriteBatch.Begin must have been successfully called!</param>
         protected void DrawLocalArea(SpriteBatch spriteBatch) {
-            const float viewradius = 250f;
+            const float viewradius = 256f;
             Vector2 min = new Vector2(Player.position.X - viewradius, Player.position.Y - viewradius);
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
 
