@@ -101,6 +101,10 @@ namespace ShiftDrive {
             base.OnCollision(other, normal, penetration);
         }
 
+        protected override GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
+            return null;
+        }
+
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
 

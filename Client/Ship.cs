@@ -39,6 +39,8 @@ namespace ShiftDrive {
 
         private bool needRetransmit;
 
+        protected abstract GameObject SelectTarget(WeaponMount mount, Weapon weapon);
+
         protected Ship(GameState world) : base(world) {
             needRetransmit = true;
             hull = 100f;
@@ -94,6 +96,10 @@ namespace ShiftDrive {
                         wep.Ammo != AmmoType.Dummy) // dummy ammo has no clips
                         wep.AmmoClipsLeft--;
                 }
+
+                // find a target to fire upon
+                GameObject target = SelectTarget(mounts[i], wep);
+                if (target == null) continue;
                 
                 // increment charge
                 wep.Charge += deltaTime;
