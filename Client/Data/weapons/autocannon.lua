@@ -9,6 +9,7 @@ return {
   projspread = 1,
   damagetype = DamageType.KINETIC,
   damage = 0.15,
+  range = 50,
   chargetime = 0.1,
   ammotype = AmmoType.BULLET,
   ammouse = 1,

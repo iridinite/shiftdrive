@@ -62,6 +62,7 @@ namespace ShiftDrive {
         public float Damage;
         public float ChargeTime;
         public float Charge;
+        public float Range;
 
         public WeaponType ProjType;
         public string ProjSprite;
@@ -89,7 +90,8 @@ namespace ShiftDrive {
             ret.PowerDraw = LuaAPI.luaH_gettablefloat(L, tableidx, "draw");
             ret.Damage = LuaAPI.luaH_gettablefloat(L, tableidx, "damage");
             ret.ChargeTime = LuaAPI.luaH_gettablefloat(L, tableidx, "chargetime");
-            
+            ret.Range = LuaAPI.luaH_gettablefloat(L, tableidx, "range");
+
             ret.ProjType = (WeaponType)LuaAPI.luaH_gettableint(L, tableidx, "weapontype");
             if (ret.ProjType == WeaponType.Projectile) {
                 ret.ProjSprite = LuaAPI.luaH_gettablestring(L, tableidx, "projsprite");
