@@ -151,6 +151,13 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Specifies whether this object can be targeted by weapons.
+        /// </summary>
+        public virtual bool IsTargetable() {
+            return false;
+        }
+
+        /// <summary>
         /// Schedules this object for deletion. The server will erase the object
         /// once the update cycle has been completed.
         /// </summary>

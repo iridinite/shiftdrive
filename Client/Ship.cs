@@ -175,6 +175,10 @@ namespace ShiftDrive {
             base.Destroy();
         }
 
+        public override bool IsTargetable() {
+            return true;
+        }
+
         public bool IsAlly(Ship other) {
             return faction == other.faction;
         }
