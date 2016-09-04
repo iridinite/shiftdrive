@@ -102,7 +102,26 @@ namespace ShiftDrive {
         }
 
         protected override GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
-            return null;
+            GameObject bestTarget = null;
+            float closest = float.MaxValue;
+
+            foreach (uint targetid in targets) {
+                if (!world.Objects.ContainsKey(targetid)) continue;
+                GameObject target = world.Objects[targetid];
+
+                // make sure we can actually shoot this thing
+                if (!GetCanTarget(target, weapon.Range, mount.Bearing + this.facing, mount.Arc))
+                    continue;
+
+                // keep closest object
+                float dist = Vector2.DistanceSquared(target.position, this.position);
+                if (dist > closest) continue;
+
+                closest = dist;
+                bestTarget = target;
+            }
+
+            return bestTarget;
         }
 
         public override void Serialize(BinaryWriter writer) {

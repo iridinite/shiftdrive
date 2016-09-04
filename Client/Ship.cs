@@ -39,8 +39,6 @@ namespace ShiftDrive {
 
         private bool needRetransmit;
 
-        protected abstract GameObject SelectTarget(WeaponMount mount, Weapon weapon);
-
         protected Ship(GameState world) : base(world) {
             needRetransmit = true;
             hull = 100f;
@@ -198,6 +196,26 @@ namespace ShiftDrive {
             return IsAlly(observer) ? Color.LightGreen : Color.Red;
         }
 
+        protected virtual GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
+            GameObject target = null;
+            float closest = float.MaxValue;
+
+            // find closest object. station has 360 weapon so don't care about weapon arcs
+            foreach (GameObject gobj in world.Objects.Values) {
+                // make sure we can actually shoot this thing
+                if (!GetCanTarget(gobj, weapon.Range, mount.Bearing + this.facing, mount.Arc))
+                    continue;
+
+                // keep closest object
+                float dist = Vector2.DistanceSquared(gobj.position, this.position);
+                if (dist > closest) continue;
+
+                closest = dist;
+                target = gobj;
+            }
+
+            return target;
+        }
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
             // resolve collision
             base.OnCollision(other, normal, penetration);
