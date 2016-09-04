@@ -216,6 +216,39 @@ namespace ShiftDrive {
 
             return target;
         }
+
+        protected bool GetCanTarget(GameObject target, float range, float bearing, float arc) {
+            // must be targetable at all
+            if (!target.IsTargetable())
+                return false;
+
+            // if ship, cannot fire on friendlies
+            if (target.IsShip()) {
+                Ship ship = target as Ship;
+                Debug.Assert(ship != null);
+                if (ship.IsAlly(this))
+                    return false;
+            }
+
+            // cannot exceed weapon range
+            if (Vector2.DistanceSquared(target.position, this.position) > range * range)
+                return false;
+
+            // cannot fall outside weapon arc
+            float targetAngle = Utils.CalculateBearing(this.position, target.position);
+            float arcfrom = Utils.Repeat(bearing - arc, 0f, 360f);
+            float arcto = Utils.Repeat(bearing + arc, 0f, 360f);
+
+            while (arcto < arcfrom) arcto += 360f;
+            while (targetAngle < arcfrom) targetAngle += 360f;
+
+            if (this.type == ObjectType.AIShip && target.type == ObjectType.PlayerShip) {
+                SDGame.Inst.Print($"Arc {arcfrom:000} / {arcto:000}, target angle {targetAngle:000}", targetAngle >= arcfrom && targetAngle <= arcto);
+            }
+
+            return targetAngle >= arcfrom && targetAngle <= arcto;
+        }
+
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
             // resolve collision
             base.OnCollision(other, normal, penetration);
