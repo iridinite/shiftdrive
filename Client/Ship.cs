@@ -76,7 +76,8 @@ namespace ShiftDrive {
             for (int i = 0; i < mountsNum; i++) {
                 Weapon wep = weapons[i];
                 if (wep == null) continue;
-                
+                if (mounts[i] == null) continue;
+
                 // out-of-ammo processing
                 if (wep.Ammo != AmmoType.None && wep.AmmoLeft < wep.AmmoPerShot) {
                     // need ammo reserve
