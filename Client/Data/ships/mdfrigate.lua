@@ -32,7 +32,10 @@ return {
     }
   },
   flares = {
-    {-8, -15}
+    {-8.5, -18},
+    {-10.5, -18},
+    {8.5, -18},
+    {10.5, -18}
   },
   weapons = {
     require("weapons/plasmacannon"),
