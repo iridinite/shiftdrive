@@ -63,11 +63,7 @@ namespace ShiftDrive {
 
             base.Update(deltaTime);
         }
-
-        protected override GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
-            return null;
-        }
-
+        
     }
 
 }
