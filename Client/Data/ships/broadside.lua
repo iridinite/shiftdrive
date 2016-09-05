@@ -7,7 +7,7 @@ return {
   hullmax = 100,
   shieldmax = 80,
   cargo = 4,
-  bounding = 20,
+  bounding = 30,
   
   sprite = "ship/broadside",
   
