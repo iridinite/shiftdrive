@@ -242,11 +242,7 @@ namespace ShiftDrive {
 
             while (arcto < arcfrom) arcto += 360f;
             while (targetAngle < arcfrom) targetAngle += 360f;
-
-            if (this.type == ObjectType.AIShip && target.type == ObjectType.PlayerShip) {
-                SDGame.Inst.Print($"Arc {arcfrom:000} / {arcto:000}, target angle {targetAngle:000}", targetAngle >= arcfrom && targetAngle <= arcto);
-            }
-
+            
             return targetAngle >= arcfrom && targetAngle <= arcto;
         }
 
