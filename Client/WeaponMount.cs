@@ -39,7 +39,7 @@ namespace ShiftDrive {
             ret.OffsetMag = -ret.Offset.Length();
             LuaAPI.lua_pop(L, 1);
             ret.Bearing = LuaAPI.luaH_gettablefloat(L, tableidx, "bearing");
-            ret.Arc = LuaAPI.luaH_gettablefloat(L, tableidx, "arc");
+            ret.Arc = LuaAPI.luaH_gettablefloat(L, tableidx, "arc") / 2f;
             ret.Size = (MountSize)LuaAPI.luaH_gettableint(L, tableidx, "size");
             return ret;
         }
