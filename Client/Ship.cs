@@ -114,7 +114,7 @@ namespace ShiftDrive {
                 float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
                 NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite,
                     position + mounts[i].Position,
-                    Utils.Repeat(facing + mounts[i].Bearing + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
+                    Utils.Repeat(Utils.CalculateBearing(this.position, target.position) + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
                     this.faction));
 
                 // consume fuel for weapon fire
