@@ -15,49 +15,49 @@ return {
     {
       position = {10, -8},
       bearing = 90,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {10, -3},
       bearing = 90,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {10, 2},
       bearing = 90,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {10, 7},
       bearing = 90,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {-10, -8},
       bearing = 270,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {-10, -3},
       bearing = 270,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {-10, 2},
       bearing = 270,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     },
     {
       position = {-10, 7},
       bearing = 270,
-      arc = 100,
+      arc = 50,
       size = Mount.SMALL
     }
   },
