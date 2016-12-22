@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
-    internal sealed class LuaState {
+    internal sealed class LuaState : IDisposable {
 
         internal readonly IntPtr L;
 
@@ -67,7 +67,11 @@ namespace ShiftDrive {
             GC.Collect();
 #endif
         }
-        
+
+        public void Dispose() {
+            LuaAPI.lua_close(L);
+        }
+
         public void Print(string s, bool error = false) {
             SDGame.Inst.Print(s, error);
         }
@@ -99,10 +103,6 @@ namespace ShiftDrive {
             }
             // save the table of compiled functions into the Lua registry
             LuaAPI.lua_setregistry(L, "precompiled");
-        }
-
-        public void Destroy() {
-            LuaAPI.lua_close(L);
         }
 
         public void PushDelegate(lua_CFunction fn) {

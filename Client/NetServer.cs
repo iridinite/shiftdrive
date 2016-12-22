@@ -121,7 +121,7 @@ namespace ShiftDrive {
 
         public static void Stop() {
             SDGame.Logger.Log("Stopping server and closing Lua state.");
-            lua.Destroy();
+            lua.Dispose();
             lua = null;
             socket.Stop();
         }
