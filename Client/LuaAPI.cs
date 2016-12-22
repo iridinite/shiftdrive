@@ -18,6 +18,7 @@ namespace ShiftDrive {
     /// <summary>
     /// Represents an error that occurs during a Lua-related operation.
     /// </summary>
+    [Serializable]
     internal class LuaException : Exception {
         public LuaException() : base() {}
         public LuaException(string message) : base(message) {}
@@ -49,19 +50,19 @@ namespace ShiftDrive {
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void lua_close(IntPtr L);
 
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int luaL_loadstringex(IntPtr L, string s, string chunkname);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
+        internal static extern int luaL_loadstringex(IntPtr L, [MarshalAs(UnmanagedType.LPStr)] string s, [MarshalAs(UnmanagedType.LPStr)] string chunkname);
         
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern lua_CFunction lua_atpanic(IntPtr L, lua_CFunction newfn);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int lua_error(IntPtr L);
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int luaL_argerror(IntPtr L, int narg, string extramsg);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
+        internal static extern int luaL_argerror(IntPtr L, int narg, [MarshalAs(UnmanagedType.LPStr)] string extramsg);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void luaL_where(IntPtr L, int lvl);
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void luaL_traceback(IntPtr L, IntPtr L1, string msg, int lvl);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
+        internal static extern void luaL_traceback(IntPtr L, IntPtr L1, [MarshalAs(UnmanagedType.LPStr)] string msg, int lvl);
         internal static string lua_getwhere(IntPtr L, int lvl = 1) {
             string ret;
             luaL_where(L, lvl);
@@ -101,16 +102,16 @@ namespace ShiftDrive {
             lua_settop(L, -(n) - 1);
         }
 
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void lua_setfield(IntPtr L, int index, string k);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
+        internal static extern void lua_setfield(IntPtr L, int index, [MarshalAs(UnmanagedType.LPStr)] string k);
         internal static void lua_setglobal(IntPtr L, string k) {
             lua_setfield(L, LUA_GLOBALSINDEX, k);
         }
         internal static void lua_setregistry(IntPtr L, string k) {
             lua_setfield(L, LUA_REGISTRYINDEX, k);
         }
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void lua_getfield(IntPtr L, int index, string k);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
+        internal static extern void lua_getfield(IntPtr L, int index, [MarshalAs(UnmanagedType.LPStr)] string k);
         internal static void lua_getglobal(IntPtr L, string k) {
             lua_getfield(L, LUA_GLOBALSINDEX, k);
         }
@@ -136,8 +137,8 @@ namespace ShiftDrive {
             return Marshal.PtrToStringAnsi(lua_typename_backend(L, index));
         }
 
-        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void lua_pushstring(IntPtr L, string s);
+        [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
+        internal static extern void lua_pushstring(IntPtr L, [MarshalAs(UnmanagedType.LPStr)] string s);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void lua_pushnumber(IntPtr L, double n);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
