@@ -55,7 +55,7 @@ namespace ShiftDrive {
             btnIntel.Draw(spriteBatch);
 
             for (int i = 0; i < 5; i++) {
-                PlayerRole thisrole = (PlayerRole) (1 << i);
+                PlayerRole thisrole = (PlayerRole)(1 << i);
                 if (NetClient.TakenRoles.HasFlag(thisrole))
                     spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("role_taken"), new Vector2(SDGame.Inst.GameWidth / 2 + 130, SDGame.Inst.GameHeight / 2 - 138 + (i * 50)), Color.White);
                 spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 - 150 + (i * 50), 40, 40), NetClient.MyRoles.HasFlag(thisrole) ? Color.Green : Color.Red);

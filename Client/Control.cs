@@ -12,13 +12,13 @@ namespace ShiftDrive {
     /// Represents an interactive UI component.
     /// </summary>
     internal abstract class Control {
-        
+
         public int x { get; set; }
         public int y { get; set; }
 
         public int width { get; set; }
         public int height { get; set; }
-        
+
         public abstract void Draw(SpriteBatch spriteBatch);
         public abstract void Update(GameTime gameTime);
         

@@ -6,7 +6,7 @@
 using System;
 
 namespace ShiftDrive {
-    
+
     [Flags]
     internal enum CollisionLayer {
         None = 0,

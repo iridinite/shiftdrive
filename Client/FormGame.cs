@@ -84,7 +84,7 @@ namespace ShiftDrive {
         private void BtnLRS_OnClick(Control sender) {
             Console = new ConsoleLrs();
         }
-        
+
         public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
             lock (NetClient.worldLock) {
                 PlayerShip player = NetClient.World.GetPlayerShip();
@@ -111,7 +111,7 @@ namespace ShiftDrive {
 
                 foreach (Button b in consoleButtons)
                     b.Draw(spriteBatch);
-                
+
                 // black overlay when fading out
                 if (gameOverFade > 0f)
                     spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.Black * gameOverFade);

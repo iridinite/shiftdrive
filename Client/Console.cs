@@ -18,7 +18,7 @@ namespace ShiftDrive {
         private RenderTarget2D rtAreaHud;
 
         public abstract void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch);
-        
+
         /// <summary>
         /// Shorthand for NetClient.World.GetPlayerShip()
         /// </summary>
@@ -88,7 +88,7 @@ namespace ShiftDrive {
             // switch to back buffer and start putting everything together
             graphicsDevice.SetRenderTarget(null);
             graphicsDevice.Clear(Color.Black);
-            
+
             // draw background
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), new Rectangle((int)Player.position.X, (int)Player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);

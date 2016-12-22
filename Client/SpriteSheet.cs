@@ -15,7 +15,7 @@ namespace ShiftDrive {
     /// Represents an animated sprite.
     /// </summary>
     internal sealed class SpriteSheet {
-        
+
         /// <summary>
         /// Specifies a style with which to render a sprite.
         /// </summary>

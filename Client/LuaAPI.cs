@@ -33,7 +33,7 @@ namespace ShiftDrive {
         private const int LUA_REGISTRYINDEX = -10000;
         private const int LUA_ENVIRONINDEX = -10001;
         private const int LUA_GLOBALSINDEX = -10002;
-        
+
         internal const int LUA_TNONE = -1;
         internal const int LUA_TNIL = 0;
         internal const int LUA_TBOOLEAN = 1;
@@ -44,7 +44,7 @@ namespace ShiftDrive {
         internal const int LUA_TFUNCTION = 6;
         internal const int LUA_TUSERDATA = 7;
         internal const int LUA_TTHREAD = 8;
-        
+
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr luaL_newstate();
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
@@ -52,7 +52,7 @@ namespace ShiftDrive {
 
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl, BestFitMapping = false)]
         internal static extern int luaL_loadstringex(IntPtr L, [MarshalAs(UnmanagedType.LPStr)] string s, [MarshalAs(UnmanagedType.LPStr)] string chunkname);
-        
+
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern lua_CFunction lua_atpanic(IntPtr L, lua_CFunction newfn);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
@@ -79,7 +79,7 @@ namespace ShiftDrive {
         internal static extern int luaopen_string(IntPtr L);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int luaopen_math(IntPtr L);
-        
+
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void lua_call(IntPtr L, int nargs, int nresults);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
@@ -123,7 +123,7 @@ namespace ShiftDrive {
         internal static extern int lua_setmetatable(IntPtr L, int index);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int lua_getmetatable(IntPtr L, int index);
-        
+
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int lua_isnumber(IntPtr L, int index);
         [DllImport(LIBNAME, CallingConvention = CallingConvention.Cdecl)]

@@ -14,7 +14,7 @@ namespace ShiftDrive {
     /// Implements a <seealso cref="Console"/> for the helmsman's station.
     /// </summary>
     internal sealed class ConsoleHelm : Console {
-        
+
         private float targetThrottle;
 
         private bool glowVisible;
@@ -33,7 +33,7 @@ namespace ShiftDrive {
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             int baseBarHeight = (SDGame.Inst.GameHeight - 100) / 2 - 100;
-            
+
             // Throttle bar
             // we show local target throttle so that the UI always animates and is responsive,
             // even if the server will only actually apply the target throttle several frames later.
@@ -50,7 +50,7 @@ namespace ShiftDrive {
 
             // fuel bar
             DrawFuelGauge(spriteBatch);
-            
+
             // pulse where user clicked
             if (glowVisible)
                 spriteBatch.Draw(Assets.textures["ui/glow1"], glowPos, null, Color.White * Math.Max(0f, 1f - glowSize), 0f, new Vector2(16, 16), glowSize * 4f, SpriteEffects.None, 0f);
@@ -91,14 +91,14 @@ namespace ShiftDrive {
                     packet.Write(targetThrottle);
                     NetClient.Send(packet);
                 }
-            
+
             // animate the clicky glow pulse
             if (glowVisible) {
                 glowSize += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (glowSize >= 1f) glowVisible = false;
             }
         }
-        
+
     }
 
 }

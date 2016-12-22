@@ -155,7 +155,7 @@ namespace ShiftDrive {
             // animate the object sprite
             if (!world.IsServer) sprite.Update(deltaTime);
         }
-        
+
         /// <summary>
         /// Applies damage to this object. The derived class decides how
         /// damage affects the object, if at all.
@@ -416,7 +416,7 @@ namespace ShiftDrive {
             if (recvChanged.HasFlag(ObjectProperty.Color))
                 color.PackedValue = reader.ReadUInt32();
         }
-        
+
         /// <summary>
         /// Resets the sequence of object ID numbers.
         /// </summary>
@@ -425,5 +425,5 @@ namespace ShiftDrive {
         }
 
     }
-    
+
 }

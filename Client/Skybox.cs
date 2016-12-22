@@ -14,7 +14,7 @@ namespace ShiftDrive {
     internal static class Skybox {
 
         private static float rotation;
-        
+
         public static void Draw(GraphicsDevice graphicsDevice) {
             // Use the unlit shader to render a skybox.
             Effect fx = Assets.fxUnlit; // shortcut

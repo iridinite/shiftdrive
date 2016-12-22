@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
-    
+
     /// <summary>
     /// Implements a <seealso cref="Console"/> for the weapon officer's station.
     /// </summary>

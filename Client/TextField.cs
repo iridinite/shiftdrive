@@ -64,7 +64,7 @@ namespace ShiftDrive {
             SDGame.Inst.Window.TextInput -= Window_TextInput;
             base.OnDestroy();
         }
-        
+
         private void Window_TextInput(object sender, TextInputEventArgs e) {
             if (!focus) return;
             int ascii = Convert.ToInt32(e.Character);

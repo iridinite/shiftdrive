@@ -12,7 +12,7 @@ namespace ShiftDrive {
     /// Manages the storage of user configuration settings.
     /// </summary>
     internal sealed class Config {
-        
+
         private const string cfgFileName = "config.dat";
         private const byte cfgVersion = 1;
 
@@ -60,7 +60,7 @@ namespace ShiftDrive {
 
         public void Save() {
             if (!Logger.HasWritePermission()) return;
-            
+
             try {
                 using (FileStream stream = new FileStream(Logger.BaseDir.FullName + cfgFileName, FileMode.Create)) {
                     using (BinaryWriter writer = new BinaryWriter(stream)) {

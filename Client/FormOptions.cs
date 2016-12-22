@@ -12,9 +12,9 @@ namespace ShiftDrive {
     /// Implements an <seealso cref="IForm"/> showing a menu of customizable settings.
     /// </summary>
     internal class FormOptions : IForm {
-        
+
         private readonly TextButton btn1, btn2, btn3, btn4, btn5, btn6, btnCancel;
-        
+
         public FormOptions() {
             // create UI controls
             btn1 = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 - 100, 250, 40, Utils.LocaleGet("option_1"));
@@ -76,7 +76,7 @@ namespace ShiftDrive {
             btn6.Close();
             btnCancel.Close();
         }
-        
+
     }
 
 }

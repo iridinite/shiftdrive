@@ -20,7 +20,7 @@ namespace ShiftDrive {
         private StreamWriter Writer;
 
         private bool disposedValue = false; // To detect redundant calls
-        
+
         public Logger() {
             Debug.Assert(HasWritePermission());
             Writer = new StreamWriter(BaseDir.FullName + "output.log");
@@ -38,7 +38,7 @@ namespace ShiftDrive {
             Writer?.Dispose();
             Writer = null;
         }
-        
+
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -65,7 +65,7 @@ namespace ShiftDrive {
         /// <param name="message">The message to write.</param>
         public void Log(string message) {
             if (String.IsNullOrEmpty(message)) throw new ArgumentNullException(nameof(message));
-            
+
             LogHeader("INFO");
             Writer?.WriteLine(message);
         }
@@ -106,7 +106,7 @@ namespace ShiftDrive {
             try {
                 using (StreamWriter exWriter = new StreamWriter(
                     $"{BaseDir.FullName}crash{DateTime.Now.ToFileTime()}.log")) {
-                    
+
                     exWriter.WriteLine("===================================");
                     exWriter.WriteLine("EXCEPTION REPORT");
                     exWriter.WriteLine("===================================");
@@ -125,8 +125,7 @@ namespace ShiftDrive {
                     exWriter.WriteLine("END OF EXCEPTION REPORT");
                     exWriter.WriteLine("===================================");
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // we're already failing if this method is called at all,
                 // no point in throwing more exceptions if logging fails.
             }

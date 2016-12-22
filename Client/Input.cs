@@ -23,7 +23,7 @@ namespace ShiftDrive {
             prev = curr;
             curr = Microsoft.Xna.Framework.Input.Mouse.GetState();
         }
-        
+
         public static bool IsInArea(Rectangle rect) {
             return curr.X >= rect.X &&
                 curr.X <= rect.X + rect.Width &&

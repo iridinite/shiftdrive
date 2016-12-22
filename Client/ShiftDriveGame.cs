@@ -76,7 +76,7 @@ namespace ShiftDrive {
 
             loggerInst.Log("ShiftDrive Client " + Utils.GetVersionString());
         }
-        
+
         protected override void LoadContent() {
             // create a new SpriteBatch, which can be used to draw textures
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -116,11 +116,11 @@ namespace ShiftDrive {
             Assets.sndUIAppear3 = Content.Load<SoundEffect>("Audio/SFX/ui_appear3");
             Assets.sndUIAppear4 = Content.Load<SoundEffect>("Audio/SFX/ui_appear4");
         }
-        
+
         protected override void UnloadContent() {
             base.UnloadContent();
         }
-        
+
         protected override void Update(GameTime gameTime) {
             // update viewport info
             GameWidth = GraphicsDevice.Viewport.Width;
@@ -162,7 +162,7 @@ namespace ShiftDrive {
 
             base.Update(gameTime);
         }
-        
+
         protected override void Draw(GameTime gameTime) {
             // clear canvas
             GraphicsDevice.Clear(Color.Black);

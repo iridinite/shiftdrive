@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
-    
+
     /// <summary>
     /// Represents an interactive button with an image label.
     /// </summary>
@@ -44,7 +44,7 @@ namespace ShiftDrive {
                 imageSource,
                 imageColor);
         }
-        
+
         public void SetSourceRect(Rectangle? rect) {
             imageSource = rect;
             imageSize = rect.HasValue

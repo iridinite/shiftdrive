@@ -20,7 +20,7 @@ namespace ShiftDrive {
         // Fuel reserves.
         // Integer part is fuel cell count, decimal part is reservoir.
         public float fuel;
-        
+
         // indicates that the ship has been destroyed (not scheduled for deletion)
         public bool destroyed;
 

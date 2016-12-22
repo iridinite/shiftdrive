@@ -81,7 +81,7 @@ namespace ShiftDrive {
 
         public void Precompile() {
             LuaAPI.lua_createtable(L, 0, 0);
-            
+
             DirectoryInfo dir = new DirectoryInfo("Data");
             IOrderedEnumerable<FileInfo> files = dir.GetFiles("*.lua", SearchOption.AllDirectories).OrderBy(f => f.Name);
             foreach (FileInfo file in files) {
@@ -99,7 +99,7 @@ namespace ShiftDrive {
                         throw new LuaException($"Failed to compile script {file.Name}: {LuaAPI.lua_tostring(L, -1)}");
                     // insert the compiled Lua function into the table and obtain a reference integer
                     compiledfns.Add(scriptname, LuaAPI.luaL_ref(L, -2));
-                    
+
                 } catch (IOException e) {
                     throw new LuaException($"I/O error occurred while compiling {file.Name}: {e}");
                 }
@@ -235,10 +235,10 @@ namespace ShiftDrive {
         private int lua_errorhandler(IntPtr L) {
             // make sure we got the error message
             if (LuaAPI.lua_isstring(L, 1) == 0) return 0;
-            
+
             string errmsg = LuaAPI.lua_tostring(L, 1);
             LuaAPI.luaL_traceback(L, L, errmsg, 2);
-            
+
             return 1;
         }
 

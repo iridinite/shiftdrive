@@ -14,7 +14,7 @@ namespace ShiftDrive {
     /// Implements an <seealso cref="IForm"/> showing game-over state before returning to the <seealso cref="FormLobby"/>.
     /// </summary>
     internal class FormGameOver : IForm {
-        
+
         private enum GameOverAnimState {
             HoldPre,
             FadeIn,

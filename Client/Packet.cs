@@ -135,7 +135,7 @@ namespace ShiftDrive {
         public void Write(uint value) {
             byteWriter.Write(value);
         }
-        
+
         /// <summary>
         /// Writes a four-byte signed integer to the current stream and advances the stream position by four bytes.
         /// </summary>

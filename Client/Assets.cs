@@ -19,13 +19,13 @@ namespace ShiftDrive {
             fontBold,
             fontTooltip,
             fontQuote;
-        
+
         public static readonly Dictionary<string, Texture2D>
             textures = new Dictionary<string, Texture2D>();
 
         public static readonly Dictionary<string, SpriteSheet>
             sprites = new Dictionary<string, SpriteSheet>();
-        
+
         public static Model
             mdlSkybox;
 

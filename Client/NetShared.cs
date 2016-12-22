@@ -32,7 +32,7 @@ namespace ShiftDrive {
     /// </summary>
     internal static class NetShared {
         public const byte ProtocolVersion = 1;
-        
+
         /// <summary>
         /// Compresses the specified byte array using a DeflateStream.
         /// </summary>

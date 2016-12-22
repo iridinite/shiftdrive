@@ -12,10 +12,10 @@ namespace ShiftDrive {
     /// Implements an <seealso cref="IForm"/> requesting confirmation for application termination.
     /// </summary>
     internal sealed class FormConfirmExit : IForm {
-        
+
         private readonly TextButton btnQuit, btnCancel;
         private int leaveAction;
-        
+
         public FormConfirmExit() {
             // create UI controls
             btnQuit = new TextButton(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_yes"));
@@ -42,7 +42,7 @@ namespace ShiftDrive {
         public void Update(GameTime gameTime) {
             Skybox.Update(gameTime);
             Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, 0f);
-            
+
             btnQuit.Update(gameTime);
             btnCancel.Update(gameTime);
 
@@ -66,7 +66,7 @@ namespace ShiftDrive {
             btnQuit.Close();
             btnCancel.Close();
         }
-        
+
     }
 
 }

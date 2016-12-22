@@ -12,7 +12,7 @@ namespace ShiftDrive {
     /// Implements an <seealso cref="IForm"/> showing an informative message and an option to return to the <seealso cref="FormMainMenu"/>.
     /// </summary>
     internal class FormMessage : IForm {
-        
+
         private readonly TextButton btnCancel;
         private readonly string message;
 
@@ -37,18 +37,18 @@ namespace ShiftDrive {
 
         public void Update(GameTime gameTime) {
             Skybox.Update(gameTime);
-            
+
             btnCancel.Update(gameTime);
 
             if (btnCancel.IsClosed) {
                 SDGame.Inst.ActiveForm = new FormMainMenu();
             }
         }
-        
+
         private void btnCancel_Click(Control sender) {
             btnCancel.Close();
         }
-        
+
     }
 
 }

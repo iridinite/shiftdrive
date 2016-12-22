@@ -16,7 +16,7 @@ namespace ShiftDrive {
         public static GameState World { get; private set; }
         public static bool IsConnecting { get; private set; }
         public static bool Connected { get { return socket != null && socket.Connected; } }
-        
+
         public static bool SimRunning { get; private set; }
         public static int PlayerCount { get; private set; }
         public static PlayerRole TakenRoles { get; private set; }
@@ -174,7 +174,7 @@ namespace ShiftDrive {
                 }
             }
         }
-        
+
     }
 
 }

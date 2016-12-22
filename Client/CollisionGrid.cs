@@ -124,7 +124,7 @@ namespace ShiftDrive {
                 ret.AddRange(grid[x + 1, y]);
             if (x < SUBDIVISIONS - 1 && y < SUBDIVISIONS - 1)
                 ret.AddRange(grid[x + 1, y + 1]);
-            
+
             return ret;
         }
 

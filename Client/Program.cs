@@ -7,11 +7,9 @@ using System;
 
 namespace ShiftDrive {
 #if WINDOWS || LINUX
-    public static class Program
-    {
+    public static class Program {
         [STAThread]
-        public static void Main()
-        {
+        public static void Main() {
 #if !DEBUG
             try {
 #endif
