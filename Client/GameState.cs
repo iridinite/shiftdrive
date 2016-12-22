@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace ShiftDrive {
-    
+
     internal sealed class GameState {
 
         public readonly Dictionary<uint, GameObject> Objects;
@@ -109,35 +109,20 @@ namespace ShiftDrive {
                     // this is a new object
                     GameObject obj;
                     switch (objtype) {
-                        case ObjectType.PlayerShip:
-                            obj = new PlayerShip(this);
-                            break;
-                        case ObjectType.AIShip:
-                            obj = new AIShip(this);
-                            break;
-                        case ObjectType.Station:
-                            obj = new SpaceStation(this);
-                            break;
-                        case ObjectType.Asteroid:
-                            obj = new Asteroid(this);
-                            break;
-                        case ObjectType.BlackHole:
-                            obj = new BlackHole(this);
-                            break;
-                        case ObjectType.Projectile:
-                            obj = new Projectile(this);
-                            break;
-                        case ObjectType.Particle:
-                            obj = new Particle(this);
-                            break;
+                        case ObjectType.PlayerShip: obj = new PlayerShip(this); break;
+                        case ObjectType.AIShip: obj = new AIShip(this); break;
+                        case ObjectType.Station: obj = new SpaceStation(this); break;
+                        case ObjectType.Asteroid: obj = new Asteroid(this); break;
+                        case ObjectType.BlackHole: obj = new BlackHole(this); break;
+                        case ObjectType.Projectile: obj = new Projectile(this); break;
+                        case ObjectType.Particle: obj = new Particle(this); break;
                         default:
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }
                     obj.Deserialize(reader, recvChanged);
                     obj.id = objid;
                     AddObject(obj);
-                }
-                else {
+                } else {
                     // update this object with info from the stream
                     Objects[objid].Deserialize(reader, recvChanged);
                 }
