@@ -105,11 +105,18 @@ namespace ShiftDrive {
         private void BtnReady_OnClick(Control sender) {
             // toggle ready state and propagate to server
             isReady = !isReady;
-            NetClient.Send(new Packet(PacketType.Ready, isReady));
+
+            using (Packet p = new Packet(PacketID.Ready)) {
+                p.Write(isReady);
+                NetClient.Send(p);
+            }
         }
 
         private void ToggleRole(PlayerRole role) {
-            NetClient.Send(new Packet(PacketType.SelectRole, (byte)role));
+            using (Packet packet = new Packet(PacketID.SelectRole)) {
+                packet.Write((byte)role);
+                NetClient.Send(packet);
+            }
         }
 
         private void BtnHelm_OnClick(Control sender) {

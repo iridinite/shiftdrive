@@ -65,7 +65,7 @@ namespace ShiftDrive {
         }
 
         public static void Send(Packet packet) {
-            socket.Send(packet.Bytes);
+            socket.Send(packet.ToArray());
         }
 
         private static void Client_OnConnected() {
@@ -77,8 +77,10 @@ namespace ShiftDrive {
             IsConnecting = false;
 
             // send a handshake packet
-            Packet handshake = new Packet(PacketType.Handshake, NetShared.ProtocolVersion);
-            socket.Send(handshake.Bytes);
+            using (Packet packet = new Packet(PacketID.Handshake)) {
+                packet.Write(NetShared.ProtocolVersion);
+                Send(packet);
+            }
         }
 
         private static void Client_OnDisconnected() {
@@ -102,82 +104,74 @@ namespace ShiftDrive {
         }
 
         private static void Client_OnDataReceived(byte[] bytes) {
-            try {
-                Packet packet = new Packet(bytes);
-                switch (packet.Type) {
-                    case PacketType.Handshake:
-                        // require same protocol versions
-                        if (packet.Payload.Length != 1 || packet.Payload[0] != NetShared.ProtocolVersion) {
-                            throw new Exception(Utils.LocaleGet("err_version"));
-                        }
-                        break;
+            using (Packet recv = new Packet(bytes)) {
+                try {
+                    switch (recv.GetID()) {
+                        case PacketID.Handshake:
+                            // require same protocol versions
+                            if (recv.GetLength() != 1 || recv.ReadByte() != NetShared.ProtocolVersion)
+                                throw new Exception(Utils.LocaleGet("err_version"));
+                            break;
 
-                    case PacketType.LobbyState:
-                        using (MemoryStream ms = new MemoryStream(packet.Payload)) {
-                            using (BinaryReader reader = new BinaryReader(ms)) {
-                                SimRunning = reader.ReadBoolean();
-                                PlayerCount = reader.ReadUInt16();
-                                TakenRoles = (PlayerRole) reader.ReadByte();
-                            }
-                        }
-                        break;
+                        case PacketID.LobbyState:
+                            SimRunning = recv.ReadBoolean();
+                            PlayerCount = recv.ReadUInt16();
+                            TakenRoles = (PlayerRole)recv.ReadByte();
+                            break;
 
-                    case PacketType.GameUpdate:
-                        lock (worldLock) {
-                            // first decompress the buffer received from the network
-                            byte[] worldbytes = NetShared.DecompressBuffer(packet.Payload);
-                            // then reconstruct the game state
-                            using (MemoryStream ms = new MemoryStream(worldbytes)) {
-                                using (BinaryReader reader = new BinaryReader(ms)) {
-                                    World.Deserialize(reader);
+                        case PacketID.GameUpdate:
+                            lock (worldLock) {
+                                // first decompress the buffer received from the network
+                                byte[] worldbytes = NetShared.DecompressBuffer(recv.ToArray());
+                                // then reconstruct the game state
+                                using (MemoryStream ms = new MemoryStream(worldbytes)) {
+                                    using (BinaryReader reader = new BinaryReader(ms)) {
+                                        World.Deserialize(reader);
+                                    }
                                 }
                             }
-                        }
-                        break;
+                            break;
 
-                    case PacketType.SelectRole:
-                        // server replies with the list of roles this client currently has
-                        MyRoles = (PlayerRole) packet.Payload[0];
-                        break;
+                        case PacketID.SelectRole:
+                            // server replies with the list of roles this client currently has
+                            MyRoles = (PlayerRole)recv.ReadByte();
+                            break;
 
-                    case PacketType.EnterGame:
-                        SDGame.Inst.ActiveForm = new FormGame();
-                        break;
+                        case PacketID.EnterGame:
+                            SDGame.Inst.ActiveForm = new FormGame();
+                            break;
 
-                    case PacketType.Announcement:
-                        string announce = null;
-                        AnnouncementId id = (AnnouncementId)packet.Payload[0];
-                        switch (id) {
-                            case AnnouncementId.Custom:
-                                byte[] custombuf = new byte[packet.Payload.Length - 1];
-                                Buffer.BlockCopy(packet.Payload, 1, custombuf, 0, custombuf.Length);
-                                announce = Encoding.UTF8.GetString(custombuf);
-                                break;
-                            case AnnouncementId.FuelLow: announce = Utils.LocaleGet("announce_fuellow"); break;
-                            case AnnouncementId.FuelCritical: announce = Utils.LocaleGet("announce_fuelcrit"); break;
-                            case AnnouncementId.Hull75: announce = Utils.LocaleGet("announce_hull75"); break;
-                            case AnnouncementId.Hull50: announce = Utils.LocaleGet("announce_hull50"); break;
-                            case AnnouncementId.Hull25: announce = Utils.LocaleGet("announce_hull25"); break;
-                            case AnnouncementId.BlackHole: announce = Utils.LocaleGet("announce_blackhole"); break;
-                            case AnnouncementId.ShieldLow: announce = Utils.LocaleGet("announce_shieldlow"); break;
-                            case AnnouncementId.ShieldDown: announce = Utils.LocaleGet("announce_shielddown"); break;
-                            case AnnouncementId.ShieldUp: announce = Utils.LocaleGet("announce_shieldup"); break;
-                            case AnnouncementId.ShiftInitialize: announce = Utils.LocaleGet("announce_shiftinit"); break;
-                            case AnnouncementId.ShiftCharged: announce = Utils.LocaleGet("announce_shiftsoon"); break;
-                            default:
-                                throw new InvalidDataException(Utils.LocaleGet("err_unknownannounce"));
-                        }
-                        Announcement?.Invoke(announce);
-                        break;
+                        case PacketID.Announcement:
+                            string announce = null;
+                            AnnouncementId id = (AnnouncementId)recv.ReadByte();
+                            switch (id) {
+                                case AnnouncementId.Custom: announce = recv.ReadString(); break;
+                                case AnnouncementId.FuelLow: announce = Utils.LocaleGet("announce_fuellow"); break;
+                                case AnnouncementId.FuelCritical: announce = Utils.LocaleGet("announce_fuelcrit"); break;
+                                case AnnouncementId.Hull75: announce = Utils.LocaleGet("announce_hull75"); break;
+                                case AnnouncementId.Hull50: announce = Utils.LocaleGet("announce_hull50"); break;
+                                case AnnouncementId.Hull25: announce = Utils.LocaleGet("announce_hull25"); break;
+                                case AnnouncementId.BlackHole: announce = Utils.LocaleGet("announce_blackhole"); break;
+                                case AnnouncementId.ShieldLow: announce = Utils.LocaleGet("announce_shieldlow"); break;
+                                case AnnouncementId.ShieldDown: announce = Utils.LocaleGet("announce_shielddown"); break;
+                                case AnnouncementId.ShieldUp: announce = Utils.LocaleGet("announce_shieldup"); break;
+                                case AnnouncementId.ShiftInitialize: announce = Utils.LocaleGet("announce_shiftinit"); break;
+                                case AnnouncementId.ShiftCharged: announce = Utils.LocaleGet("announce_shiftsoon"); break;
+                                default:
+                                    throw new InvalidDataException(Utils.LocaleGet("err_unknownannounce"));
+                            }
+                            Announcement?.Invoke(announce);
+                            break;
 
-                    default:
-                        SDGame.Logger.LogError("Client got unknown packet " + packet.Type);
-                        throw new InvalidDataException(Utils.LocaleGet("err_unknownpacket") + " (" + packet.Type + ")");
+                        default:
+                            SDGame.Logger.LogError("Client got unknown packet " + recv.GetID());
+                            throw new InvalidDataException(Utils.LocaleGet("err_unknownpacket") + " (" + recv.GetID() + ")");
+                    }
+                } catch (Exception ex) {
+                    Disconnect();
+                    SDGame.Logger.LogError("Client error in OnDataReceived: " + ex);
+                    SDGame.Inst.ActiveForm = new FormMessage(Utils.LocaleGet("err_comm") + Environment.NewLine + ex.ToString());
                 }
-            } catch (Exception ex) {
-                Disconnect();
-                SDGame.Logger.LogError("Client error in OnDataReceived: " + ex);
-                SDGame.Inst.ActiveForm = new FormMessage(Utils.LocaleGet("err_comm") + Environment.NewLine + ex.ToString());
             }
         }
         

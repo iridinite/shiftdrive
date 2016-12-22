@@ -63,7 +63,10 @@ namespace ShiftDrive {
             if (Mouse.GetLeftDown() && Vector2.DistanceSquared(screenCenter, Mouse.Position) < 122500) {
                 // send a steering message to the server
                 float newbearing = Utils.CalculateBearing(screenCenter, Mouse.Position);
-                NetClient.Send(new Packet(PacketType.HelmSteering, BitConverter.GetBytes(newbearing)));
+                using (Packet packet = new Packet(PacketID.HelmSteering)) {
+                    packet.Write(newbearing);
+                    NetClient.Send(packet);
+                }
 
                 glowPos = Mouse.Position;
                 glowSize = 0f;
@@ -81,7 +84,10 @@ namespace ShiftDrive {
 
             // replicate throttle input to server, but avoid clogging bandwidth
             if (Math.Abs(oldThrottle - targetThrottle) > 0.01f)
-                NetClient.Send(new Packet(PacketType.HelmThrottle, BitConverter.GetBytes(targetThrottle)));
+                using (Packet packet = new Packet(PacketID.HelmThrottle)) {
+                    packet.Write(targetThrottle);
+                    NetClient.Send(packet);
+                }
             
             // animate the clicky glow pulse
             if (glowVisible) {

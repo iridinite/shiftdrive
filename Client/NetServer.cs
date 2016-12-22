@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 using Iridinite.Networking;
 
 namespace ShiftDrive {
-    
+
     internal sealed class NetPlayer {
         public bool authorized;
         public bool ready;
@@ -25,7 +25,7 @@ namespace ShiftDrive {
         internal static bool Active { get { return socket != null && socket.Listening; } }
 
         public const float MAPSIZE = 1000f;
-        
+
         private static Host socket;
         private static LuaState lua;
 
@@ -34,7 +34,7 @@ namespace ShiftDrive {
 
         private static float heartbeatMax;
         private static float heartbeatTimer;
-        
+
         public static bool PrepareWorld() {
             GameObject.ResetIds();
             world = new GameState();
@@ -66,7 +66,7 @@ namespace ShiftDrive {
             heartbeatMax = 0.1f;
             heartbeatTimer = 0f;
             announceCooldown = new Dictionary<AnnouncementId, float>();
-            
+
             SDGame.Logger.Log("Starting server...");
             socket = new Host();
             socket.OnClientConnect += Socket_OnClientConnect;
@@ -118,7 +118,7 @@ namespace ShiftDrive {
                 if (gobj.IsDestroyScheduled()) world.Objects.Remove(key);
             }
         }
-        
+
         public static void Stop() {
             SDGame.Logger.Log("Stopping server and closing Lua state.");
             lua.Destroy();
@@ -187,21 +187,18 @@ namespace ShiftDrive {
 
         private static void BroadcastLobbyState() {
             // create a packet describing the lobby state
-            Packet p;
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write(false);
-                    writer.Write((ushort)players.Count);
-                    // sum up all taken role bitmasks
-                    PlayerRole taken = 0;
-                    foreach (NetPlayer otherplayer in players.Values)
-                        taken |= otherplayer.roles;
-                    writer.Write((byte)taken);
-                }
-                p = new Packet(PacketType.LobbyState, ms.ToArray());
+            using (Packet packet = new Packet(PacketID.LobbyState)) {
+                packet.Write(false);
+                packet.Write((ushort)players.Count);
+                // sum up all taken role bitmasks
+                PlayerRole taken = 0;
+                foreach (NetPlayer otherplayer in players.Values)
+                    taken |= otherplayer.roles;
+                packet.Write((byte)taken);
+
+                // send the packet to all clients
+                socket.Broadcast(packet.ToArray());
             }
-            // send the packet to all clients
-            socket.Broadcast(p.Bytes);
         }
 
         private static void BroadcastGameState() {
@@ -218,100 +215,107 @@ namespace ShiftDrive {
             byte[] compressed = NetShared.CompressBuffer(worldbytes);
 
             // send the compressed state out to all connected clients
-            //SDGame.Inst.Print($"Update: {worldbytes.Length} bytes -> {compressed.Length} bytes");
-            Packet gspacket = new Packet(PacketType.GameUpdate, compressed);
-            socket.Broadcast(gspacket.Bytes);
-        }
-
-        public static void PublishAnnouncement(AnnouncementId id, string customText) {
-            // with the exception of custom announcement, don't spam them
-            if (id != AnnouncementId.Custom && announceCooldown.ContainsKey(id) && announceCooldown[id] > 0f) return;
-            announceCooldown[id] = 30f;
-
-            Packet ap;
-            if (id == AnnouncementId.Custom) {
-                // custom announcement -> include custom text in packet
-                if (String.IsNullOrEmpty(customText))
-                    throw new ArgumentNullException(nameof(customText));
-                // create a buffer with the Custom identifier, followed by the string
-                int strbytes = Encoding.UTF8.GetByteCount(customText);
-                byte[] announceBuf = new byte[strbytes + 1];
-                announceBuf[0] = (byte)id;
-                Buffer.BlockCopy(Encoding.UTF8.GetBytes(customText), 0, announceBuf, 1, strbytes);
-                ap = new Packet(PacketType.Announcement, announceBuf);
-
-            } else {
-                // predefined announce, only need to send ID
-                ap = new Packet(PacketType.Announcement, (byte)id);
+            SDGame.Inst.Print($"Update: {worldbytes.Length} bytes -> {compressed.Length} bytes");
+            using (Packet packet = new Packet(PacketID.GameUpdate)) {
+                packet.Write(compressed);
+                socket.Broadcast(packet.ToArray());
             }
-
-            socket.Broadcast(ap.Bytes);
         }
-        
-        private static void Socket_OnDataReceived(int clientID, byte[] packetbytes) {
-            try {
-                // find the client associated with the client id
-                NetPlayer player = players[clientID];
-                // reconstruct packet from received bytes
-                Packet packet = new Packet(packetbytes);
 
-                // if the packet is anything but a handshake and this user has not yet handshaked, kick the client.
-                // might later replace this with some kind of actual authentication if necessary. Lua checksums maybe?
-                if (packet.Type != PacketType.Handshake && !player.authorized) {
-                    socket.Kick(clientID);
-                    return;
+        public static void PublishAnnouncement(AnnouncementId annId, string customText) {
+            // with the exception of custom announcement, don't spam them
+            if (annId != AnnouncementId.Custom && announceCooldown.ContainsKey(annId) && announceCooldown[annId] > 0f) return;
+            announceCooldown[annId] = 30f;
+
+            using (Packet packet = new Packet(PacketID.Announcement)) {
+                packet.Write((byte)annId);
+
+                // custom announcement -> include custom text in packet
+                if (annId == AnnouncementId.Custom) {
+                    if (String.IsNullOrEmpty(customText))
+                        throw new ArgumentNullException(nameof(customText));
+
+                    packet.Write(customText);
                 }
 
-                // handle the packet
-                switch (packet.Type) {
-                    case PacketType.Handshake:
-                        // require same protocol versions
-                        if (packet.Payload.Length != 1 || packet.Payload[0] != NetShared.ProtocolVersion) {
-                            socket.Kick(clientID);
-                            return;
-                        }
-                        player.authorized = true;
-                        // send a handshake response and then broadcast lobby
-                        Packet handshake = new Packet(PacketType.Handshake, NetShared.ProtocolVersion);
-                        socket.Send(clientID, handshake.Bytes);
-                        BroadcastLobbyState();
-                        break;
+                socket.Broadcast(packet.ToArray());
+            }
+        }
 
-                    case PacketType.SelectRole:
-                        if (packet.Payload.Length != 1) {
-                            socket.Kick(clientID);
-                            return;
-                        }
-                        player.roles ^= (PlayerRole)packet.Payload[0];
-                        Packet confirmroles = new Packet(PacketType.SelectRole, (byte)player.roles);
-                        socket.Send(clientID, confirmroles.Bytes);
-                        BroadcastLobbyState();
-                        SDGame.Logger.Log($"Client #{clientID} has roles {player.roles}.");
-                        break;
+        private static void Socket_OnDataReceived(int clientID, byte[] packetbytes) {
+            try {
+                using (Packet recv = new Packet(packetbytes)) {
+                    // find the client associated with the client id
+                    NetPlayer player = players[clientID];
 
-                    case PacketType.Ready:
-                        if (packet.Payload.Length != 1) {
-                            socket.Kick(clientID);
-                            return;
-                        }
-                        player.ready = (packet.Payload[0] == 1);
-                        SDGame.Logger.Log($"Client #{clientID} ready: {player.ready}");
-                        // temp begingame packet
-                        Packet begingamePacket = new Packet(PacketType.EnterGame);
-                        socket.Send(clientID, begingamePacket.Bytes);
-                        break;
+                    // if the packet is anything but a handshake and this user has not yet handshaked, kick the client.
+                    // might later replace this with some kind of actual authentication if necessary. Lua checksums maybe?
+                    if (recv.GetID() != PacketID.Handshake && !player.authorized) {
+                        socket.Kick(clientID);
+                        return;
+                    }
 
-                    case PacketType.HelmSteering:
-                        // Helm sets ship steering vector.
-                        world.GetPlayerShip().steering = BitConverter.ToSingle(packet.Payload, 0);
-                        world.GetPlayerShip().changed = true;
-                        break;
+                    // handle the packet
+                    switch (recv.GetID()) {
+                        case PacketID.Handshake:
+                            // require same protocol versions
+                            if (recv.GetLength() != 1 || recv.ReadByte() != NetShared.ProtocolVersion) {
+                                socket.Kick(clientID);
+                                return;
+                            }
+                            // handshake OK, this connection can send game commands now
+                            player.authorized = true;
+                            // send a handshake response
+                            using (Packet reply = new Packet(PacketID.Handshake)) {
+                                reply.Write(NetShared.ProtocolVersion);
+                                socket.Send(clientID, reply.ToArray());
+                            }
+                            // inform players of new connection
+                            BroadcastLobbyState();
+                            break;
 
-                    case PacketType.HelmThrottle:
-                        // Helm sets ship throttle. Clamp to ensure input sanity.
-                        world.GetPlayerShip().throttle = MathHelper.Clamp(BitConverter.ToSingle(packet.Payload, 0), 0f, 1f);
-                        world.GetPlayerShip().changed = true;
-                        break;
+                        case PacketID.SelectRole:
+                            if (recv.GetLength() != 1) {
+                                socket.Kick(clientID);
+                                return;
+                            }
+                            // save role choice and confirm back to client
+                            player.roles ^= (PlayerRole)recv.ReadByte();
+                            Packet test = new Packet(PacketID.EnterGame);
+                            using (Packet reply = new Packet(PacketID.SelectRole)) {
+                                reply.Write((byte)player.roles);
+                                socket.Send(clientID, reply.ToArray());
+                            }
+                            // update list of taken roles
+                            BroadcastLobbyState();
+                            SDGame.Logger.Log($"Client #{clientID} has roles {player.roles}.");
+                            break;
+
+                        case PacketID.Ready:
+                            if (recv.GetLength() != 1) {
+                                socket.Kick(clientID);
+                                return;
+                            }
+                            player.ready = recv.ReadBoolean();
+                            SDGame.Logger.Log($"Client #{clientID} ready: {player.ready}");
+                            // TODO: wait until all players are ready
+                            using (Packet reply = new Packet(PacketID.EnterGame))
+                                socket.Send(clientID, reply.ToArray());
+                            break;
+
+                        case PacketID.HelmSteering:
+                            // Helm sets ship steering vector.
+                            world.GetPlayerShip().steering = MathHelper.Clamp(recv.ReadSingle(), 0f, 360f);
+                            world.GetPlayerShip().changed = true;
+                            break;
+
+                        case PacketID.HelmThrottle:
+                            // Helm sets ship throttle. Clamp to ensure input sanity.
+                            world.GetPlayerShip().throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
+                            world.GetPlayerShip().changed = true;
+                            break;
+                    }
+
                 }
 
             } catch (Exception) {
