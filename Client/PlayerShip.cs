@@ -132,8 +132,8 @@ namespace ShiftDrive {
             writer.Write(fuel);
         }
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
+        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            base.Deserialize(reader, recvChanged);
 
             destroyed = reader.ReadBoolean();
             player = reader.ReadByte();

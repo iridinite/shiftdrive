@@ -33,8 +33,10 @@ namespace ShiftDrive {
 
             facing += angularVelocity * deltaTime;
             angularVelocity *= (float)Math.Pow(0.8f, deltaTime);
+
             // re-transmit object if it's moving around
-            changed = changed || angularVelocity > 0.01f;
+            if (Math.Abs(angularVelocity) > 0.001f)
+                changed |= ObjectProperty.AngularVelocity;
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
@@ -55,12 +57,14 @@ namespace ShiftDrive {
 
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
-            writer.Write(angularVelocity);
+            if (changed.HasFlag(ObjectProperty.AngularVelocity))
+                writer.Write(angularVelocity);
         }
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
-            angularVelocity = reader.ReadSingle();
+        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            base.Deserialize(reader, recvChanged);
+            if (recvChanged.HasFlag(ObjectProperty.AngularVelocity))
+                angularVelocity = reader.ReadSingle();
         }
 
     }

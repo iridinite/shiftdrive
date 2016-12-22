@@ -37,10 +37,7 @@ namespace ShiftDrive {
 
         public byte faction;
 
-        private bool needRetransmit;
-
         protected Ship(GameState world) : base(world) {
-            needRetransmit = true;
             hull = 100f;
             hullMax = 100f;
             shield = 100f;
@@ -70,7 +67,12 @@ namespace ShiftDrive {
             // apply maneuver: find whether turning left or right is fastest
             float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
             facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
-            
+
+            // retransmit modified properties
+            if (throttle > 0f)
+                changed |= ObjectProperty.Position;
+            if (Math.Abs(deltaFacing) > 0.001f)
+                changed |= ObjectProperty.Facing;
 
             // update weapon charge / ammo states
             for (int i = 0; i < mountsNum; i++) {
@@ -99,7 +101,7 @@ namespace ShiftDrive {
                 // find a target to fire upon
                 GameObject target = SelectTarget(mounts[i], wep);
                 if (target == null) continue;
-                
+
                 // increment charge
                 wep.Charge += deltaTime;
                 if (wep.Charge < wep.ChargeTime) continue;
@@ -108,7 +110,7 @@ namespace ShiftDrive {
                 // remove ammo for this shot
                 if (wep.Ammo != AmmoType.None)
                     wep.AmmoLeft -= wep.AmmoPerShot;
-                
+
                 // if running on server, fire the weapon
                 if (!world.IsServer) continue;
                 float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
@@ -156,13 +158,12 @@ namespace ShiftDrive {
                         mounts[i].OffsetMag * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
                 }
             }
-
-            changed = changed || throttle > 0f || Math.Abs(deltaFacing) > 0.001f;
         }
 
         public override void TakeDamage(float damage) {
-            // always retransmit
-            changed = true;
+            // need to resend hull and shields
+            changed |= ObjectProperty.Health;
+
             // apply damage to shields first, if possible
             if (shieldActive && shield > 0f) {
                 shield = MathHelper.Clamp(shield - damage, 0f, shieldMax);
@@ -242,7 +243,7 @@ namespace ShiftDrive {
 
             while (arcto < arcfrom) arcto += 360f;
             while (targetAngle < arcfrom) targetAngle += 360f;
-            
+
             return targetAngle >= arcfrom && targetAngle <= arcto;
         }
 
@@ -270,82 +271,100 @@ namespace ShiftDrive {
 
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
-            
+
             // hull and shield status
-            writer.Write(hull);
-            writer.Write(shield);
-            writer.Write(shieldActive);
+            if (changed.HasFlag(ObjectProperty.Health)) {
+                writer.Write(hull);
+                writer.Write(shield);
+                writer.Write(shieldActive);
+            }
+
+            if (changed.HasFlag(ObjectProperty.HealthMax)) {
+                writer.Write(hullMax);
+                writer.Write(shieldMax);
+            }
 
             // movement
-            writer.Write(throttle);
-            writer.Write(steering);
+            if (changed.HasFlag(ObjectProperty.Throttle))
+                writer.Write(throttle);
+            if (changed.HasFlag(ObjectProperty.Steering))
+                writer.Write(steering);
+            if (changed.HasFlag(ObjectProperty.MoveStats)) {
+                writer.Write(topSpeed);
+                writer.Write(turnRate);
+            }
 
             // mounts and weapons data
-            writer.Write(mountsNum);
-            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                if (weapons[i] != null) {
-                    writer.Write((byte)1);
-                    weapons[i].Serialize(writer);
-                } else {
-                    writer.Write((byte)0);
+            if (changed.HasFlag(ObjectProperty.Mounts)) {
+                writer.Write(mountsNum);
+                for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                    if (weapons[i] != null) {
+                        writer.Write((byte)1);
+                        weapons[i].Serialize(writer);
+                    } else {
+                        writer.Write((byte)0);
+                    }
                 }
             }
 
-            // we should not serialize data about the ship that isn't
-            // going to change often
-            writer.Write(needRetransmit);
-            if (!needRetransmit) return;
-            needRetransmit = false;
-
-            // stats
-            writer.Write(hullMax);
-            writer.Write(shieldMax);
-            writer.Write(topSpeed);
-            writer.Write(turnRate);
-
             // engine flare positions
-            writer.Write((byte)flares.Count);
-            for (int i = 0; i < flares.Count; i++) {
-                writer.Write(flares[i].X);
-                writer.Write(flares[i].Y);
+            if (changed.HasFlag(ObjectProperty.Flares)) {
+                writer.Write((byte)flares.Count);
+                for (int i = 0; i < flares.Count; i++) {
+                    writer.Write(flares[i].X);
+                    writer.Write(flares[i].Y);
+                }
             }
 
             // combat faction
-            writer.Write(faction);
+            if (changed.HasFlag(ObjectProperty.Faction))
+                writer.Write(faction);
         }
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
+        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            base.Deserialize(reader, recvChanged);
 
-            hull = reader.ReadSingle();
-            shield = reader.ReadSingle();
-            shieldActive = reader.ReadBoolean();
+            if (recvChanged.HasFlag(ObjectProperty.Health)) {
+                hull = reader.ReadSingle();
+                shield = reader.ReadSingle();
+                shieldActive = reader.ReadBoolean();
+            }
 
-            throttle = reader.ReadSingle();
-            steering = reader.ReadSingle();
+            if (recvChanged.HasFlag(ObjectProperty.HealthMax)) {
+                hullMax = reader.ReadSingle();
+                shieldMax = reader.ReadSingle();
+            }
 
-            mountsNum = reader.ReadByte();
-            for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                if (reader.ReadByte() == 1) {
-                    weapons[i] = Weapon.FromStream(reader);
-                } else {
-                    weapons[i] = null;
+            if (recvChanged.HasFlag(ObjectProperty.Throttle))
+                throttle = reader.ReadSingle();
+            if (recvChanged.HasFlag(ObjectProperty.Steering))
+                steering = reader.ReadSingle();
+
+            if (recvChanged.HasFlag(ObjectProperty.MoveStats)) {
+                topSpeed = reader.ReadSingle();
+                turnRate = reader.ReadSingle();
+            }
+
+            if (recvChanged.HasFlag(ObjectProperty.Mounts)) {
+                mountsNum = reader.ReadByte();
+                for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                    if (reader.ReadByte() == 1) {
+                        weapons[i] = Weapon.FromStream(reader);
+                    } else {
+                        weapons[i] = null;
+                    }
                 }
             }
 
-            if (!reader.ReadBoolean()) return;
+            if (recvChanged.HasFlag(ObjectProperty.Flares)) {
+                int flaresCount = reader.ReadByte();
+                flares.Clear();
+                for (int i = 0; i < flaresCount; i++)
+                    flares.Add(new Vector2(reader.ReadSingle(), reader.ReadSingle()));
+            }
 
-            hullMax = reader.ReadSingle();
-            shieldMax = reader.ReadSingle();
-            topSpeed = reader.ReadSingle();
-            turnRate = reader.ReadSingle();
-
-            int flaresCount = reader.ReadByte();
-            flares.Clear();
-            for (int i = 0; i < flaresCount; i++)
-                flares.Add(new Vector2(reader.ReadSingle(), reader.ReadSingle()));
-
-            faction = reader.ReadByte();
+            if (recvChanged.HasFlag(ObjectProperty.Faction))
+                faction = reader.ReadByte();
         }
 
         protected override int LuaGet(IntPtr L) {
@@ -385,31 +404,33 @@ namespace ShiftDrive {
             switch (key) {
                 case "hull":
                     hull = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, hullMax);
+                    changed |= ObjectProperty.Health;
                     break;
                 case "hullmax":
                     hullMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
                     hull = MathHelper.Clamp(hull, 0f, hullMax);
-                    needRetransmit = true;
+                    changed |= ObjectProperty.HealthMax;
                     break;
                 case "shield":
                     shield = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, shieldMax);
+                    changed |= ObjectProperty.Health;
                     break;
                 case "shieldmax":
                     shieldMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
                     shield = MathHelper.Clamp(shield, 0f, shieldMax);
-                    needRetransmit = true;
+                    changed |= ObjectProperty.HealthMax;
                     break;
                 case "topspeed":
                     topSpeed = (float)LuaAPI.luaL_checknumber(L, 3);
-                    needRetransmit = true;
+                    changed |= ObjectProperty.MoveStats;
                     break;
                 case "turnrate":
                     turnRate = (float)LuaAPI.luaL_checknumber(L, 3);
-                    needRetransmit = true;
+                    changed |= ObjectProperty.MoveStats;
                     break;
                 case "faction":
                     faction = (byte)LuaAPI.luaL_checknumber(L, 3);
-                    needRetransmit = true;
+                    changed |= ObjectProperty.Faction;
                     break;
                 case "flares":
                     // table of engine flare points
@@ -424,7 +445,6 @@ namespace ShiftDrive {
                         flares.Add(LuaAPI.lua_tovec2(L, 4));
                         LuaAPI.lua_pop(L, 1);
                     }
-                    needRetransmit = true;
                     break;
                 case "mounts":
                     // table of weapon mount points
@@ -438,7 +458,7 @@ namespace ShiftDrive {
                         }
                         LuaAPI.lua_pop(L, 1);
                     }
-                    needRetransmit = true;
+                    changed |= ObjectProperty.Mounts;
                     break;
                 case "weapons":
                     // parse the table of weapon tables
@@ -450,12 +470,11 @@ namespace ShiftDrive {
                             weapons[i] = Weapon.FromLua(L, 4);
                         LuaAPI.lua_pop(L, 1);
                     }
-                    needRetransmit = true;
+                    changed |= ObjectProperty.Weapons;
                     break;
                 default:
                     return base.LuaSet(L);
             }
-            changed = true;
             return 0;
         }
     }

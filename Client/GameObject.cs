@@ -8,7 +8,10 @@ using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
-    
+
+    /// <summary>
+    /// Reflects the class that should be used to deserialize an object.
+    /// </summary>
     internal enum ObjectType {
         Generic,
         Asteroid,
@@ -21,7 +24,46 @@ namespace ShiftDrive {
         Projectile,
         Particle
     }
-    
+
+    /// <summary>
+    /// Represents a bitmask of properties, used for avoiding serialization of
+    /// unchanged <seealso cref="GameObject"/> attributes.
+    /// </summary>
+    [Flags]
+    internal enum ObjectProperty : uint {
+        None            = 0,
+
+        Position        = 1 << 0,
+        Velocity        = 1 << 1,
+        AngularVelocity = 1 << 2,
+        Facing          = 1 << 3,
+        Sector          = 1 << 4,
+        ZOrder          = 1 << 5,
+        Sprite          = 1 << 6,
+        Color           = 1 << 7,
+        Damping         = 1 << 8,
+        Bounding        = 1 << 9,
+
+        Health          = 1 << 11,
+        HealthMax       = 1 << 12,
+        MoveStats       = 1 << 13,
+        Throttle        = 1 << 14,
+        Steering        = 1 << 15,
+        Mounts          = 1 << 16,
+        Weapons         = 1 << 17,
+        Faction         = 1 << 18,
+        Flares          = 1 << 19,
+
+        ParticleData    = 1 << 20,
+        ProjectileData  = 1 << 21,
+
+        NameShort       = 1 << 22,
+        NameFull        = 1 << 23,
+        Description     = 1 << 24,
+
+        All             = unchecked((uint)-1)
+    }
+
     /// <summary>
     /// Represents a serializable object in the game world.
     /// </summary>
@@ -44,7 +86,6 @@ namespace ShiftDrive {
         public CollisionLayer layer;
         public CollisionLayer layermask;
 
-        public bool changed;
         protected readonly GameState world;
 
         private readonly lua_CFunction
@@ -55,6 +96,7 @@ namespace ShiftDrive {
             refLuaIsShip,
             refLuaIsTerrain;
 
+        public ObjectProperty changed;
         private bool destroyScheduled;
         private static uint nextId;
 
@@ -67,7 +109,7 @@ namespace ShiftDrive {
             refLuaDestroy = clua_Destroy;
             refLuaIsShip = clua_IsShip;
             refLuaIsTerrain = clua_IsTerrain;
-            changed = true;
+            changed = ObjectProperty.All;
             color = Color.White;
             damping = 1.0f;
             zorder = 127;
@@ -107,12 +149,11 @@ namespace ShiftDrive {
             // integrate velocity into position
             position += velocity * deltaTime;
             velocity *= (float)Math.Pow(damping, deltaTime);
+            if (velocity.LengthSquared() > 0.01f)
+                changed |= ObjectProperty.Velocity | ObjectProperty.Position;
 
             // animate the object sprite
             if (!world.IsServer) sprite.Update(deltaTime);
-
-            // re-transmit object if it's moving around
-            changed = changed || velocity.LengthSquared() > 0.01f;
         }
         
         /// <summary>
@@ -267,29 +308,34 @@ namespace ShiftDrive {
                     // position is a two-element table {x, y}
                     position = LuaAPI.lua_tovec2(L, 3);
                     world.ReinsertGrid(this);
+                    changed |= ObjectProperty.Position;
                     break;
                 case "facing":
                     facing = (float)LuaAPI.luaL_checknumber(L, 3);
+                    changed |= ObjectProperty.Facing;
                     break;
                 case "bounding":
                     bounding = (float)LuaAPI.luaL_checknumber(L, 3);
+                    changed |= ObjectProperty.Bounding;
                     world.ReinsertGrid(this);
                     break;
                 case "sprite":
                     spritename = LuaAPI.luaL_checkstring(L, 3);
+                    changed |= ObjectProperty.Sprite;
                     break;
                 case "zorder":
                     zorder = (byte)LuaAPI.luaL_checknumber(L, 3);
+                    changed |= ObjectProperty.ZOrder;
                     break;
                 case "color":
                     color.PackedValue = (uint)LuaAPI.luaL_checknumber(L, 3);
+                    changed |= ObjectProperty.Color;
                     break;
                 default:
                     LuaAPI.lua_pushstring(L, "attempt to modify unknown field '" + key + "'");
                     LuaAPI.lua_error(L);
                     break;
             }
-            changed = true;
             return 0;
         }
 
@@ -318,43 +364,59 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="writer"></param>
         public virtual void Serialize(BinaryWriter writer) {
-            writer.Write((byte)type);
-            writer.Write(position.X);
-            writer.Write(position.Y);
-            writer.Write(velocity.X);
-            writer.Write(velocity.Y);
-            writer.Write(facing);
-            writer.Write((byte)sector);
-            writer.Write(zorder);
-            writer.Write(bounding);
-            writer.Write(damping);
+            if (changed.HasFlag(ObjectProperty.Position)) {
+                writer.Write(position.X);
+                writer.Write(position.Y);
+            }
+            if (changed.HasFlag(ObjectProperty.Velocity)) {
+                writer.Write(velocity.X);
+                writer.Write(velocity.Y);
+            }
+            if (changed.HasFlag(ObjectProperty.Facing))
+                writer.Write(facing);
+            if (changed.HasFlag(ObjectProperty.Sector))
+                writer.Write((byte)sector);
+            if (changed.HasFlag(ObjectProperty.ZOrder))
+                writer.Write(zorder);
+            if (changed.HasFlag(ObjectProperty.Bounding))
+                writer.Write(bounding);
+            if (changed.HasFlag(ObjectProperty.Damping))
+                writer.Write(damping);
 
-            writer.Write(spritename);
-            writer.Write(color.PackedValue);
+            if (changed.HasFlag(ObjectProperty.Sprite))
+                writer.Write(spritename);
+            if (changed.HasFlag(ObjectProperty.Color))
+                writer.Write(color.PackedValue);
         }
 
         /// <summary>
         /// Deserializes the object, reading a byte array from the stream as written by Serialize.
         /// </summary>
-        /// <param name="reader"></param>
-        public virtual void Deserialize(BinaryReader reader) {
-            type = (ObjectType)reader.ReadByte();
-            position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-            velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-            facing = reader.ReadSingle();
-            sector = reader.ReadByte();
-            zorder = reader.ReadByte();
-            bounding = reader.ReadSingle();
-            damping = reader.ReadSingle();
+        public virtual void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            if (recvChanged.HasFlag(ObjectProperty.Position))
+                position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            if (recvChanged.HasFlag(ObjectProperty.Velocity))
+                velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            if (recvChanged.HasFlag(ObjectProperty.Facing))
+                facing = reader.ReadSingle();
+            if (recvChanged.HasFlag(ObjectProperty.Sector))
+                sector = reader.ReadByte();
+            if (recvChanged.HasFlag(ObjectProperty.ZOrder))
+                zorder = reader.ReadByte();
+            if (recvChanged.HasFlag(ObjectProperty.Bounding))
+                bounding = reader.ReadSingle();
+            if (recvChanged.HasFlag(ObjectProperty.Damping))
+                damping = reader.ReadSingle();
 
-            string oldsprite = spritename;
-            spritename = reader.ReadString();
-            if (sprite == null || !spritename.Equals(oldsprite, StringComparison.InvariantCulture))
+            if (recvChanged.HasFlag(ObjectProperty.Sprite)) {
+                spritename = reader.ReadString();
                 sprite = Assets.GetSprite(spritename).Clone();
+            }
 
-            color.PackedValue = reader.ReadUInt32();
+            if (recvChanged.HasFlag(ObjectProperty.Color))
+                color.PackedValue = reader.ReadUInt32();
         }
-
+        
         /// <summary>
         /// Resets the sequence of object ID numbers.
         /// </summary>

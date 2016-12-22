@@ -42,7 +42,7 @@ namespace ShiftDrive {
                 Vector2 pulldir = Vector2.Normalize(position - gobj.position);
                 float pullpower = 1f - Vector2.Distance(gobj.position, this.position) / 140f;
                 gobj.position += pulldir * pullpower * pullpower * deltaTime * 40f;
-                gobj.changed = true;
+                gobj.changed |= ObjectProperty.Position;
 
                 // notify player ship
                 if (pullpower >= 0.1f && gobj.type == ObjectType.PlayerShip && world.IsServer)

@@ -38,6 +38,7 @@ namespace ShiftDrive {
                         travelAlignTime = 6f;
                         this.steering = Utils.CalculateBearing(position, travelDest);
                         this.throttle = MathHelper.Max(1f, MathHelper.Clamp(Vector2.Distance(position, travelDest), 0f, 1f));
+                        this.changed |= ObjectProperty.Throttle | ObjectProperty.Steering;
                         break;
 
                     case AITask.TravelRandomize:
@@ -56,6 +57,7 @@ namespace ShiftDrive {
                             // calculate 'away' vector to steer away from the black hole
                             Vector2 safedir = this.position - obj.position;
                             this.steering = Utils.CalculateBearing(position, position + safedir);
+                            this.changed |= ObjectProperty.Steering;
                         }
                         break;
                 }

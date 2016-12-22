@@ -51,9 +51,6 @@ namespace ShiftDrive {
 
             // get rid of projectiles that have traveled very far already
             if (world.IsServer && lifetime >= 10f) Destroy();
-
-            // as these move every frame, always re-send them
-            changed = true;
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
@@ -72,12 +69,16 @@ namespace ShiftDrive {
 
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
+            if (!changed.HasFlag(ObjectProperty.ProjectileData))
+                return;
             writer.Write(damage);
             writer.Write(faction);
         }
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
+        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            base.Deserialize(reader, recvChanged);
+            if (!recvChanged.HasFlag(ObjectProperty.ProjectileData))
+                return;
             damage = reader.ReadSingle();
             faction = reader.ReadByte();
         }

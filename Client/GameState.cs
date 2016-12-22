@@ -75,12 +75,13 @@ namespace ShiftDrive {
                     writer.Write(pair.Value.id);
                     writer.Write(true);
 
-                } else if (obj.changed) {
+                } else if (obj.changed > ObjectProperty.None) {
                     writer.Write(pair.Value.id);
                     writer.Write(false);
                     writer.Write((byte)pair.Value.type);
+                    writer.Write((uint)pair.Value.changed);
                     pair.Value.Serialize(writer);
-                    pair.Value.changed = false;
+                    pair.Value.changed = ObjectProperty.None;
                 }
             }
             // 0x00000000 marks the end of the message
@@ -102,6 +103,7 @@ namespace ShiftDrive {
                 }
 
                 ObjectType objtype = (ObjectType)reader.ReadByte();
+                ObjectProperty recvChanged = (ObjectProperty)reader.ReadUInt32();
 
                 if (!Objects.ContainsKey(objid)) {
                     // this is a new object
@@ -131,13 +133,13 @@ namespace ShiftDrive {
                         default:
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }
-                    obj.Deserialize(reader);
+                    obj.Deserialize(reader, recvChanged);
                     obj.id = objid;
                     AddObject(obj);
                 }
                 else {
                     // update this object with info from the stream
-                    Objects[objid].Deserialize(reader);
+                    Objects[objid].Deserialize(reader, recvChanged);
                 }
             }
         }

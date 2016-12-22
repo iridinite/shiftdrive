@@ -306,13 +306,13 @@ namespace ShiftDrive {
                         case PacketID.HelmSteering:
                             // Helm sets ship steering vector.
                             world.GetPlayerShip().steering = MathHelper.Clamp(recv.ReadSingle(), 0f, 360f);
-                            world.GetPlayerShip().changed = true;
+                            world.GetPlayerShip().changed |= ObjectProperty.Steering;
                             break;
 
                         case PacketID.HelmThrottle:
                             // Helm sets ship throttle. Clamp to ensure input sanity.
                             world.GetPlayerShip().throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
-                            world.GetPlayerShip().changed = true;
+                            world.GetPlayerShip().changed |= ObjectProperty.Throttle;
                             break;
                     }
 

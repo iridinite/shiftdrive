@@ -26,17 +26,23 @@ namespace ShiftDrive {
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
 
-            writer.Write(nameshort);
-            writer.Write(namefull);
-            writer.Write(desc);
+            if (changed.HasFlag(ObjectProperty.NameShort))
+                writer.Write(nameshort);
+            if (changed.HasFlag(ObjectProperty.NameFull))
+                writer.Write(namefull);
+            if (changed.HasFlag(ObjectProperty.Description))
+                writer.Write(desc);
         }
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
+        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            base.Deserialize(reader, recvChanged);
 
-            nameshort = reader.ReadString();
-            namefull = reader.ReadString();
-            desc = reader.ReadString();
+            if (recvChanged.HasFlag(ObjectProperty.NameShort))
+                nameshort = reader.ReadString();
+            if (recvChanged.HasFlag(ObjectProperty.NameFull))
+                namefull = reader.ReadString();
+            if (recvChanged.HasFlag(ObjectProperty.Description))
+                desc = reader.ReadString();
         }
 
         protected override int LuaGet(IntPtr L) {
@@ -64,17 +70,19 @@ namespace ShiftDrive {
             switch (key) {
                 case "nameshort":
                     nameshort = LuaAPI.luaL_checkstring(L, 3);
+                    changed |= ObjectProperty.NameShort;
                     break;
                 case "namefull":
                     namefull = LuaAPI.luaL_checkstring(L, 3);
+                    changed |= ObjectProperty.NameFull;
                     break;
                 case "desc":
                     desc = LuaAPI.luaL_checkstring(L, 3);
+                    changed |= ObjectProperty.Description;
                     break;
                 default:
                     return base.LuaSet(L);
             }
-            changed = true;
             return 0;
         }
 

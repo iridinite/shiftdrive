@@ -40,7 +40,7 @@ namespace ShiftDrive {
             layer = CollisionLayer.None;
             layermask = CollisionLayer.None;
         }
-        
+
         public override void Update(float deltaTime) {
             base.Update(deltaTime);
 
@@ -61,6 +61,8 @@ namespace ShiftDrive {
 
         public override void Serialize(BinaryWriter writer) {
             base.Serialize(writer);
+            if (!changed.HasFlag(ObjectProperty.ParticleData))
+                return;
             writer.Write(life);
             writer.Write(lifemax);
             writer.Write(colorstart.PackedValue);
@@ -71,8 +73,10 @@ namespace ShiftDrive {
             writer.Write(rotateoffset);
         }
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
+        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+            base.Deserialize(reader, recvChanged);
+            if (!recvChanged.HasFlag(ObjectProperty.ParticleData))
+                return;
             life = reader.ReadSingle();
             lifemax = reader.ReadSingle();
             colorstart.PackedValue = reader.ReadUInt32();
