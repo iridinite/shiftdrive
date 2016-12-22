@@ -9,6 +9,9 @@ using System.IO;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents a game world and manages a collection of <seealso cref="GameObject"/>s.
+    /// </summary>
     internal sealed class GameState {
 
         public readonly Dictionary<uint, GameObject> Objects;

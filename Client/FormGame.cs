@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> displaying in-game client state and a linked <seealso cref="ShiftDrive.Console"/>.
+    /// </summary>
     internal class FormGame : IForm {
         public Console Console { get; set; }
 

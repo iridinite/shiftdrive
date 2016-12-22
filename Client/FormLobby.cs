@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> showing a game lobby with role selection.
+    /// </summary>
     internal class FormLobby : IForm {
 
         private readonly TextButton btnHelm, btnWeap, btnEngi, btnQuar, btnIntel, btnReady, btnDisconnect;

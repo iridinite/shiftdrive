@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
     
     /// <summary>
-    /// The interface for the Weapons console.
+    /// Implements a <seealso cref="Console"/> for the weapon officer's station.
     /// </summary>
     internal sealed class ConsoleWeapons : Console {
 

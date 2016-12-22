@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> requesting confirmation for application termination.
+    /// </summary>
     internal sealed class FormConfirmExit : IForm {
         
         private readonly TextButton btnQuit, btnCancel;

@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents a mouse-over tooltip.
+    /// </summary>
     internal class Tooltip {
 
         private readonly Rectangle trigger;

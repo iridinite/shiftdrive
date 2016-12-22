@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> showing the main menu.
+    /// </summary>
     internal class FormMainMenu : IForm {
 
         private readonly TextButton btnConnect, btnHost, btnOptions, btnQuit;

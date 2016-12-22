@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Exposes functionality for obtaining mouse state.
+    /// </summary>
     internal static class Mouse {
         private static MouseState prev;
         private static MouseState curr;
@@ -56,6 +59,9 @@ namespace ShiftDrive {
         }
     }
 
+    /// <summary>
+    /// Exposes functionality for obtaining keyboard state.
+    /// </summary>
     internal static class KeyInput {
 
         private static KeyboardState prev;

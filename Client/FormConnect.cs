@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> showing a menu for connecting to a game server.
+    /// </summary>
     internal class FormConnect : IForm {
 
         private readonly TextField txtIP;

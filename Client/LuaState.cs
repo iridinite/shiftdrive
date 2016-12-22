@@ -12,6 +12,9 @@ using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents an instance of the Lua runtime.
+    /// </summary>
     internal sealed class LuaState : IDisposable {
 
         internal readonly IntPtr L;

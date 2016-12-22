@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Long-range scanner view.
+    /// Implements a <seealso cref="Console"/> showing a map overview for debugging purposes.
     /// </summary>
     internal sealed class ConsoleLrs : Console {
 

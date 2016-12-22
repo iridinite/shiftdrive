@@ -12,6 +12,9 @@ using Iridinite.Localization;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Exposes common functionality used throughout the program.
+    /// </summary>
     internal static class Utils {
 
         private static float logoY = 100f;
@@ -177,5 +180,5 @@ namespace ShiftDrive {
 #endif
 
     }
-    
+
 }

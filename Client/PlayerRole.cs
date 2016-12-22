@@ -7,6 +7,9 @@ using System;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents the <seealso cref="Console"/> of a player on the ship.
+    /// </summary>
     [Flags]
     internal enum PlayerRole {
         Helm = 1,

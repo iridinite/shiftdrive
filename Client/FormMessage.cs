@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> showing an informative message and an option to return to the <seealso cref="FormMainMenu"/>.
+    /// </summary>
     internal class FormMessage : IForm {
         
         private readonly TextButton btnCancel;

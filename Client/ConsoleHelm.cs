@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements a <seealso cref="Console"/> for the helmsman's station.
+    /// </summary>
     internal sealed class ConsoleHelm : Console {
         
         private float targetThrottle;
@@ -37,7 +40,7 @@ namespace ShiftDrive {
             // bar filling
             int throttleBarY = SDGame.Inst.GameHeight - 40 - baseBarHeight;
             int throttleFillH = (int)(baseBarHeight * targetThrottle);
-            int throttleFillY =  baseBarHeight - throttleFillH;
+            int throttleFillY = baseBarHeight - throttleFillH;
             spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(40, throttleBarY + throttleFillY, 64, throttleFillH), new Rectangle(64, throttleFillY, 64, throttleFillH), Color.White);
             // bar outline
             spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(40, throttleBarY, 64, 24), new Rectangle(0, 0, 64, 24), Color.White);

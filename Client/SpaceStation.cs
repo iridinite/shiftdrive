@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents a space station that can be docked to.
+    /// </summary>
     internal sealed class SpaceStation : Ship {
 
         public SpaceStation(GameState world) : base(world) {
@@ -29,7 +32,7 @@ namespace ShiftDrive {
             // base update
             base.Update(deltaTime);
         }
-        
+
     }
 
 }

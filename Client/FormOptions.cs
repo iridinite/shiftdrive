@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Implements an <seealso cref="IForm"/> showing a menu of customizable settings.
+    /// </summary>
     internal class FormOptions : IForm {
         
         private readonly TextButton btn1, btn2, btn3, btn4, btn5, btn6, btnCancel;
