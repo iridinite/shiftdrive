@@ -362,59 +362,58 @@ namespace ShiftDrive {
         /// <summary>
         /// Serializes the object as a byte array.
         /// </summary>
-        /// <param name="writer"></param>
-        public virtual void Serialize(BinaryWriter writer) {
+        public virtual void Serialize(Packet outstream) {
             if (changed.HasFlag(ObjectProperty.Position)) {
-                writer.Write(position.X);
-                writer.Write(position.Y);
+                outstream.Write(position.X);
+                outstream.Write(position.Y);
             }
             if (changed.HasFlag(ObjectProperty.Velocity)) {
-                writer.Write(velocity.X);
-                writer.Write(velocity.Y);
+                outstream.Write(velocity.X);
+                outstream.Write(velocity.Y);
             }
             if (changed.HasFlag(ObjectProperty.Facing))
-                writer.Write(facing);
+                outstream.Write(facing);
             if (changed.HasFlag(ObjectProperty.Sector))
-                writer.Write((byte)sector);
+                outstream.Write((byte)sector);
             if (changed.HasFlag(ObjectProperty.ZOrder))
-                writer.Write(zorder);
+                outstream.Write(zorder);
             if (changed.HasFlag(ObjectProperty.Bounding))
-                writer.Write(bounding);
+                outstream.Write(bounding);
             if (changed.HasFlag(ObjectProperty.Damping))
-                writer.Write(damping);
+                outstream.Write(damping);
 
             if (changed.HasFlag(ObjectProperty.Sprite))
-                writer.Write(spritename);
+                outstream.Write(spritename);
             if (changed.HasFlag(ObjectProperty.Color))
-                writer.Write(color.PackedValue);
+                outstream.Write(color.PackedValue);
         }
 
         /// <summary>
         /// Deserializes the object, reading a byte array from the stream as written by Serialize.
         /// </summary>
-        public virtual void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
+        public virtual void Deserialize(Packet instream, ObjectProperty recvChanged) {
             if (recvChanged.HasFlag(ObjectProperty.Position))
-                position = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+                position = new Vector2(instream.ReadSingle(), instream.ReadSingle());
             if (recvChanged.HasFlag(ObjectProperty.Velocity))
-                velocity = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+                velocity = new Vector2(instream.ReadSingle(), instream.ReadSingle());
             if (recvChanged.HasFlag(ObjectProperty.Facing))
-                facing = reader.ReadSingle();
+                facing = instream.ReadSingle();
             if (recvChanged.HasFlag(ObjectProperty.Sector))
-                sector = reader.ReadByte();
+                sector = instream.ReadByte();
             if (recvChanged.HasFlag(ObjectProperty.ZOrder))
-                zorder = reader.ReadByte();
+                zorder = instream.ReadByte();
             if (recvChanged.HasFlag(ObjectProperty.Bounding))
-                bounding = reader.ReadSingle();
+                bounding = instream.ReadSingle();
             if (recvChanged.HasFlag(ObjectProperty.Damping))
-                damping = reader.ReadSingle();
+                damping = instream.ReadSingle();
 
             if (recvChanged.HasFlag(ObjectProperty.Sprite)) {
-                spritename = reader.ReadString();
+                spritename = instream.ReadString();
                 sprite = Assets.GetSprite(spritename).Clone();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Color))
-                color.PackedValue = reader.ReadUInt32();
+                color.PackedValue = instream.ReadUInt32();
         }
 
         /// <summary>

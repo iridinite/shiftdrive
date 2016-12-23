@@ -124,20 +124,20 @@ namespace ShiftDrive {
             return bestTarget;
         }
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
+        public override void Serialize(Packet outstream) {
+            base.Serialize(outstream);
 
-            writer.Write(destroyed);
-            writer.Write(player);
-            writer.Write(fuel);
+            outstream.Write(destroyed);
+            outstream.Write(player);
+            outstream.Write(fuel);
         }
 
-        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
-            base.Deserialize(reader, recvChanged);
+        public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
+            base.Deserialize(instream, recvChanged);
 
-            destroyed = reader.ReadBoolean();
-            player = reader.ReadByte();
-            fuel = reader.ReadSingle();
+            destroyed = instream.ReadBoolean();
+            player = instream.ReadByte();
+            fuel = instream.ReadSingle();
         }
 
         public void ConsumeFuel(float amount) {

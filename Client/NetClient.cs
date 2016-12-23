@@ -121,14 +121,8 @@ namespace ShiftDrive {
 
                         case PacketID.GameUpdate:
                             lock (worldLock) {
-                                // first decompress the buffer received from the network
-                                byte[] worldbytes = NetShared.DecompressBuffer(recv.ToArray());
-                                // then reconstruct the game state
-                                using (MemoryStream ms = new MemoryStream(worldbytes)) {
-                                    using (BinaryReader reader = new BinaryReader(ms)) {
-                                        World.Deserialize(reader);
-                                    }
-                                }
+                                // read game state from packet
+                                World.Deserialize(recv);
                             }
                             break;
 

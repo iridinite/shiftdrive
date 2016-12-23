@@ -23,26 +23,26 @@ namespace ShiftDrive {
             desc = "";
         }
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
+        public override void Serialize(Packet outstream) {
+            base.Serialize(outstream);
 
             if (changed.HasFlag(ObjectProperty.NameShort))
-                writer.Write(nameshort);
+                outstream.Write(nameshort);
             if (changed.HasFlag(ObjectProperty.NameFull))
-                writer.Write(namefull);
+                outstream.Write(namefull);
             if (changed.HasFlag(ObjectProperty.Description))
-                writer.Write(desc);
+                outstream.Write(desc);
         }
 
-        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
-            base.Deserialize(reader, recvChanged);
+        public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
+            base.Deserialize(instream, recvChanged);
 
             if (recvChanged.HasFlag(ObjectProperty.NameShort))
-                nameshort = reader.ReadString();
+                nameshort = instream.ReadString();
             if (recvChanged.HasFlag(ObjectProperty.NameFull))
-                namefull = reader.ReadString();
+                namefull = instream.ReadString();
             if (recvChanged.HasFlag(ObjectProperty.Description))
-                desc = reader.ReadString();
+                desc = instream.ReadString();
         }
 
         protected override int LuaGet(IntPtr L) {

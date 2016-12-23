@@ -208,22 +208,9 @@ namespace ShiftDrive {
         }
 
         private static void BroadcastGameState() {
-            // build a byte array containing the world state
-            byte[] worldbytes;
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    world.Serialize(writer);
-                }
-                worldbytes = ms.ToArray();
-            }
-
-            // compress the world state and create a packet
-            byte[] compressed = NetShared.CompressBuffer(worldbytes);
-
             // send the compressed state out to all connected clients
-            SDGame.Inst.Print($"Update: {worldbytes.Length} bytes -> {compressed.Length} bytes");
             using (Packet packet = new Packet(PacketID.GameUpdate)) {
-                packet.Write(compressed);
+                world.Serialize(packet);
                 socket.Broadcast(packet.ToArray());
             }
         }

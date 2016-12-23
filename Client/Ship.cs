@@ -269,87 +269,87 @@ namespace ShiftDrive {
             }
         }
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
+        public override void Serialize(Packet outstream) {
+            base.Serialize(outstream);
 
             // hull and shield status
             if (changed.HasFlag(ObjectProperty.Health)) {
-                writer.Write(hull);
-                writer.Write(shield);
-                writer.Write(shieldActive);
+                outstream.Write(hull);
+                outstream.Write(shield);
+                outstream.Write(shieldActive);
             }
 
             if (changed.HasFlag(ObjectProperty.HealthMax)) {
-                writer.Write(hullMax);
-                writer.Write(shieldMax);
+                outstream.Write(hullMax);
+                outstream.Write(shieldMax);
             }
 
             // movement
             if (changed.HasFlag(ObjectProperty.Throttle))
-                writer.Write(throttle);
+                outstream.Write(throttle);
             if (changed.HasFlag(ObjectProperty.Steering))
-                writer.Write(steering);
+                outstream.Write(steering);
             if (changed.HasFlag(ObjectProperty.MoveStats)) {
-                writer.Write(topSpeed);
-                writer.Write(turnRate);
+                outstream.Write(topSpeed);
+                outstream.Write(turnRate);
             }
 
             // mounts and weapons data
             if (changed.HasFlag(ObjectProperty.Mounts)) {
-                writer.Write(mountsNum);
+                outstream.Write(mountsNum);
                 for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                     if (weapons[i] != null) {
-                        writer.Write((byte)1);
-                        weapons[i].Serialize(writer);
+                        outstream.Write((byte)1);
+                        weapons[i].Serialize(outstream);
                     } else {
-                        writer.Write((byte)0);
+                        outstream.Write((byte)0);
                     }
                 }
             }
 
             // engine flare positions
             if (changed.HasFlag(ObjectProperty.Flares)) {
-                writer.Write((byte)flares.Count);
+                outstream.Write((byte)flares.Count);
                 for (int i = 0; i < flares.Count; i++) {
-                    writer.Write(flares[i].X);
-                    writer.Write(flares[i].Y);
+                    outstream.Write(flares[i].X);
+                    outstream.Write(flares[i].Y);
                 }
             }
 
             // combat faction
             if (changed.HasFlag(ObjectProperty.Faction))
-                writer.Write(faction);
+                outstream.Write(faction);
         }
 
-        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
-            base.Deserialize(reader, recvChanged);
+        public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
+            base.Deserialize(instream, recvChanged);
 
             if (recvChanged.HasFlag(ObjectProperty.Health)) {
-                hull = reader.ReadSingle();
-                shield = reader.ReadSingle();
-                shieldActive = reader.ReadBoolean();
+                hull = instream.ReadSingle();
+                shield = instream.ReadSingle();
+                shieldActive = instream.ReadBoolean();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.HealthMax)) {
-                hullMax = reader.ReadSingle();
-                shieldMax = reader.ReadSingle();
+                hullMax = instream.ReadSingle();
+                shieldMax = instream.ReadSingle();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Throttle))
-                throttle = reader.ReadSingle();
+                throttle = instream.ReadSingle();
             if (recvChanged.HasFlag(ObjectProperty.Steering))
-                steering = reader.ReadSingle();
+                steering = instream.ReadSingle();
 
             if (recvChanged.HasFlag(ObjectProperty.MoveStats)) {
-                topSpeed = reader.ReadSingle();
-                turnRate = reader.ReadSingle();
+                topSpeed = instream.ReadSingle();
+                turnRate = instream.ReadSingle();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Mounts)) {
-                mountsNum = reader.ReadByte();
+                mountsNum = instream.ReadByte();
                 for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                    if (reader.ReadByte() == 1) {
-                        weapons[i] = Weapon.FromStream(reader);
+                    if (instream.ReadByte() == 1) {
+                        weapons[i] = Weapon.FromStream(instream);
                     } else {
                         weapons[i] = null;
                     }
@@ -357,14 +357,14 @@ namespace ShiftDrive {
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Flares)) {
-                int flaresCount = reader.ReadByte();
+                int flaresCount = instream.ReadByte();
                 flares.Clear();
                 for (int i = 0; i < flaresCount; i++)
-                    flares.Add(new Vector2(reader.ReadSingle(), reader.ReadSingle()));
+                    flares.Add(new Vector2(instream.ReadSingle(), instream.ReadSingle()));
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Faction))
-                faction = reader.ReadByte();
+                faction = instream.ReadByte();
         }
 
         protected override int LuaGet(IntPtr L) {

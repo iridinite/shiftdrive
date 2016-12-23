@@ -115,46 +115,46 @@ namespace ShiftDrive {
             return ret;
         }
 
-        public static Weapon FromStream(BinaryReader reader) {
+        public static Weapon FromStream(Packet instream) {
             Weapon ret = new Weapon();
-            ret.Name = reader.ReadString();
-            ret.Description = reader.ReadString();
-            ret.Powered = reader.ReadBoolean();
-            ret.PowerDraw = reader.ReadSingle();
-            ret.DamageType = (DamageType)reader.ReadByte();
-            ret.Damage = reader.ReadSingle();
-            ret.ChargeTime = reader.ReadSingle();
-            ret.Charge = reader.ReadSingle();
-            ret.Ammo = (AmmoType)reader.ReadByte();
-            ret.AmmoPerShot = reader.ReadByte();
-            ret.AmmoPerClip = reader.ReadUInt16();
-            ret.AmmoLeft = reader.ReadUInt16();
-            ret.AmmoClipsMax = reader.ReadUInt16();
-            ret.AmmoClipsLeft = reader.ReadUInt16();
-            ret.ReloadTime = reader.ReadSingle();
-            ret.ReloadProgress = reader.ReadSingle();
+            ret.Name = instream.ReadString();
+            ret.Description = instream.ReadString();
+            ret.Powered = instream.ReadBoolean();
+            ret.PowerDraw = instream.ReadSingle();
+            ret.DamageType = (DamageType)instream.ReadByte();
+            ret.Damage = instream.ReadSingle();
+            ret.ChargeTime = instream.ReadSingle();
+            ret.Charge = instream.ReadSingle();
+            ret.Ammo = (AmmoType)instream.ReadByte();
+            ret.AmmoPerShot = instream.ReadByte();
+            ret.AmmoPerClip = instream.ReadUInt16();
+            ret.AmmoLeft = instream.ReadUInt16();
+            ret.AmmoClipsMax = instream.ReadUInt16();
+            ret.AmmoClipsLeft = instream.ReadUInt16();
+            ret.ReloadTime = instream.ReadSingle();
+            ret.ReloadProgress = instream.ReadSingle();
             return ret;
         }
 
-        public void Serialize(BinaryWriter writer) {
-            writer.Write(Name);
-            writer.Write(Description);
-            writer.Write(Powered);
-            writer.Write(PowerDraw);
-            writer.Write((byte)DamageType);
-            writer.Write(Damage);
-            writer.Write(ChargeTime);
-            writer.Write(Charge);
-            writer.Write((byte)Ammo);
-            writer.Write((byte)AmmoPerShot);
-            writer.Write((ushort)AmmoPerClip);
-            writer.Write((ushort)AmmoLeft);
-            writer.Write((ushort)AmmoClipsMax);
-            writer.Write((ushort)AmmoClipsLeft);
-            writer.Write(ReloadTime);
-            writer.Write(ReloadProgress);
+        public void Serialize(Packet outstream) {
+            outstream.Write(Name);
+            outstream.Write(Description);
+            outstream.Write(Powered);
+            outstream.Write(PowerDraw);
+            outstream.Write((byte)DamageType);
+            outstream.Write(Damage);
+            outstream.Write(ChargeTime);
+            outstream.Write(Charge);
+            outstream.Write((byte)Ammo);
+            outstream.Write((byte)AmmoPerShot);
+            outstream.Write((ushort)AmmoPerClip);
+            outstream.Write((ushort)AmmoLeft);
+            outstream.Write((ushort)AmmoClipsMax);
+            outstream.Write((ushort)AmmoClipsLeft);
+            outstream.Write(ReloadTime);
+            outstream.Write(ReloadProgress);
         }
-        
+
     }
 
 }

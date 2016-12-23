@@ -55,16 +55,16 @@ namespace ShiftDrive {
             return true;
         }
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
+        public override void Serialize(Packet outstream) {
+            base.Serialize(outstream);
             if (changed.HasFlag(ObjectProperty.AngularVelocity))
-                writer.Write(angularVelocity);
+                outstream.Write(angularVelocity);
         }
 
-        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
-            base.Deserialize(reader, recvChanged);
+        public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
+            base.Deserialize(instream, recvChanged);
             if (recvChanged.HasFlag(ObjectProperty.AngularVelocity))
-                angularVelocity = reader.ReadSingle();
+                angularVelocity = instream.ReadSingle();
         }
 
     }

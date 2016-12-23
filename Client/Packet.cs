@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -54,17 +55,20 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="packetBytes">A byte array containing the entire packet.</param>
         public Packet(byte[] packetBytes) {
-            if (packetBytes == null || packetBytes.Length < 1)
+            if (packetBytes == null || packetBytes.Length < 2)
                 throw new ArgumentException();
 
+            // read metadata
+            id = (PacketID)packetBytes[0];
+            bool compress = packetBytes[1] > 0;
+            // copy and decompress payload
+            byte[] payload = new byte[packetBytes.Length - 2];
+            Buffer.BlockCopy(packetBytes, 2, payload, 0, packetBytes.Length - 2);
+            if (compress)
+                payload = NetShared.DecompressBuffer(payload);
             // initialize the stream with the payload data
-            byte[] payload = new byte[packetBytes.Length - 1];
-            Buffer.BlockCopy(packetBytes, 1, payload, 0, packetBytes.Length - 1);
             byteStream = new MemoryStream(payload, false);
             byteReader = new BinaryReader(byteStream, Encoding.UTF8);
-
-            // copy packet type directly from input array
-            id = (PacketID)packetBytes[0];
         }
 
         /// <summary>
@@ -75,7 +79,6 @@ namespace ShiftDrive {
             this.id = id;
             byteStream = new MemoryStream();
             byteWriter = new BinaryWriter(byteStream, Encoding.UTF8);
-            byteWriter.Write((byte)id);
         }
 
         /// <summary>
@@ -93,12 +96,22 @@ namespace ShiftDrive {
         }
 
         /// <summary>
-        /// Converts the <seealso cref="Packet"/> to a byte array. If the Packet was read from the network, the array
-        /// does not include the <seealso cref="PacketID"/>, otherwise, the ID is the first byte of the stream.
+        /// Converts the <seealso cref="Packet"/> to a byte array, for network transmission.
         /// </summary>
         public byte[] ToArray() {
-            //Debug.Assert(byteWriter == null, "Packet was received from network, should not be serialized again");
-            return byteStream.ToArray();
+            Debug.Assert(byteWriter != null, "Packet was received from network, should not be serialized again");
+
+            using (MemoryStream outstream = new MemoryStream((int)GetLength() + 2)) {
+                byte[] packetBytes = byteStream.ToArray();
+                bool compress = packetBytes.Length > 1024;
+                if (compress)
+                    packetBytes = NetShared.CompressBuffer(packetBytes);
+
+                outstream.WriteByte((byte)GetID());
+                outstream.WriteByte(compress ? (byte)1 : (byte)0);
+                outstream.Write(packetBytes, 0, packetBytes.Length);
+                return outstream.ToArray();
+            }
         }
 
         /// <summary>

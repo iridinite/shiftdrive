@@ -70,43 +70,43 @@ namespace ShiftDrive {
             grid.Update();
         }
 
-        public void Serialize(BinaryWriter writer) {
+        public void Serialize(Packet outstream) {
             // write serialized objects that have changed
             foreach (var pair in Objects) {
                 GameObject obj = pair.Value;
                 if (obj.IsDestroyScheduled()) {
-                    writer.Write(pair.Value.id);
-                    writer.Write(true);
+                    outstream.Write(pair.Value.id);
+                    outstream.Write(true);
 
                 } else if (obj.changed > ObjectProperty.None) {
-                    writer.Write(pair.Value.id);
-                    writer.Write(false);
-                    writer.Write((byte)pair.Value.type);
-                    writer.Write((uint)pair.Value.changed);
-                    pair.Value.Serialize(writer);
+                    outstream.Write(pair.Value.id);
+                    outstream.Write(false);
+                    outstream.Write((byte)pair.Value.type);
+                    outstream.Write((uint)pair.Value.changed);
+                    pair.Value.Serialize(outstream);
                     pair.Value.changed = ObjectProperty.None;
                 }
             }
             // 0x00000000 marks the end of the message
             // (makes sense to use 0 because that's an invalid object ID)
-            writer.Write((uint)0);
+            outstream.Write((uint)0);
         }
 
-        public void Deserialize(BinaryReader reader) {
+        public void Deserialize(Packet instream) {
             while (true) {
                 // read next object ID. zero means end of message
-                uint objid = reader.ReadUInt32();
+                uint objid = instream.ReadUInt32();
                 if (objid == 0) break;
 
                 // set flag means a deleted object
-                if (reader.ReadBoolean()) {
+                if (instream.ReadBoolean()) {
                     if (Objects.ContainsKey(objid)) grid.Remove(Objects[objid]);
                     Objects.Remove(objid);
                     continue;
                 }
 
-                ObjectType objtype = (ObjectType)reader.ReadByte();
-                ObjectProperty recvChanged = (ObjectProperty)reader.ReadUInt32();
+                ObjectType objtype = (ObjectType)instream.ReadByte();
+                ObjectProperty recvChanged = (ObjectProperty)instream.ReadUInt32();
 
                 if (!Objects.ContainsKey(objid)) {
                     // this is a new object
@@ -122,12 +122,12 @@ namespace ShiftDrive {
                         default:
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }
-                    obj.Deserialize(reader, recvChanged);
+                    obj.Deserialize(instream, recvChanged);
                     obj.id = objid;
                     AddObject(obj);
                 } else {
                     // update this object with info from the stream
-                    Objects[objid].Deserialize(reader, recvChanged);
+                    Objects[objid].Deserialize(instream, recvChanged);
                 }
             }
         }

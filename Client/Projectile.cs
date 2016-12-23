@@ -67,20 +67,20 @@ namespace ShiftDrive {
             this.Destroy();
         }
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
+        public override void Serialize(Packet outstream) {
+            base.Serialize(outstream);
             if (!changed.HasFlag(ObjectProperty.ProjectileData))
                 return;
-            writer.Write(damage);
-            writer.Write(faction);
+            outstream.Write(damage);
+            outstream.Write(faction);
         }
 
-        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
-            base.Deserialize(reader, recvChanged);
+        public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
+            base.Deserialize(instream, recvChanged);
             if (!recvChanged.HasFlag(ObjectProperty.ProjectileData))
                 return;
-            damage = reader.ReadSingle();
-            faction = reader.ReadByte();
+            damage = instream.ReadSingle();
+            faction = instream.ReadByte();
         }
 
     }

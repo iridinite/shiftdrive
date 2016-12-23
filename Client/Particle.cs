@@ -59,32 +59,32 @@ namespace ShiftDrive {
             if (life >= lifemax) this.Destroy();
         }
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
+        public override void Serialize(Packet outstream) {
+            base.Serialize(outstream);
             if (!changed.HasFlag(ObjectProperty.ParticleData))
                 return;
-            writer.Write(life);
-            writer.Write(lifemax);
-            writer.Write(colorstart.PackedValue);
-            writer.Write(colorend.PackedValue);
-            writer.Write(scalestart);
-            writer.Write(scaleend);
-            writer.Write(rotatespeed);
-            writer.Write(rotateoffset);
+            outstream.Write(life);
+            outstream.Write(lifemax);
+            outstream.Write(colorstart.PackedValue);
+            outstream.Write(colorend.PackedValue);
+            outstream.Write(scalestart);
+            outstream.Write(scaleend);
+            outstream.Write(rotatespeed);
+            outstream.Write(rotateoffset);
         }
 
-        public override void Deserialize(BinaryReader reader, ObjectProperty recvChanged) {
-            base.Deserialize(reader, recvChanged);
+        public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
+            base.Deserialize(instream, recvChanged);
             if (!recvChanged.HasFlag(ObjectProperty.ParticleData))
                 return;
-            life = reader.ReadSingle();
-            lifemax = reader.ReadSingle();
-            colorstart.PackedValue = reader.ReadUInt32();
-            colorend.PackedValue = reader.ReadUInt32();
-            scalestart = reader.ReadSingle();
-            scaleend = reader.ReadSingle();
-            rotatespeed = reader.ReadSingle();
-            rotateoffset = reader.ReadSingle();
+            life = instream.ReadSingle();
+            lifemax = instream.ReadSingle();
+            colorstart.PackedValue = instream.ReadUInt32();
+            colorend.PackedValue = instream.ReadUInt32();
+            scalestart = instream.ReadSingle();
+            scaleend = instream.ReadSingle();
+            rotatespeed = instream.ReadSingle();
+            rotateoffset = instream.ReadSingle();
         }
 
         public static void CreateExplosion(GameState world, Vector2 position) {
