@@ -28,6 +28,11 @@ namespace ShiftDrive {
         }
 
         public override void Update(float deltaTime) {
+            base.Update(deltaTime);
+
+            // perform AI only on server
+            if (!world.IsServer) return;
+
             // walk through the AI tasks
             foreach (AITask task in brain) {
                 switch (task) {
@@ -62,8 +67,6 @@ namespace ShiftDrive {
                         break;
                 }
             }
-
-            base.Update(deltaTime);
         }
 
     }
