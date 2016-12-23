@@ -187,6 +187,17 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Reads the specified number of bytes from the current stream into a byte array and advances the current position by that number of bytes.
+        /// </summary>
+        /// <returns>
+        /// A byte array containing data read from the underlying stream. This might be less than the number of bytes requested if the end of the stream is reached.
+        /// </returns>
+        /// <param name="count">The number of bytes to read. This value must be 0 or a non-negative number or an exception will occur.</param>
+        public byte[] ReadBytes(int count) {
+            return byteReader.ReadBytes(count);
+        }
+
+        /// <summary>
         /// Reads a 2-byte unsigned integer from the current stream using little-endian encoding and advances the position of the stream by two bytes.
         /// </summary>
         public ushort ReadUInt16() {
