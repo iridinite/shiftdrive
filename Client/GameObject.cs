@@ -147,9 +147,13 @@ namespace ShiftDrive {
             }
 
             // integrate velocity into position
+            Vector2 oldVelocity = velocity;
             position += velocity * deltaTime;
             velocity *= (float)Math.Pow(damping, deltaTime);
-            if (velocity.LengthSquared() > 0.01f)
+
+            // retransmit velocity only if velocity changes, and include position as safeguard against desync.
+            // we don't need to send position normally, because the client correctly predicts position for static velocity.
+            if ((oldVelocity - velocity).LengthSquared() > 0.001f)
                 changed |= ObjectProperty.Velocity | ObjectProperty.Position;
 
             // animate the object sprite
