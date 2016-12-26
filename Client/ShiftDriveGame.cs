@@ -167,8 +167,7 @@ namespace ShiftDrive {
             // clear canvas
             GraphicsDevice.Clear(Color.Black);
             // active form should draw its contents
-            if (ActiveForm != null)
-                ActiveForm.Draw(GraphicsDevice, spriteBatch);
+            ActiveForm?.Draw(GraphicsDevice, spriteBatch);
 
 #if DEBUG
             // draw debug tools
