@@ -13,7 +13,7 @@ namespace ShiftDrive {
     /// </summary>
     internal static class Skybox {
 
-        private static float rotation;
+        private static float rotation = Utils.RandomFloat(0f, MathHelper.TwoPi);
 
         public static void Draw(GraphicsDevice graphicsDevice) {
             // Use the unlit shader to render a skybox.
