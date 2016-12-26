@@ -52,6 +52,18 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Calculates the position of an object in screen coordinates, based on the specified world view area.
+        /// </summary>
+        /// <param name="min">The upper-left corner of the view area.</param>
+        /// <param name="max">The bottom-right corner of the view area.</param>
+        /// <param name="pos">The object's position in world coordinates.</param>
+        public static Vector2 CalculateScreenPos(Vector2 min, Vector2 max, Vector2 pos) {
+            return new Vector2(
+                (pos.X - min.X) / (max.X - min.X) * SDGame.Inst.GameWidth,
+                (pos.Y - min.Y) / (max.Y - min.Y) * SDGame.Inst.GameWidth - (SDGame.Inst.GameWidth - SDGame.Inst.GameHeight) / 2f);
+        }
+
+        /// <summary>
         /// Returns a random floating point number in the specified range.
         /// </summary>
         /// <param name="min">The inclusive lower bound.</param>

@@ -48,9 +48,7 @@ namespace ShiftDrive {
                 if (Vector2.DistanceSquared(Player.position, obj.position) > 350f * 350f)
                     continue;
                 // calculate screen coordinates for this object
-                float xrel = (obj.position.X - min.X) / (max.X - min.X) * SDGame.Inst.GameWidth;
-                float yrel = (obj.position.Y - min.Y) / (max.Y - min.Y) * SDGame.Inst.GameWidth - ((SDGame.Inst.GameWidth - SDGame.Inst.GameHeight) / 2f);
-                Vector2 screenpos = new Vector2(xrel, yrel);
+                Vector2 screenpos = Utils.CalculateScreenPos(min, max, obj.position);
 
                 // draw the object
                 switch (obj.type) {
