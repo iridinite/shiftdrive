@@ -38,6 +38,9 @@ namespace ShiftDrive {
             btnReady.OnClick += BtnReady_OnClick;
 
             isReady = false;
+
+            // make sure no particles are left over from other game sessions
+            ParticleManager.Clear();
         }
 
         public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
