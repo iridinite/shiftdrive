@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
@@ -155,6 +156,16 @@ namespace ShiftDrive {
                                     throw new InvalidDataException(Utils.LocaleGet("err_unknownannounce"));
                             }
                             Announcement?.Invoke(announce);
+                            break;
+
+                        case PacketID.ParticleEffect:
+                            ParticleEffect effect = (ParticleEffect)recv.ReadByte();
+                            Vector2 position = new Vector2(recv.ReadSingle(), recv.ReadSingle());
+                            switch (effect) {
+                                case ParticleEffect.Explosion:
+                                    ParticleManager.CreateExplosion(position);
+                                    break;
+                            }
                             break;
 
                         default:

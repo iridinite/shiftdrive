@@ -93,7 +93,7 @@ namespace ShiftDrive {
             layer = CollisionLayer.None;
             layermask = CollisionLayer.None;
             // fancy display
-            Particle.CreateExplosion(NetServer.world, position);
+            NetServer.PublishParticleEffect(ParticleEffect.Explosion, position);
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {

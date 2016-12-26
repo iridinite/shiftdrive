@@ -235,6 +235,20 @@ namespace ShiftDrive {
             }
         }
 
+        /// <summary>
+        /// Instructs game clients to display the specified particle effect.
+        /// </summary>
+        /// <param name="effect">The effect to show.</param>
+        /// <param name="position">The world position at which to place the effect.</param>
+        public static void PublishParticleEffect(ParticleEffect effect, Vector2 position) {
+            using (Packet packet = new Packet(PacketID.ParticleEffect)) {
+                packet.Write((byte)effect);
+                packet.Write(position.X);
+                packet.Write(position.Y);
+                socket.Broadcast(packet.ToArray());
+            }
+        }
+
         private static void Socket_OnDataReceived(int clientID, byte[] packetbytes) {
             try {
                 using (Packet recv = new Packet(packetbytes)) {

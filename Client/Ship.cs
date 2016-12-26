@@ -177,7 +177,7 @@ namespace ShiftDrive {
 
         public override void Destroy() {
             if (!IsDestroyScheduled())
-                Particle.CreateExplosion(NetServer.world, position);
+                NetServer.PublishParticleEffect(ParticleEffect.Explosion, position);
             base.Destroy();
         }
 

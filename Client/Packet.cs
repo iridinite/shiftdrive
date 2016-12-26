@@ -10,32 +10,33 @@ namespace ShiftDrive {
     /// </summary>
     internal enum PacketID : byte {
         Handshake = 1,
-        LobbyState = 2,
-        SelectRole = 3,
-        Ready = 4,
-        EnterGame = 5,
-        GameUpdate = 6,
-        Announcement = 7,
+        LobbyState,
+        SelectRole,
+        Ready,
+        EnterGame,
+        GameUpdate,
+        Announcement,
+        ParticleEffect,
 
-        HelmSteering = 8,
-        HelmThrottle = 9,
-        HelmShift = 10,
+        HelmSteering,
+        HelmThrottle,
+        HelmShift,
 
-        WeapShields = 11,
-        WeapTarget = 12,
-        WeapMissileLoad = 13,
-        WeapMissileLaunch = 14,
+        WeapShields,
+        WeapTarget,
+        WeapMissileLoad,
+        WeapMissileLaunch,
 
-        EngiSetPower = 15,
-        EngiDamageReport = 16,
+        EngiSetPower,
+        EngiDamageReport,
 
-        QuarOrder = 17,
+        QuarOrder,
 
-        IntelScan = 18,
-        IntelInText = 19,
-        IntelSend = 20,
-        IntelShopInfo = 21,
-        IntelShopBuy = 22
+        IntelScan,
+        IntelInText,
+        IntelSend,
+        IntelShopInfo,
+        IntelShopBuy
     }
 
     /// <summary>
