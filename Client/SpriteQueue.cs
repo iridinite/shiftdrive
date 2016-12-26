@@ -35,7 +35,7 @@ namespace ShiftDrive {
         /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
         /// </summary>
         public static void QueueSprite(SpriteSheet spr, Vector2 position, Color color, float rotation, byte zorder) {
-            Debug.Assert(!spr.isPrototype);
+            Debug.Assert(!spr.isPrototype, "Cannot queue sprite prototype, use Clone() to duplicate it");
 
             foreach (SpriteSheet.SpriteLayer layer in spr.layers) {
                 SpriteSheet.SpriteFrame currentFrame = layer.frames[layer.frameNo];
