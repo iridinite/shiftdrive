@@ -29,7 +29,7 @@ namespace ShiftDrive {
         }
 
         public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            Skybox.Draw(graphicsDevice);
+            Skybox.Draw();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 

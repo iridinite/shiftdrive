@@ -15,7 +15,7 @@ namespace ShiftDrive {
 
         private static float rotation = Utils.RandomFloat(0f, MathHelper.TwoPi);
 
-        public static void Draw(GraphicsDevice graphicsDevice) {
+        public static void Draw() {
             // Use the unlit shader to render a skybox.
             Effect fx = Assets.fxUnlit; // shortcut
             fx.Parameters["WVP"].SetValue(Matrix.CreateRotationY(rotation) * Matrix.CreateRotationZ(rotation) *
