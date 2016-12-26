@@ -215,7 +215,7 @@ namespace ShiftDrive {
             }
         }
 
-        public static void PublishAnnouncement(AnnouncementId annId, string customText) {
+        public static void PublishAnnouncement(AnnouncementId annId, string customText = null) {
             // with the exception of custom announcement, don't spam them
             if (annId != AnnouncementId.Custom && announceCooldown.ContainsKey(annId) && announceCooldown[annId] > 0f) return;
             announceCooldown[annId] = 30f;

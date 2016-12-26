@@ -50,13 +50,13 @@ namespace ShiftDrive {
                 // hull integrity warnings
                 float hullFraction = hull / hullMax;
                 if (hullFraction <= 0.25f && hullWarningShown < 3) {
-                    NetServer.PublishAnnouncement(AnnouncementId.Hull25, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.Hull25);
                     hullWarningShown = 3;
                 } else if (hullFraction <= 0.5f && hullWarningShown < 2) {
-                    NetServer.PublishAnnouncement(AnnouncementId.Hull50, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.Hull50);
                     hullWarningShown = 2;
                 } else if (hullFraction <= 0.75f && hullWarningShown < 1) {
-                    NetServer.PublishAnnouncement(AnnouncementId.Hull75, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.Hull75);
                     hullWarningShown = 1;
                 } else if (hullFraction > 0.75f) {
                     // reset warnings if above 75%
@@ -65,15 +65,15 @@ namespace ShiftDrive {
 
                 // fuel reserves warnings
                 if (fuel < 1f)
-                    NetServer.PublishAnnouncement(AnnouncementId.FuelCritical, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.FuelCritical);
                 else if (fuel < 3f)
-                    NetServer.PublishAnnouncement(AnnouncementId.FuelLow, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.FuelLow);
 
                 // shield strength warnings
                 if (shieldActive && shield <= 0f)
-                    NetServer.PublishAnnouncement(AnnouncementId.ShieldDown, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.ShieldDown);
                 else if (shieldActive && shield / shieldMax <= 0.25f)
-                    NetServer.PublishAnnouncement(AnnouncementId.ShieldLow, null);
+                    NetServer.PublishAnnouncement(AnnouncementId.ShieldLow);
             }
         }
 
