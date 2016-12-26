@@ -21,8 +21,7 @@ namespace ShiftDrive {
         PlayerShip,
         Station,
         BlackHole,
-        Projectile,
-        Particle
+        Projectile
     }
 
     /// <summary>
@@ -54,7 +53,6 @@ namespace ShiftDrive {
         Faction         = 1 << 18,
         Flares          = 1 << 19,
 
-        ParticleData    = 1 << 20,
         ProjectileData  = 1 << 21,
 
         NameShort       = 1 << 22,

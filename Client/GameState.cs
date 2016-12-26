@@ -118,7 +118,6 @@ namespace ShiftDrive {
                         case ObjectType.Asteroid: obj = new Asteroid(this); break;
                         case ObjectType.BlackHole: obj = new BlackHole(this); break;
                         case ObjectType.Projectile: obj = new Projectile(this); break;
-                        case ObjectType.Particle: obj = new Particle(this); break;
                         default:
                             throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
                     }
