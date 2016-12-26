@@ -49,6 +49,7 @@
     <Compile Include="FormGameOver.cs" />
     <Compile Include="ImageButton.cs" />
     <Compile Include="Packet.cs" />
+    <Compile Include="ParticleManager.cs" />
     <Compile Include="SpaceStation.cs" />
     <Compile Include="SpriteQueue.cs" />
     <Compile Include="TextButton.cs" />

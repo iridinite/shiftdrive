@@ -142,6 +142,8 @@ namespace ShiftDrive {
                         gobj.Update(deltaTime);
                     }
                 }
+                // update particles
+                ParticleManager.Update(deltaTime);
             }
 
             // re-calculate the 3D projection matrix

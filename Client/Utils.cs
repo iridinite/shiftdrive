@@ -182,6 +182,7 @@ namespace ShiftDrive {
                 sb.AppendLine($"Players: {NetClient.PlayerCount}");
                 sb.AppendLine($"Own Roles: {(int)NetClient.MyRoles}");
                 sb.AppendLine($"Taken Roles: {(int)NetClient.TakenRoles}");
+                sb.AppendLine($"Particles: {ParticleManager.GetCount()}");
                 sb.AppendLine($"GameObjects: {NetClient.World.Objects.Count}");
             } else {
                 sb.AppendLine("disconnected");

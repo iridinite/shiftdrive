@@ -83,6 +83,9 @@ namespace ShiftDrive {
             // we're done drawing text and health bars
             spriteBatch.End();
 
+            // queue the particle sprites
+            ParticleManager.QueueDraw(min, max);
+
             // switch to back buffer and start putting everything together
             graphicsDevice.SetRenderTarget(null);
             graphicsDevice.Clear(Color.Black);
