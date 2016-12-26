@@ -17,7 +17,7 @@ namespace ShiftDrive {
 
         private RenderTarget2D rtAreaHud;
 
-        public abstract void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch);
+        public abstract void Draw(SpriteBatch spriteBatch);
 
         /// <summary>
         /// Shorthand for NetClient.World.GetPlayerShip()

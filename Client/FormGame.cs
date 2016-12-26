@@ -89,7 +89,7 @@ namespace ShiftDrive {
             lock (NetClient.worldLock) {
                 PlayerShip player = NetClient.World.GetPlayerShip();
 
-                Console.Draw(graphicsDevice, spriteBatch);
+                Console.Draw(spriteBatch);
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
