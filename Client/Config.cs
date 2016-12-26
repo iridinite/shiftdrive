@@ -11,27 +11,24 @@ namespace ShiftDrive {
     /// <summary>
     /// Manages the storage of user configuration settings.
     /// </summary>
-    internal sealed class Config {
+    internal static class Config {
 
         private const string cfgFileName = "config.dat";
         private const byte cfgVersion = 1;
 
-        public ushort ResolutionW { get; set; } = 1280;
-        public ushort ResolutionH { get; set; } = 720;
-        public bool FullScreen { get; set; } = false;
+        public static ushort ResolutionW { get; set; } = 1280;
+        public static ushort ResolutionH { get; set; } = 720;
+        public static bool FullScreen { get; set; } = false;
 
-        public byte VolumeSound { get; set; } = 10;
-        public byte VolumeMusic { get; set; } = 8;
-
-        public static Config Inst { get; internal set; }
-
-        public static Config Load() {
+        public static byte VolumeSound { get; set; } = 10;
+        public static byte VolumeMusic { get; set; } = 8;
+        
+        public static void Load() {
             if (!Logger.HasWritePermission())
                 SDGame.Logger.LogError("Warning: ShiftDrive does not have permission to save files to the app directory.\nAny settings you change will be lost.");
 
 #if DEBUG
             // if debugging, we probably always want windowed mode etc.
-            return new Config();
 #else
             if (!File.Exists(Logger.BaseDir.FullName + cfgFileName))
                 return new Config();
@@ -58,7 +55,7 @@ namespace ShiftDrive {
 #endif
         }
 
-        public void Save() {
+        public static void Save() {
             if (!Logger.HasWritePermission()) return;
 
             try {
@@ -81,14 +78,14 @@ namespace ShiftDrive {
         /// <summary>
         /// Calculates a volume multiplier.
         /// </summary>
-        public float GetVolumeSound() {
+        public static float GetVolumeSound() {
             return VolumeSound / 10f;
         }
 
         /// <summary>
         /// Calculates a volume multiplier.
         /// </summary>
-        public float GetVolumeMusic() {
+        public static float GetVolumeMusic() {
             return VolumeMusic / 10f;
         }
 
