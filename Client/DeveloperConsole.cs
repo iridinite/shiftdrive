@@ -54,8 +54,6 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="spriteBatch">A SpriteBatch to draw with.</param>
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
             try {
                 int y = 8;
                 if (msgs.Count > 0) {
@@ -75,8 +73,6 @@ namespace ShiftDrive {
             } catch (Exception) {
                 // swallow any errors
             }
-
-            spriteBatch.End();
         }
 
         /// <summary>

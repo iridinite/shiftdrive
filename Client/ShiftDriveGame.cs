@@ -169,6 +169,12 @@ namespace ShiftDrive {
             // active form should draw its contents
             ActiveForm?.Draw(GraphicsDevice, spriteBatch);
 
+            // draw always-on-top UI elements
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Tooltip.DrawQueued(spriteBatch);
+            console.Draw(spriteBatch);
+            spriteBatch.End();
+
 #if DEBUG
             // draw debug tools
             if (debugPanelShown) {
@@ -179,9 +185,6 @@ namespace ShiftDrive {
                 spriteBatch.End();
             }
 #endif
-
-            // draw the developer console text
-            console.Draw(spriteBatch);
 
             base.Draw(gameTime);
         }

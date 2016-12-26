@@ -66,7 +66,7 @@ namespace ShiftDrive {
             spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY + EffHeight - 8, width - 16, 8), new Rectangle(state * 24 + 8, 16, 8, 8), Color.White); // bottom middle
             spriteBatch.Draw(txButton, new Rectangle(x + width - 8, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24 + 16, 16, 8, 8), Color.White); // bottom right
 
-            tooltip?.Draw(spriteBatch);
+            tooltip?.Draw();
         }
 
         public override void Update(GameTime gameTime) {
