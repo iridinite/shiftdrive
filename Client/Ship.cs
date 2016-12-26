@@ -37,6 +37,8 @@ namespace ShiftDrive {
 
         public byte faction;
 
+        private float flaretime;
+
         protected Ship(GameState world) : base(world) {
             hull = 100f;
             hullMax = 100f;
@@ -48,6 +50,7 @@ namespace ShiftDrive {
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
             flares = new List<Vector2>();
+            flaretime = 0f;
             zorder = 128;
             layer = CollisionLayer.Ship;
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
@@ -130,24 +133,6 @@ namespace ShiftDrive {
 
             // server-side stuff
             if (world.IsServer) {
-                // spawn engine flare particles
-                if (throttle > 0f) {
-                    foreach (Vector2 flarepos in flares) {
-                        float relangle = Utils.CalculateBearing(Vector2.Zero, flarepos);
-                        Particle flare = new Particle(NetServer.world);
-                        flare.lifemax = 1f;
-                        flare.spritename = "map/engineflare";
-                        flare.colorend = Color.Transparent;
-                        flare.facing = facing;
-                        flare.zorder = 160;
-                        flare.position = position + new Vector2(
-                            flarepos.Length() * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
-                            flarepos.Length() * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
-
-                        NetServer.world.AddObject(flare);
-                    }
-                }
-
                 // update mount point position
                 for (int i = 0; i < mountsNum; i++) {
                     if (mounts[i] == null) continue;
@@ -157,6 +142,31 @@ namespace ShiftDrive {
                         mounts[i].OffsetMag * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
                         mounts[i].OffsetMag * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
                 }
+            }
+
+            // engine flares
+            if (!(throttle > 0f) || world.IsServer) return;
+            if (flaretime > 0f) { // space out evenly
+                flaretime -= deltaTime;
+                return;
+            }
+            flaretime = 0.01f;
+            // create particles for engine exhaust
+            foreach (Vector2 flarepos in flares) {
+                float relangle = Utils.CalculateBearing(Vector2.Zero, flarepos);
+                Particle flare = new Particle();
+                flare.lifemax = 3f;
+                flare.sprite = Assets.GetSprite("map/engineflare").Clone();
+                flare.scalestart = 1.1f;
+                flare.scaleend = 0.9f;
+                flare.colorstart = Color.White * 0.75f;
+                flare.colorend = Color.Transparent;
+                flare.facing = facing;
+                flare.zorder = 160;
+                flare.position = position + new Vector2(
+                    flarepos.Length() * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
+                    flarepos.Length() * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
+                ParticleManager.Register(flare);
             }
         }
 
