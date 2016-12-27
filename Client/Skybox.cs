@@ -19,7 +19,7 @@ namespace ShiftDrive {
             // Use the unlit shader to render a skybox.
             Effect fx = Assets.fxUnlit; // shortcut
             fx.Parameters["WVP"].SetValue(Matrix.CreateRotationY(rotation) * Matrix.CreateRotationZ(rotation) *
-                                          Matrix.CreateLookAt(new Vector3(0f, -0.25f, 2f), new Vector3(0, 0, 0),
+                                          Matrix.CreateLookAt(new Vector3(0f, -0.25f, 1.5f), new Vector3(0, 0, 0),
                                               Vector3.Up) * SDGame.Inst.Projection);
             fx.Parameters["ModelTexture"].SetValue(Assets.textures["ui/skybox"]);
             foreach (ModelMesh mesh in Assets.mdlSkybox.Meshes) {
