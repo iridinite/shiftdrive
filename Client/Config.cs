@@ -16,9 +16,9 @@ namespace ShiftDrive {
         private const string cfgFileName = "config.dat";
         private const byte cfgVersion = 1;
 
-        public static ushort ResolutionW { get; set; } = 1920;
-        public static ushort ResolutionH { get; set; } = 1080;
-        public static bool FullScreen { get; set; } = true;
+        public static ushort ResolutionW { get; set; } = 1280;
+        public static ushort ResolutionH { get; set; } = 720;
+        public static bool FullScreen { get; set; } = false;
 
         public static byte VolumeSound { get; set; } = 10;
         public static byte VolumeMusic { get; set; } = 8;
