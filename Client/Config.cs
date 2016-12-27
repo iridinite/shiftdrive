@@ -16,9 +16,9 @@ namespace ShiftDrive {
         private const string cfgFileName = "config.dat";
         private const byte cfgVersion = 1;
 
-        public static ushort ResolutionW { get; set; } = 1280;
-        public static ushort ResolutionH { get; set; } = 720;
-        public static bool FullScreen { get; set; } = false;
+        public static ushort ResolutionW { get; set; } = 1920;
+        public static ushort ResolutionH { get; set; } = 1080;
+        public static bool FullScreen { get; set; } = true;
 
         public static byte VolumeSound { get; set; } = 10;
         public static byte VolumeMusic { get; set; } = 8;
@@ -31,26 +31,23 @@ namespace ShiftDrive {
             // if debugging, we probably always want windowed mode etc.
 #else
             if (!File.Exists(Logger.BaseDir.FullName + cfgFileName))
-                return new Config();
+                return;
 
             try {
-                Config cfg = new Config();
                 using (FileStream stream = new FileStream(Logger.BaseDir.FullName + cfgFileName, FileMode.Open)) {
                     using (BinaryReader reader = new BinaryReader(stream)) {
                         if (reader.ReadByte() != cfgVersion) throw new InvalidDataException("Invalid config file version");
 
-                        cfg.ResolutionW = reader.ReadUInt16();
-                        cfg.ResolutionH = reader.ReadUInt16();
-                        cfg.FullScreen = reader.ReadBoolean();
-                        cfg.VolumeSound = reader.ReadByte();
-                        cfg.VolumeMusic = reader.ReadByte();
+                        ResolutionW = reader.ReadUInt16();
+                        ResolutionH = reader.ReadUInt16();
+                        FullScreen = reader.ReadBoolean();
+                        VolumeSound = reader.ReadByte();
+                        VolumeMusic = reader.ReadByte();
                     }
                 }
-                return cfg;
 
             } catch (Exception ex) {
                 SDGame.Logger.LogError("Failed to read config: " + ex);
-                return new Config();
             }
 #endif
         }
