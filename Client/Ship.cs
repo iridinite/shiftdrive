@@ -159,7 +159,7 @@ namespace ShiftDrive {
                 flare.sprite = Assets.GetSprite("map/engineflare").Clone();
                 flare.scalestart = 1.1f;
                 flare.scaleend = 0.9f;
-                flare.colorstart = Color.White * 0.75f;
+                flare.colorstart = Color.White * (throttle * 0.6f + 0.15f);
                 flare.colorend = Color.Transparent;
                 flare.facing = facing;
                 flare.zorder = 160;
