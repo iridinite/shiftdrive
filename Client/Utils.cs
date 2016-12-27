@@ -64,6 +64,20 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Calculates the position for a given offset when rotated by the specified angle around the origin (0, 0).
+        /// </summary>
+        /// <param name="offset">The offset to rotate, relative to (0, 0).</param>
+        /// <param name="angle">The angle to rotate by.</param>
+        public static Vector2 CalculateRotatedOffset(Vector2 offset, float angle) {
+            float offsetlen = offset.Length();
+            float relangle = CalculateBearing(Vector2.Zero, -offset);
+
+            return new Vector2(
+                offsetlen * (float)Math.Cos(MathHelper.ToRadians(angle + relangle + 90f)),
+                offsetlen * (float)Math.Sin(MathHelper.ToRadians(angle + relangle + 90f)));
+        }
+
+        /// <summary>
         /// Returns a random floating point number in the specified range.
         /// </summary>
         /// <param name="min">The inclusive lower bound.</param>

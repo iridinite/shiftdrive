@@ -136,11 +136,7 @@ namespace ShiftDrive {
                 // update mount point position
                 for (int i = 0; i < mountsNum; i++) {
                     if (mounts[i] == null) continue;
-                    float relangle = Utils.CalculateBearing(Vector2.Zero, mounts[i].Offset);
-
-                    mounts[i].Position = new Vector2(
-                        mounts[i].OffsetMag * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
-                        mounts[i].OffsetMag * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
+                    mounts[i].Position = Utils.CalculateRotatedOffset(mounts[i].Offset, facing);
                 }
             }
 
@@ -153,7 +149,6 @@ namespace ShiftDrive {
             flaretime = 0.01f;
             // create particles for engine exhaust
             foreach (Vector2 flarepos in flares) {
-                float relangle = Utils.CalculateBearing(Vector2.Zero, flarepos);
                 Particle flare = new Particle();
                 flare.lifemax = 3f;
                 flare.sprite = Assets.GetSprite("map/engineflare").Clone();
@@ -163,9 +158,7 @@ namespace ShiftDrive {
                 flare.colorend = Color.Transparent;
                 flare.facing = facing;
                 flare.zorder = 160;
-                flare.position = position + new Vector2(
-                    flarepos.Length() * (float)Math.Cos(MathHelper.ToRadians(facing + relangle + 90f)),
-                    flarepos.Length() * (float)Math.Sin(MathHelper.ToRadians(facing + relangle + 90f)));
+                flare.position = position + Utils.CalculateRotatedOffset(flarepos, facing);
                 ParticleManager.Register(flare);
             }
         }
