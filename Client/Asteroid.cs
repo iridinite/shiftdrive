@@ -51,10 +51,6 @@ namespace ShiftDrive {
             }
         }
 
-        public override bool IsTerrain() {
-            return true;
-        }
-
         public override void Serialize(Packet outstream) {
             base.Serialize(outstream);
             if (changed.HasFlag(ObjectProperty.AngularVelocity))

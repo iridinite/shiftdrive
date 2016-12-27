@@ -55,11 +55,6 @@ namespace ShiftDrive {
                 if (pullpower >= 0.95f) gobj.Destroy();
             }
         }
-
-        public override bool IsTerrain() {
-            return true;
-        }
-
     }
 
 }

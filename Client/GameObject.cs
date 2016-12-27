@@ -91,8 +91,7 @@ namespace ShiftDrive {
             refLuaSet,
             refLuaTakeDamage,
             refLuaDestroy,
-            refLuaIsShip,
-            refLuaIsTerrain;
+            refLuaIsShip;
 
         public ObjectProperty changed;
         private bool destroyScheduled;
@@ -106,7 +105,6 @@ namespace ShiftDrive {
             refLuaTakeDamage = clua_TakeDamage;
             refLuaDestroy = clua_Destroy;
             refLuaIsShip = clua_IsShip;
-            refLuaIsTerrain = clua_IsTerrain;
             changed = ObjectProperty.All;
             color = Color.White;
             damping = 1.0f;
@@ -184,14 +182,6 @@ namespace ShiftDrive {
             return nextId;
         }
 #endif
-
-        /// <summary>
-        /// Specifies whether this object counts as terrain.
-        /// Terrain objects are only sent once to clients, saving bandwidth.
-        /// </summary>
-        public virtual bool IsTerrain() {
-            return false;
-        }
 
         /// <summary>
         /// Specifies whether this object can be targeted by weapons.
@@ -282,9 +272,6 @@ namespace ShiftDrive {
                 case "Destroy":
                     LuaAPI.lua_pushcclosure(L, refLuaDestroy, 0);
                     break;
-                case "IsTerrain":
-                    LuaAPI.lua_pushcclosure(L, refLuaIsTerrain, 0);
-                    break;
                 case "IsShip":
                     LuaAPI.lua_pushcclosure(L, refLuaIsShip, 0);
                     break;
@@ -353,11 +340,6 @@ namespace ShiftDrive {
 
         private int clua_IsShip(IntPtr L) {
             LuaAPI.lua_pushboolean(L, IsShip() ? 1 : 0);
-            return 1;
-        }
-
-        private int clua_IsTerrain(IntPtr L) {
-            LuaAPI.lua_pushboolean(L, IsTerrain() ? 1 : 0);
             return 1;
         }
 
