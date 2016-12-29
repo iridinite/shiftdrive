@@ -171,6 +171,10 @@ namespace ShiftDrive {
             return loc.GetPhrase(key);
         }
 
+        public static float Cross(this Vector2 a, Vector2 b) {
+            return a.X * b.Y - a.Y * b.X;
+        }
+
 #if DEBUG
         public static StringBuilder GetDebugInfo() {
             StringBuilder sb = new StringBuilder();
