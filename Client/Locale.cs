@@ -26,7 +26,7 @@ namespace ShiftDrive {
     /// </remarks>
     internal static class Locale {
 
-        private static readonly Dictionary<string, string> stringTable;
+        private static readonly Dictionary<string, string> stringTable = new Dictionary<string, string>();
 
         /// <summary>
         /// Loads a string table from a file.
