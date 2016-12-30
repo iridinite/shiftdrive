@@ -48,6 +48,7 @@
     <Compile Include="CollisionLayer.cs" />
     <Compile Include="FormGameOver.cs" />
     <Compile Include="ImageButton.cs" />
+    <Compile Include="Locale.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="ParticleManager.cs" />
     <Compile Include="SpaceStation.cs" />
