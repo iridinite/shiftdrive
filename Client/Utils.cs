@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Iridinite.Localization;
 
 namespace ShiftDrive {
 
@@ -18,7 +17,6 @@ namespace ShiftDrive {
     internal static class Utils {
 
         private static float logoY = 100f;
-        private static Localizer loc;
 
         internal static Random RNG { get; private set; }
 
@@ -145,24 +143,7 @@ namespace ShiftDrive {
             // TODO
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Loads the string tables for localization.
-        /// </summary>
-        public static void LocaleLoad() {
-            loc = new Localizer();
-            loc.LoadLocale("Data//locale//en-GB//strings.txt");
-            loc.LoadPhrases("Data//locale//en-GB//phrases.txt");
-        }
-
-        /// <summary>
-        /// Returns the value for a key/value pair in the string table.
-        /// </summary>
-        /// <param name="key">The key to look up.</param>
-        public static string LocaleGet(string key) {
-            return loc.GetString(key);
-        }
-
+        
         /// <summary>
         /// Generates a random phrase for the given key in the phrase table.
         /// </summary>

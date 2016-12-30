@@ -114,10 +114,6 @@
       <Project>{9a7ec68f-98ad-4b84-b95e-814cdea2ec13}</Project>
       <Name>CommLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Localization\Localization.vbproj">
-      <Project>{bee5e0f2-ed50-4b82-b38b-f966f94b0b89}</Project>
-      <Name>Localization</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

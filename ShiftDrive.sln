@@ -1,17 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{49D15A09-4058-46B6-B118-1314FDF68972}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9A7EC68F-98AD-4B84-B95E-814CDEA2EC13} = {9A7EC68F-98AD-4B84-B95E-814CDEA2EC13}
-		{BEE5E0F2-ED50-4B82-B38B-F966F94B0B89} = {BEE5E0F2-ED50-4B82-B38B-F966F94B0B89}
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CommLib", "CommLib\CommLib.vbproj", "{9A7EC68F-98AD-4B84-B95E-814CDEA2EC13}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Localization", "Localization\Localization.vbproj", "{BEE5E0F2-ED50-4B82-B38B-F966F94B0B89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +24,6 @@ Global
 		{9A7EC68F-98AD-4B84-B95E-814CDEA2EC13}.Debug|x64.Build.0 = Debug|Any CPU
 		{9A7EC68F-98AD-4B84-B95E-814CDEA2EC13}.Release|x64.ActiveCfg = Release|Any CPU
 		{9A7EC68F-98AD-4B84-B95E-814CDEA2EC13}.Release|x64.Build.0 = Release|Any CPU
-		{BEE5E0F2-ED50-4B82-B38B-F966F94B0B89}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BEE5E0F2-ED50-4B82-B38B-F966F94B0B89}.Debug|x64.Build.0 = Debug|Any CPU
-		{BEE5E0F2-ED50-4B82-B38B-F966F94B0B89}.Release|x64.ActiveCfg = Release|Any CPU
-		{BEE5E0F2-ED50-4B82-B38B-F966F94B0B89}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
