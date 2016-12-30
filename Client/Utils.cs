@@ -126,7 +126,7 @@ namespace ShiftDrive {
 
             string versionstr = GetVersionString() +
                                 " / Protocol " + NetShared.ProtocolVersion;
-            spriteBatch.DrawString(Assets.fontDefault, LocaleGet("credit"), new Vector2(16, SDGame.Inst.GameHeight - 28), Color.Gray);
+            spriteBatch.DrawString(Assets.fontDefault, Locale.Get("credit"), new Vector2(16, SDGame.Inst.GameHeight - 28), Color.Gray);
             spriteBatch.DrawString(Assets.fontDefault, versionstr, new Vector2(SDGame.Inst.GameWidth - Assets.fontDefault.MeasureString(versionstr).X - 16, SDGame.Inst.GameHeight - 28), Color.Gray);
         }
 
@@ -144,14 +144,6 @@ namespace ShiftDrive {
             throw new NotImplementedException();
         }
         
-        /// <summary>
-        /// Generates a random phrase for the given key in the phrase table.
-        /// </summary>
-        /// <param name="key">The key to look up.</param>
-        public static string LocalePhrase(string key) {
-            return loc.GetPhrase(key);
-        }
-
         public static float Cross(this Vector2 a, Vector2 b) {
             return a.X * b.Y - a.Y * b.X;
         }

@@ -278,7 +278,8 @@ namespace ShiftDrive {
         }
 
         private int clua_phrase(IntPtr L) {
-            lua_pushstring(L, Utils.LocalePhrase(luaL_checkstring(L, 1)));
+            //lua_pushstring(L, Utils.LocalePhrase(luaL_checkstring(L, 1)));
+            lua_pushnil(L); // TODO
             return 1;
         }
 
