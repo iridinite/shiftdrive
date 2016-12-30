@@ -41,18 +41,18 @@ namespace ShiftDrive {
             NetClient.Announcement += NetClient_Announcement;
 
             consoleButtons = new List<Button>();
-            AddConsoleButton(0, 4, BtnHelm_OnClick, Utils.LocaleGet("console_settings")); // settings
+            AddConsoleButton(0, 4, BtnHelm_OnClick, Locale.Get("console_settings")); // settings
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
-                AddConsoleButton(1, -1, BtnHelm_OnClick, Utils.LocaleGet("console_helm"));
+                AddConsoleButton(1, -1, BtnHelm_OnClick, Locale.Get("console_helm"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons))
-                AddConsoleButton(2, -1, BtnWeap_OnClick, Utils.LocaleGet("console_wep"));
+                AddConsoleButton(2, -1, BtnWeap_OnClick, Locale.Get("console_wep"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Engineering))
-                AddConsoleButton(3, -1, BtnWeap_OnClick, Utils.LocaleGet("console_eng"));
+                AddConsoleButton(3, -1, BtnWeap_OnClick, Locale.Get("console_eng"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster))
-                AddConsoleButton(4, -1, BtnWeap_OnClick, Utils.LocaleGet("console_quar"));
+                AddConsoleButton(4, -1, BtnWeap_OnClick, Locale.Get("console_quar"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence))
-                AddConsoleButton(5, -1, BtnWeap_OnClick, Utils.LocaleGet("console_intel"));
-            AddConsoleButton(6, -1, BtnLRS_OnClick, Utils.LocaleGet("console_lrs")); // debug LRS
+                AddConsoleButton(5, -1, BtnWeap_OnClick, Locale.Get("console_intel"));
+            AddConsoleButton(6, -1, BtnLRS_OnClick, Locale.Get("console_lrs")); // debug LRS
 
             Console = new ConsoleHelm();
         }

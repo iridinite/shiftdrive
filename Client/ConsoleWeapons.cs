@@ -29,7 +29,7 @@ namespace ShiftDrive {
                 // find the weapon in this index
                 Weapon wep = Player.weapons[i];
                 if (wep == null) {
-                    spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("no_weapon"), new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.FromNonPremultiplied(48, 48, 48, 255));
+                    spriteBatch.DrawString(Assets.fontDefault, Locale.Get("no_weapon"), new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.FromNonPremultiplied(48, 48, 48, 255));
                     continue;
                 }
 
@@ -46,9 +46,9 @@ namespace ShiftDrive {
                     spriteBatch.DrawString(Assets.fontTooltip, "x " + wep.AmmoClipsLeft, new Vector2(weaponCurrentX + 110, SDGame.Inst.GameHeight - 32), wep.AmmoClipsMax == 0 ? Color.Orange : Color.White);
                     // alert text for reloading / out of ammo
                     if (wep.AmmoLeft == 0 && wep.ReloadProgress > 0f)
-                        spriteBatch.DrawString(Assets.fontTooltip, Utils.LocaleGet("reloading"), new Vector2(weaponCurrentX + 24, SDGame.Inst.GameHeight - 16), Color.Orange);
+                        spriteBatch.DrawString(Assets.fontTooltip, Locale.Get("reloading"), new Vector2(weaponCurrentX + 24, SDGame.Inst.GameHeight - 16), Color.Orange);
                     else if (wep.AmmoLeft == 0 && wep.AmmoClipsLeft == 0)
-                        spriteBatch.DrawString(Assets.fontTooltip, Utils.LocaleGet("outofammo"), new Vector2(weaponCurrentX + 24, SDGame.Inst.GameHeight - 16), Color.Orange);
+                        spriteBatch.DrawString(Assets.fontTooltip, Locale.Get("outofammo"), new Vector2(weaponCurrentX + 24, SDGame.Inst.GameHeight - 16), Color.Orange);
                 }
                 spriteBatch.DrawString(Assets.fontTooltip, wep.Name, new Vector2(weaponCurrentX + 9, SDGame.Inst.GameHeight - 51), Color.Black);
                 spriteBatch.DrawString(Assets.fontTooltip, wep.Name, new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.White);

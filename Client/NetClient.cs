@@ -87,7 +87,7 @@ namespace ShiftDrive {
         private static void Client_OnDisconnected() {
             // show a 'connection lost' message if the disconnect was unexpected
             if (!expectShutdown)
-                SDGame.Inst.ActiveForm = new FormMessage(Utils.LocaleGet("err_connlost"));
+                SDGame.Inst.ActiveForm = new FormMessage(Locale.Get("err_connlost"));
             SDGame.Logger.Log("Disconnected from server.");
         }
 
@@ -111,7 +111,7 @@ namespace ShiftDrive {
                         case PacketID.Handshake:
                             // require same protocol versions
                             if (recv.GetLength() != 1 || recv.ReadByte() != NetShared.ProtocolVersion)
-                                throw new Exception(Utils.LocaleGet("err_version"));
+                                throw new Exception(Locale.Get("err_version"));
                             break;
 
                         case PacketID.LobbyState:
@@ -141,19 +141,19 @@ namespace ShiftDrive {
                             AnnouncementId id = (AnnouncementId)recv.ReadByte();
                             switch (id) {
                                 case AnnouncementId.Custom: announce = recv.ReadString(); break;
-                                case AnnouncementId.FuelLow: announce = Utils.LocaleGet("announce_fuellow"); break;
-                                case AnnouncementId.FuelCritical: announce = Utils.LocaleGet("announce_fuelcrit"); break;
-                                case AnnouncementId.Hull75: announce = Utils.LocaleGet("announce_hull75"); break;
-                                case AnnouncementId.Hull50: announce = Utils.LocaleGet("announce_hull50"); break;
-                                case AnnouncementId.Hull25: announce = Utils.LocaleGet("announce_hull25"); break;
-                                case AnnouncementId.BlackHole: announce = Utils.LocaleGet("announce_blackhole"); break;
-                                case AnnouncementId.ShieldLow: announce = Utils.LocaleGet("announce_shieldlow"); break;
-                                case AnnouncementId.ShieldDown: announce = Utils.LocaleGet("announce_shielddown"); break;
-                                case AnnouncementId.ShieldUp: announce = Utils.LocaleGet("announce_shieldup"); break;
-                                case AnnouncementId.ShiftInitialize: announce = Utils.LocaleGet("announce_shiftinit"); break;
-                                case AnnouncementId.ShiftCharged: announce = Utils.LocaleGet("announce_shiftsoon"); break;
+                                case AnnouncementId.FuelLow: announce = Locale.Get("announce_fuellow"); break;
+                                case AnnouncementId.FuelCritical: announce = Locale.Get("announce_fuelcrit"); break;
+                                case AnnouncementId.Hull75: announce = Locale.Get("announce_hull75"); break;
+                                case AnnouncementId.Hull50: announce = Locale.Get("announce_hull50"); break;
+                                case AnnouncementId.Hull25: announce = Locale.Get("announce_hull25"); break;
+                                case AnnouncementId.BlackHole: announce = Locale.Get("announce_blackhole"); break;
+                                case AnnouncementId.ShieldLow: announce = Locale.Get("announce_shieldlow"); break;
+                                case AnnouncementId.ShieldDown: announce = Locale.Get("announce_shielddown"); break;
+                                case AnnouncementId.ShieldUp: announce = Locale.Get("announce_shieldup"); break;
+                                case AnnouncementId.ShiftInitialize: announce = Locale.Get("announce_shiftinit"); break;
+                                case AnnouncementId.ShiftCharged: announce = Locale.Get("announce_shiftsoon"); break;
                                 default:
-                                    throw new InvalidDataException(Utils.LocaleGet("err_unknownannounce"));
+                                    throw new InvalidDataException(Locale.Get("err_unknownannounce"));
                             }
                             Announcement?.Invoke(announce);
                             break;
@@ -170,12 +170,12 @@ namespace ShiftDrive {
 
                         default:
                             SDGame.Logger.LogError("Client got unknown packet " + recv.GetID());
-                            throw new InvalidDataException(Utils.LocaleGet("err_unknownpacket") + " (" + recv.GetID() + ")");
+                            throw new InvalidDataException(Locale.Get("err_unknownpacket") + " (" + recv.GetID() + ")");
                     }
                 } catch (Exception ex) {
                     Disconnect();
                     SDGame.Logger.LogError("Client error in OnDataReceived: " + ex);
-                    SDGame.Inst.ActiveForm = new FormMessage(Utils.LocaleGet("err_comm") + Environment.NewLine + ex.ToString());
+                    SDGame.Inst.ActiveForm = new FormMessage(Locale.Get("err_comm") + Environment.NewLine + ex.ToString());
                 }
             }
         }

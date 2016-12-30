@@ -273,7 +273,7 @@ namespace ShiftDrive {
         }
 
         private int clua_localize(IntPtr L) {
-            lua_pushstring(L, Utils.LocaleGet(luaL_checkstring(L, 1)));
+            lua_pushstring(L, Locale.Get(luaL_checkstring(L, 1)));
             return 1;
         }
 

@@ -82,7 +82,8 @@ namespace ShiftDrive {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // load string table
-            Utils.LocaleLoad();
+            Locale.LoadStrings("Data//locale//en-GB//strings.txt");
+            //loc.LoadPhrases("Data//locale//en-GB//phrases.txt");
 
             // load game assets
             Assets.fontDefault = Content.Load<SpriteFont>("Fonts/Default");

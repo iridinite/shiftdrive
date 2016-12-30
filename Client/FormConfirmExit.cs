@@ -18,9 +18,9 @@ namespace ShiftDrive {
 
         public FormConfirmExit() {
             // create UI controls
-            btnQuit = new TextButton(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_yes"));
+            btnQuit = new TextButton(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Locale.Get("confirmexit_yes"));
             btnQuit.OnClick += btnConnect_Click;
-            btnCancel = new TextButton(1, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Utils.LocaleGet("confirmexit_no"));
+            btnCancel = new TextButton(1, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Locale.Get("confirmexit_no"));
             btnCancel.CancelSound = true;
             btnCancel.OnClick += btnCancel_Click;
         }
@@ -32,7 +32,7 @@ namespace ShiftDrive {
 
             Utils.DrawTitle(spriteBatch);
 
-            spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("confirmexit"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(Utils.LocaleGet("confirmexit")).X / 2f), SDGame.Inst.GameHeight / 2f), Color.White);
+            spriteBatch.DrawString(Assets.fontDefault, Locale.Get("confirmexit"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(Locale.Get("confirmexit")).X / 2f), SDGame.Inst.GameHeight / 2f), Color.White);
             btnQuit.Draw(spriteBatch);
             btnCancel.Draw(spriteBatch);
 

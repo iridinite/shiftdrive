@@ -20,7 +20,7 @@ namespace ShiftDrive {
             // store the message
             this.message = message;
             // create UI controls
-            btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Utils.LocaleGet("returntomenu"));
+            btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Locale.Get("returntomenu"));
             btnCancel.OnClick += btnCancel_Click;
         }
 

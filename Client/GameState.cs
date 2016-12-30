@@ -119,7 +119,7 @@ namespace ShiftDrive {
                         case ObjectType.BlackHole: obj = new BlackHole(this); break;
                         case ObjectType.Projectile: obj = new Projectile(this); break;
                         default:
-                            throw new Exception(Utils.LocaleGet("err_unknownobject") + " (" + objtype + ")");
+                            throw new Exception(Locale.Get("err_unknownobject") + " (" + objtype + ")");
                     }
                     obj.Deserialize(instream, recvChanged);
                     obj.id = objid;

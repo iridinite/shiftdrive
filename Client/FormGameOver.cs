@@ -39,10 +39,10 @@ namespace ShiftDrive {
             // string table, but seeing as this one-time operation is cheap and proper-case
             // improves the table's readability, I'm opting to do it here instead.
             int quoteNum = Utils.RNG.Next(1, 7);
-            quoteAuthor = Utils.LocaleGet("deathquote_" + quoteNum + "b").ToUpperInvariant();
+            quoteAuthor = Locale.Get("deathquote_" + quoteNum + "b").ToUpperInvariant();
             quoteLines = new List<string>(3);
             // split the full quote line into words
-            string quoteFullLine = Utils.LocaleGet("deathquote_" + quoteNum + "a").ToUpperInvariant();
+            string quoteFullLine = Locale.Get("deathquote_" + quoteNum + "a").ToUpperInvariant();
             string[] quoteParts = quoteFullLine.Split(' ');
             // assemble the words back into lines with line-breaks
             StringBuilder sb = new StringBuilder(128);

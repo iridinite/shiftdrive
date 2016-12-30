@@ -18,14 +18,14 @@ namespace ShiftDrive {
 
         public FormMainMenu() {
             // create UI controls
-            btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 100, 260, 40, Utils.LocaleGet("menu_connect"));
+            btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 100, 260, 40, Locale.Get("menu_connect"));
             btnConnect.OnClick += btnConnect_Click;
-            btnHost = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 150, 260, 40, Utils.LocaleGet("menu_host"));
+            btnHost = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 150, 260, 40, Locale.Get("menu_host"));
             btnHost.OnClick += btnHost_OnClick;
             btnHost.Enabled = false;
-            btnOptions = new TextButton(2, SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Utils.LocaleGet("menu_options"));
+            btnOptions = new TextButton(2, SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Locale.Get("menu_options"));
             btnOptions.OnClick += btnOptions_OnClick;
-            btnQuit = new TextButton(3, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Utils.LocaleGet("menu_exit"));
+            btnQuit = new TextButton(3, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Locale.Get("menu_exit"));
             btnQuit.OnClick += btnClose_Click;
         }
 

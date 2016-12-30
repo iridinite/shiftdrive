@@ -20,21 +20,21 @@ namespace ShiftDrive {
         public FormLobby() {
             int cx = SDGame.Inst.GameWidth / 2;
             int cy = SDGame.Inst.GameHeight / 2;
-            btnHelm = new TextButton(1, cx - 80, cy - 150, 200, 40, Utils.LocaleGet("console_helm"));
+            btnHelm = new TextButton(1, cx - 80, cy - 150, 200, 40, Locale.Get("console_helm"));
             btnHelm.OnClick += BtnHelm_OnClick;
-            btnWeap = new TextButton(2, cx - 80, cy - 100, 200, 40, Utils.LocaleGet("console_wep"));
+            btnWeap = new TextButton(2, cx - 80, cy - 100, 200, 40, Locale.Get("console_wep"));
             btnWeap.OnClick += BtnWeap_OnClick;
-            btnEngi = new TextButton(3, cx - 80, cy - 50, 200, 40, Utils.LocaleGet("console_eng"));
+            btnEngi = new TextButton(3, cx - 80, cy - 50, 200, 40, Locale.Get("console_eng"));
             btnEngi.OnClick += BtnEngi_OnClick;
-            btnQuar = new TextButton(4, cx - 80, cy, 200, 40, Utils.LocaleGet("console_quar"));
+            btnQuar = new TextButton(4, cx - 80, cy, 200, 40, Locale.Get("console_quar"));
             btnQuar.OnClick += BtnQuar_OnClick;
-            btnIntel = new TextButton(5, cx - 80, cy + 50, 200, 40, Utils.LocaleGet("console_intel"));
+            btnIntel = new TextButton(5, cx - 80, cy + 50, 200, 40, Locale.Get("console_intel"));
             btnIntel.OnClick += BtnIntel_OnClick;
 
-            btnDisconnect = new TextButton(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("disconnect"));
+            btnDisconnect = new TextButton(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Locale.Get("disconnect"));
             btnDisconnect.CancelSound = true;
             btnDisconnect.OnClick += BtnDisconnect_OnClick;
-            btnReady = new TextButton(6, SDGame.Inst.GameWidth - 220, SDGame.Inst.GameHeight - 60, 200, 40, Utils.LocaleGet("ready"));
+            btnReady = new TextButton(6, SDGame.Inst.GameWidth - 220, SDGame.Inst.GameHeight - 60, 200, 40, Locale.Get("ready"));
             btnReady.OnClick += BtnReady_OnClick;
 
             isReady = false;
@@ -60,7 +60,7 @@ namespace ShiftDrive {
             for (int i = 0; i < 5; i++) {
                 PlayerRole thisrole = (PlayerRole)(1 << i);
                 if (NetClient.TakenRoles.HasFlag(thisrole))
-                    spriteBatch.DrawString(Assets.fontDefault, Utils.LocaleGet("role_taken"), new Vector2(SDGame.Inst.GameWidth / 2 + 130, SDGame.Inst.GameHeight / 2 - 138 + (i * 50)), Color.White);
+                    spriteBatch.DrawString(Assets.fontDefault, Locale.Get("role_taken"), new Vector2(SDGame.Inst.GameWidth / 2 + 130, SDGame.Inst.GameHeight / 2 - 138 + (i * 50)), Color.White);
                 spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 - 150 + (i * 50), 40, 40), NetClient.MyRoles.HasFlag(thisrole) ? Color.Green : Color.Red);
             }
 
