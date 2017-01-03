@@ -319,6 +319,12 @@ namespace ShiftDrive {
                             world.GetPlayerShip().throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
                             world.GetPlayerShip().changed |= ObjectProperty.Throttle;
                             break;
+
+                        case PacketID.WeapShields:
+                            // Weapons toggles shield status
+                            world.GetPlayerShip().shieldActive = !world.GetPlayerShip().shieldActive;
+                            world.GetPlayerShip().changed |= ObjectProperty.Health;
+                            break;
                     }
 
                 }

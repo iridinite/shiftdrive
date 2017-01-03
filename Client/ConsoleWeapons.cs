@@ -72,11 +72,8 @@ namespace ShiftDrive {
         }
 
         private void btnShields_Click(Control sender) {
-            bool newstate = !Player.shieldActive;
-            using (Packet packet = new Packet(PacketID.WeapShields)) {
-                packet.Write(newstate);
+            using (Packet packet = new Packet(PacketID.WeapShields))
                 NetClient.Send(packet);
-            }
         }
 
     }
