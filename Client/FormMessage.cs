@@ -15,10 +15,12 @@ namespace ShiftDrive {
 
         private readonly TextButton btnCancel;
         private readonly string message;
+        private readonly Vector2 messageSize;
 
         public FormMessage(string message) {
             // store the message
-            this.message = message;
+            this.message = Utils.WrapText(Assets.fontDefault, message, SDGame.Inst.GameWidth - 200);
+            this.messageSize = Assets.fontDefault.MeasureString(this.message);
             // create UI controls
             btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Locale.Get("returntomenu"));
             btnCancel.OnClick += btnCancel_Click;
@@ -28,8 +30,8 @@ namespace ShiftDrive {
             Skybox.Draw();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-            spriteBatch.DrawString(Assets.fontDefault, message, new Vector2((int)(SDGame.Inst.GameWidth / 2 - Assets.fontDefault.MeasureString(message).X / 2), SDGame.Inst.GameHeight / 2 - 100), Color.White);
+            
+            spriteBatch.DrawString(Assets.fontDefault, message, new Vector2((int)(SDGame.Inst.GameWidth / 2f - messageSize.X / 2f), SDGame.Inst.GameHeight / 2f - messageSize.Y / 2f), Color.White);
             btnCancel.Draw(spriteBatch);
 
             spriteBatch.End();
