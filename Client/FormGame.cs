@@ -100,14 +100,31 @@ namespace ShiftDrive {
                 // hull integrity bar
                 const int hullbarx = 64;
                 float hullFraction = player.hull / player.hullMax;
+                float shieldFraction = player.shield / player.shieldMax;
                 Color outlineColor = hullFraction <= 0.35f && hullFlicker >= 0.5f ? Color.Red : Color.White;
                 Color hullbarColor = hullFraction <= 0.35f ? Color.Red : hullFraction <= 0.7f ? Color.Orange : Color.Green;
+                // background
                 spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 64, 512, 64), Color.White);
-                spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, (int)(hullDecline / player.hullMax * 512f), 64), new Rectangle(0, 128, (int)(hullDecline / player.hullMax * 512f), 64), Color.Purple);
-                spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, (int)(hullFraction * 512f), 64), new Rectangle(0, 128, (int)(hullFraction * 512f), 64), hullbarColor);
+                // hull
+                spriteBatch.Draw(Assets.textures["ui/hullbar"],
+                    new Rectangle(hullbarx, 0, (int)(hullDecline / player.hullMax * 512f), 64),
+                    new Rectangle(0, 128, (int)(hullDecline / player.hullMax * 512f), 64),
+                    Color.Purple);
+                spriteBatch.Draw(Assets.textures["ui/hullbar"],
+                    new Rectangle(hullbarx, 0, (int)(hullFraction * 512f), 64),
+                    new Rectangle(0, 128, (int)(hullFraction * 512f), 64),
+                    hullbarColor);
+                // shields
+                int shieldPixels = (int)(shieldFraction * 352f); // chop off 160 pixels left
+                spriteBatch.Draw(Assets.textures["ui/hullbar"],
+                    new Rectangle(hullbarx + 160 + 352 - shieldPixels, 0, shieldPixels, 64),
+                    new Rectangle(160 + 352 - shieldPixels, 192, shieldPixels, 64),
+                    player.shieldActive ? Color.LightSkyBlue : Color.Gray);
+                // outline
                 spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 0, 512, 64), outlineColor);
-                spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 472, 34), Color.Black);
-                spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 470, 32), outlineColor);
+                
+                //spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 472, 34), Color.Black);
+                //spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 470, 32), outlineColor);
 
                 foreach (Button b in consoleButtons)
                     b.Draw(spriteBatch);
@@ -136,7 +153,7 @@ namespace ShiftDrive {
                         hullDeclineWait = 0.75f;
                         hullPrevious = player.hull;
                     }
-                    if (hullDeclineWait <= 0f) // animate the hull bar declination
+                    if (hullDeclineWait <= 0f) // animate the hull integrity loss
                         hullDecline = MathHelper.Max(player.hull, hullDecline - dt * player.hullMax * 0.2f);
                 }
 
