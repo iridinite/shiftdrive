@@ -13,11 +13,19 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class ConsoleWeapons : Console {
 
+        private readonly Button btnShields = new TextButton(1, SDGame.Inst.GameWidth - 200, 400, 120, 40, "Shields");
+
+        public ConsoleWeapons() {
+            btnShields.OnClick += btnShields_Click;
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             DrawLocalArea(spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             DrawFuelGauge(spriteBatch);
+
+            btnShields.Draw(spriteBatch);
 
             // draw a list of currently active weapons
             int weaponBoxX = SDGame.Inst.GameWidth / 2 - Player.mountsNum * 80;
@@ -59,6 +67,16 @@ namespace ShiftDrive {
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
+
+            btnShields.Update(gameTime);
+        }
+
+        private void btnShields_Click(Control sender) {
+            bool newstate = !Player.shieldActive;
+            using (Packet packet = new Packet(PacketID.WeapShields)) {
+                packet.Write(newstate);
+                NetClient.Send(packet);
+            }
         }
 
     }
