@@ -1,6 +1,6 @@
 ﻿/*
 ** Project ShiftDrive
-** (C) Mika Molenkamp, 2016.
+** (C) Mika Molenkamp, 2016-2017.
 */
 
 using System.Collections.Generic;
