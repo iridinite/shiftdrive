@@ -38,6 +38,7 @@ namespace ShiftDrive {
         public byte faction;
 
         private float flaretime;
+        private float shieldRegenPause;
 
         protected Ship(GameState world) : base(world) {
             hull = 100f;
@@ -51,6 +52,7 @@ namespace ShiftDrive {
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
             flares = new List<Vector2>();
             flaretime = 0f;
+            shieldRegenPause = 0f;
             zorder = 128;
             layer = CollisionLayer.Ship;
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
@@ -76,6 +78,17 @@ namespace ShiftDrive {
                 changed |= ObjectProperty.Position;
             if (Math.Abs(deltaFacing) > 0.001f)
                 changed |= ObjectProperty.Facing;
+
+            // shield regeneration
+            if (shield < shieldMax) {
+                if (shieldRegenPause > 0f)
+                    shieldRegenPause -= deltaTime;
+                else
+                    // TODO: Check: is local-only change sufficient?
+                    // hopefully client predicts regeneration correctly, so replication is unnecessary.
+                    shield = Math.Min(shield + 2f * deltaTime, shieldMax);
+                    // changed |= ObjectProperty.Health;
+            }
 
             // update weapon charge / ammo states
             for (int i = 0; i < mountsNum; i++) {
@@ -166,6 +179,9 @@ namespace ShiftDrive {
         public override void TakeDamage(float damage) {
             // need to resend hull and shields
             changed |= ObjectProperty.Health;
+
+            // delay shield recharge
+            shieldRegenPause = 5f;
 
             // apply damage to shields first, if possible
             if (shieldActive && shield > 0f) {
