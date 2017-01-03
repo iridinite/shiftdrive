@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Xml;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
@@ -30,15 +31,17 @@ namespace ShiftDrive {
         /// </summary>
         internal class SpriteFrame {
             public Texture2D texture;
-            public SpriteBlend blend;
-            public float wait;
+            public float hold;
         }
 
         /// <summary>
         /// Represents a texture layer in a layered sprite.
         /// </summary>
         internal class SpriteLayer {
+            public string tag;
+
             public List<SpriteFrame> frames = new List<SpriteFrame>();
+            public SpriteBlend blend;
             public float rotate;
             public float rotateSpeed;
             public float scale;
@@ -59,135 +62,70 @@ namespace ShiftDrive {
             SpriteSheet ret = new SpriteSheet();
             ret.isPrototype = true;
 
-            // variables for recording parsing state
-            SpriteLayer layer = null;
-            SpriteFrame frame = null;
-            SpriteBlend blend = SpriteBlend.AlphaBlend;
-            float? currentFrameWait = null;
-            bool staticMode = false;
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filename);
 
-            using (StreamReader reader = new StreamReader(filename)) {
-                while (!reader.EndOfStream) {
-                    // read a line from the text file
-                    string line = reader.ReadLine();
-                    if (String.IsNullOrWhiteSpace(line)) continue; // blank line
+            // TODO: maybe do these integrity checks with an actual XML schema document?
+            XmlNode xmlRoot = xmlDoc.DocumentElement;
+            if (xmlRoot == null || !String.Equals(xmlRoot.Name, "sprite", StringComparison.InvariantCultureIgnoreCase))
+                throw new InvalidDataException($"In sprite sheet '{filename}': document must have exactly one root node named 'sprite'");
 
-                    // parse the command in the line
-                    line = line.Trim();
-                    if (line.StartsWith("#")) continue; // comment
-                    string[] parts = line.Split(new[] {' '}, 2);
-                    if (parts.Length < 1)
-                        throw new InvalidDataException($"In sprite sheet '{filename}': Could not parse line '{line}'");
+            if (!xmlRoot.HasChildNodes)
+                throw new InvalidDataException($"In sprite sheet '{filename}': sprite must have at least one layer");
 
-                    // follow the command
-                    switch (parts[0].Trim()) {
-                        case "blend": // Specify a blend mode for the sprite
-                            if (parts[1].Equals("alpha", StringComparison.InvariantCulture))
-                                blend = SpriteBlend.AlphaBlend;
-                            else if (parts[1].Equals("additive", StringComparison.InvariantCulture))
-                                blend = SpriteBlend.Additive;
-                            else if (parts[1].Equals("half", StringComparison.InvariantCulture))
-                                blend = SpriteBlend.HalfBlend;
-                            else
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized blend state '{parts[1]}'");
-                            break;
+            // helper for getting attribute and dealing with defaults / invalid data
+            Func<XmlNode, string, float, float> getFloatAttr = (node, attrname, defval) => {
+                float outval;
+                XmlAttribute attr = node.Attributes?[attrname];
+                if (attr == null) return defval;
+                if (float.TryParse(attr.Value, NumberStyles.Float,
+                    CultureInfo.InvariantCulture.NumberFormat, out outval))
+                    return outval;
+                throw new InvalidDataException($"In sprite sheet '{filename}': in node '{node.Name}': attribute '{attrname}' has invalid value '{attr.Value}'");
+            };
 
-                        case "offset": // Specify a random offset into the first frame
-                            if (parts[1].Equals("random", StringComparison.InvariantCulture))
-                                ret.offsetRandom = true;
-                            else
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Unrecognized offset setting '{parts[1]}'");
-                            break;
+            // walk through all layer definitions
+            XmlNode xmlLayer = xmlRoot.FirstChild;
+            while (xmlLayer != null) {
+                // parse basic layer settings
+                SpriteLayer layer = new SpriteLayer();
+                layer.tag = xmlLayer.Attributes?["tag"]?.Value;
+                layer.rotateSpeed = getFloatAttr(xmlLayer, "rotate", 0f);
+                layer.scale = getFloatAttr(xmlLayer, "scale", 1f);
 
-                        case "frame": // Add a new frame with a given texture
-                            // create a default layer
-                            if (layer == null) {
-                                layer = new SpriteLayer();
-                                layer.scale = 1f;
-                                layer.rotateSpeed = 0f;
-                            }
-                            // flush any existing frame to the active layer
-                            if (frame != null) {
-                                if (currentFrameWait == null)
-                                    throw new InvalidDataException($"In sprite sheet '{filename}': Encountered frame before wait specification: '{parts[1]}'");
-                                if (staticMode)
-                                    throw new InvalidDataException($"In sprite sheet '{filename}': Static sprite cannot have more than one frame");
-                                frame.wait = currentFrameWait.Value;
-                                frame.blend = blend;
-                                layer.frames.Add(frame);
-                            }
-                            frame = new SpriteFrame();
-                            frame.texture = Assets.GetTexture(parts[1].Trim('"'));
-                            break;
+                // parse blend mode string
+                string blendmode = xmlLayer.Attributes?["blend"]?.Value ?? "alpha";
+                if (blendmode.Equals("alpha", StringComparison.InvariantCultureIgnoreCase))
+                    layer.blend = SpriteBlend.AlphaBlend;
+                else if (blendmode.Equals("additive", StringComparison.InvariantCultureIgnoreCase))
+                    layer.blend = SpriteBlend.Additive;
+                else if (blendmode.Equals("half", StringComparison.InvariantCultureIgnoreCase))
+                    layer.blend = SpriteBlend.HalfBlend;
+                else 
+                    throw new InvalidDataException($"In sprite sheet '{filename}': in layer '{layer.tag ?? "unnamed"}': invalid blend mode '{blendmode}'");
 
-                        case "layer":
-                            // flush any existing frame to the active layer
-                            if (frame != null) {
-                                if (currentFrameWait == null)
-                                    throw new InvalidDataException($"In sprite sheet '{filename}': Unspecified frame wait time at '{line}'");
-                                frame.wait = currentFrameWait.Value;
-                                frame.blend = blend;
-                                layer.frames.Add(frame);
-                            }
-                            // save currently open layer to the sheet
-                            frame = null;
-                            if (layer != null) ret.layers.Add(layer);
+                if (!xmlLayer.HasChildNodes)
+                    throw new InvalidDataException($"In sprite sheet '{filename}': in layer '{layer.tag ?? "unnamed"}': must have at least one frame");
 
-                            layer = new SpriteLayer();
-                            layer.scale = 1f;
-                            layer.rotateSpeed = 0f;
-                            break;
+                // parse the collection of frames
+                XmlNode xmlFrame = xmlLayer.FirstChild;
+                while (xmlFrame != null) {
+                    if (xmlFrame.Attributes?["texture"] == null)
+                        throw new InvalidDataException($"In sprite sheet '{filename}': in layer '{layer.tag ?? "unnamed"}': frame must have texture attribute");
 
-                        case "rotate":
-                            if (!float.TryParse(parts[1], NumberStyles.Float,
-                                CultureInfo.InvariantCulture.NumberFormat, out layer.rotateSpeed))
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse rotate speed '{parts[1]}'");
-                            break;
-
-                        case "scale":
-                            if (!float.TryParse(parts[1], NumberStyles.Float,
-                                CultureInfo.InvariantCulture.NumberFormat, out layer.scale))
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse scale '{parts[1]}'");
-                            break;
-
-                        case "wait": // Specify the time to wait until the next frame
-                            float val;
-                            if (staticMode)
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Unexpected wait time declaration in static sprite");
-                            if (!float.TryParse(parts[1], NumberStyles.Float,
-                                CultureInfo.InvariantCulture.NumberFormat, out val))
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Failed to parse wait time '{parts[1]}'");
-                            currentFrameWait = val;
-                            break;
-
-                        case "static": // Specify that this sprite has no animation
-                            // Assign a dummy value to the frame wait time. Because there are no other
-                            // frames, the value has no meaning, but it's cleaner to have the sprite
-                            // sheet itself explicitly specify that no animation is intentional.
-                            if (currentFrameWait != null)
-                                throw new InvalidDataException($"In sprite sheet '{filename}': Unexpected static declaration after wait time declaration");
-                            currentFrameWait = 1f;
-                            staticMode = true;
-                            break;
-
-                        default:
-                            throw new InvalidDataException($"In sprite sheet '{filename}': Could not parse line '{line}'");
-                    }
-
-                }
-
-                // flush last frame to sheet
-                if (frame != null) {
-                    if (currentFrameWait == null)
-                        throw new InvalidDataException($"In sprite sheet '{filename}': Unspecified frame wait time at end of file");
-                    frame.wait = currentFrameWait.Value;
-                    frame.blend = blend;
+                    SpriteFrame frame = new SpriteFrame();
+                    frame.texture = Assets.GetTexture(xmlFrame.Attributes["texture"].Value);
+                    frame.hold = getFloatAttr(xmlFrame, "hold", 1f);
                     layer.frames.Add(frame);
+                    xmlFrame = xmlFrame.NextSibling;
                 }
-                ret.layers.Add(layer);
 
-                return ret;
+                // save this layer and continue to the next
+                ret.layers.Add(layer);
+                xmlLayer = xmlLayer.NextSibling;
             }
+
+            return ret;
         }
 
         /// <summary>
@@ -202,6 +140,8 @@ namespace ShiftDrive {
             ret.layers = new List<SpriteLayer>();
             foreach (SpriteLayer protlayer in layers) {
                 SpriteLayer clonelayer = new SpriteLayer();
+                clonelayer.tag = protlayer.tag;
+                clonelayer.blend = protlayer.blend;
                 clonelayer.frames = protlayer.frames;
                 clonelayer.frameTime = protlayer.frameTime;
                 clonelayer.frameNo = 0;
@@ -212,7 +152,7 @@ namespace ShiftDrive {
             }
             if (offsetRandom) // randomize offsets
                 foreach (SpriteLayer layer in ret.layers)
-                    layer.frameTime = (float)Utils.RNG.NextDouble() * layer.frames[0].wait;
+                    layer.frameTime = (float)Utils.RNG.NextDouble() * layer.frames[0].hold;
             return ret;
         }
 
@@ -237,7 +177,7 @@ namespace ShiftDrive {
 
                 // add delta time to this frame's lifetime
                 layer.frameTime += deltaTime;
-                if (!(layer.frameTime > layer.frames[layer.frameNo].wait)) continue;
+                if (!(layer.frameTime > layer.frames[layer.frameNo].hold)) continue;
 
                 // if the wait time is over, advance the frame
                 layer.frameNo++;

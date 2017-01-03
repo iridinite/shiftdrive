@@ -1,6 +1,0 @@
-static
-blend alpha
-layer
-frame "ship/mdfrigate0"
-layer
-frame "ship/mdfrigate1"

@@ -296,30 +296,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Map/mine1.png
 
-#begin Textures/Projectile/bullet0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/bullet0.png
-
-#begin Textures/Projectile/plasma0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/plasma0.png
-
 #begin Textures/Ship/broadside0.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -379,36 +355,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/Ship/station0.png
-
-#begin Textures/Map/mine.txt
-/copy:Textures/Map/mine.txt
-
-#begin Textures/Map/asteroid.txt
-/copy:Textures/Map/asteroid.txt
-
-#begin Textures/Map/nebula.txt
-/copy:Textures/Map/nebula.txt
-
-#begin Textures/Map/blackhole.txt
-/copy:Textures/Map/blackhole.txt
-
-#begin Textures/Map/explosion.txt
-/copy:Textures/Map/explosion.txt
-
-#begin Textures/Map/flare.txt
-/copy:Textures/Map/flare.txt
-
-#begin Textures/Map/shockwave.txt
-/copy:Textures/Map/shockwave.txt
-
-#begin Textures/Ship/broadside.txt
-/copy:Textures/Ship/broadside.txt
-
-#begin Textures/Ship/mdfrigate.txt
-/copy:Textures/Ship/mdfrigate.txt
-
-#begin Textures/Ship/station.txt
-/copy:Textures/Ship/station.txt
 
 #begin Textures/Map/nebula0.png
 /importer:TextureImporter
@@ -500,125 +446,11 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Tooltip.spritefont
 
-#begin Textures/Projectile/beam-impact.txt
-/copy:Textures/Projectile/beam-impact.txt
-
-#begin Textures/Projectile/beam-impact0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/beam-impact0.png
-
-#begin Textures/Projectile/beam-l0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/beam-l0.png
-
-#begin Textures/Projectile/beam-m0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/beam-m0.png
-
-#begin Textures/Projectile/beam-s.txt
-/copy:Textures/Projectile/beam-s.txt
-
-#begin Textures/Projectile/beam-s0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/beam-s0.png
-
-#begin Textures/Projectile/bullet.txt
-/copy:Textures/Projectile/bullet.txt
-
-#begin Textures/Projectile/bullet-impact.txt
-/copy:Textures/Projectile/bullet-impact.txt
-
-#begin Textures/Projectile/bullet-impact0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/bullet-impact0.png
-
-#begin Textures/Projectile/bullet-impact1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/bullet-impact1.png
-
-#begin Textures/Projectile/bullet-impact2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/bullet-impact2.png
-
-#begin Textures/Projectile/bullet-impact3.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Projectile/bullet-impact3.png
-
-#begin Textures/Projectile/plasma.txt
-/copy:Textures/Projectile/plasma.txt
-
 #begin Fonts/Quote.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Quote.spritefont
-
-#begin Textures/Map/engineflare.txt
-/copy:Textures/Map/engineflare.txt
 
 #begin Textures/Map/engineflare0.png
 /importer:TextureImporter
@@ -631,4 +463,166 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/Map/engineflare0.png
+
+#begin Textures/Map/asteroid.xml
+/copy:Textures/Map/asteroid.xml
+
+#begin Textures/Map/beam-impact0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/beam-impact0.png
+
+#begin Textures/Map/beam-l0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/beam-l0.png
+
+#begin Textures/Map/beam-m0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/beam-m0.png
+
+#begin Textures/Map/beam-s0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/beam-s0.png
+
+#begin Textures/Map/blackhole.xml
+/copy:Textures/Map/blackhole.xml
+
+#begin Textures/Map/bullet.xml
+/copy:Textures/Map/bullet.xml
+
+#begin Textures/Map/bullet0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/bullet0.png
+
+#begin Textures/Map/bullet-impact.xml
+/copy:Textures/Map/bullet-impact.xml
+
+#begin Textures/Map/bullet-impact0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/bullet-impact0.png
+
+#begin Textures/Map/bullet-impact1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/bullet-impact1.png
+
+#begin Textures/Map/bullet-impact2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/bullet-impact2.png
+
+#begin Textures/Map/bullet-impact3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/bullet-impact3.png
+
+#begin Textures/Map/engineflare.xml
+/copy:Textures/Map/engineflare.xml
+
+#begin Textures/Map/explosion.xml
+/copy:Textures/Map/explosion.xml
+
+#begin Textures/Map/flare.xml
+/copy:Textures/Map/flare.xml
+
+#begin Textures/Map/mine.xml
+/copy:Textures/Map/mine.xml
+
+#begin Textures/Map/nebula.xml
+/copy:Textures/Map/nebula.xml
+
+#begin Textures/Map/plasma.xml
+/copy:Textures/Map/plasma.xml
+
+#begin Textures/Map/plasma0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Map/plasma0.png
+
+#begin Textures/Map/shockwave.xml
+/copy:Textures/Map/shockwave.xml
+
+#begin Textures/Ship/broadside.xml
+/copy:Textures/Ship/broadside.xml
+
+#begin Textures/Ship/mdfrigate.xml
+/copy:Textures/Ship/mdfrigate.xml
+
+#begin Textures/Ship/station.xml
+/copy:Textures/Ship/station.xml
 

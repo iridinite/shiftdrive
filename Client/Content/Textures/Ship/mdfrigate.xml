@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer tag="base">
+        <frame texture="ship/mdfrigate0" />
+    </layer>
+    <layer tag="color">
+        <frame texture="ship/mdfrigate1" />
+    </layer>
+</sprite>

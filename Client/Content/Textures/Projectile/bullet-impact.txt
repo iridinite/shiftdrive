@@ -1,6 +1,0 @@
-blend alpha
-wait 0.1
-frame "projectile/bullet-impact0"
-frame "projectile/bullet-impact1"
-frame "projectile/bullet-impact2"
-frame "projectile/bullet-impact3"

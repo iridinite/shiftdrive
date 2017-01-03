@@ -1,3 +1,0 @@
-static
-blend alpha
-frame "map/nebula0"

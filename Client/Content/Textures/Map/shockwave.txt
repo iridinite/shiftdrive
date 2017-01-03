@@ -1,3 +1,0 @@
-static
-blend additive
-frame "map/shockwave0"

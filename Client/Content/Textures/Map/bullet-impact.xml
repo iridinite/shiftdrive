@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer blend="alpha" loop="disappear">
+        <frame texture="map/bullet-impact0" hold="0.1" />
+        <frame texture="map/bullet-impact1" hold="0.1" />
+        <frame texture="map/bullet-impact2" hold="0.1" />
+        <frame texture="map/bullet-impact3" hold="0.1" />
+    </layer>
+</sprite>

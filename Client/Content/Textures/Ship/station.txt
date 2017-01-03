@@ -1,4 +1,0 @@
-static
-blend alpha
-layer
-frame "ship/station0"

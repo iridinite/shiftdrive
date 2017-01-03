@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer tag="base">
+        <frame texture="ship/station0" />
+    </layer>
+</sprite>

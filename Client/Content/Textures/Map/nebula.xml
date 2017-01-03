@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer>
+        <frame texture="map/nebula0" />
+    </layer>
+</sprite>

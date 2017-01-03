@@ -47,7 +47,7 @@ namespace ShiftDrive {
                 queuedFrame.color = color;
                 queuedFrame.zorder = zorder;
 
-                switch (currentFrame.blend) {
+                switch (layer.blend) {
                     case SpriteSheet.SpriteBlend.AlphaBlend:
                         drawQueueAlpha.Add(queuedFrame);
                         break;
@@ -62,7 +62,7 @@ namespace ShiftDrive {
                         drawQueueAlpha.Add(queuedFrame);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(currentFrame.blend));
+                        throw new ArgumentOutOfRangeException(nameof(layer.blend));
                 }
             }
         }

@@ -4,7 +4,7 @@ return {
   mount = Mount.SMALL,
   draw = 0.025,
   weapontype = WeaponType.PROJECTILE,
-  projsprite = "projectile/bullet",
+  projsprite = "map/bullet",
   projspeed = 150,
   projspread = 1,
   damagetype = DamageType.KINETIC,

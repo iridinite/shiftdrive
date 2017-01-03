@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer blend="alpha" rotate="0.25" scale="2.0">
+        <frame texture="map/blackhole0" />
+    </layer>
+    <layer blend="additive" rotate="-0.15">
+        <frame texture="map/blackhole0" />
+    </layer>
+</sprite>

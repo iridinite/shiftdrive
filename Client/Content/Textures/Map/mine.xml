@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer>
+        <frame texture="map/mine0" hold="1.25" />
+        <frame texture="map/mine1" hold="0.2" />
+    </layer>
+</sprite>

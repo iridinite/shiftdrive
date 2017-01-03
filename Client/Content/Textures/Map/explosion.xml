@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer blend="half">
+        <frame texture="map/explosion0" />
+    </layer>
+</sprite>

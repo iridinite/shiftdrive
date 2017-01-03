@@ -1,3 +1,0 @@
-static
-blend half
-frame "map/explosion0"

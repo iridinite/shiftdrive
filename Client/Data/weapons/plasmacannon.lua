@@ -4,7 +4,7 @@ return {
   mount = Mount.SMALL,
   draw = 0.05,
   weapontype = WeaponType.PROJECTILE,
-  projsprite = "projectile/plasma",
+  projsprite = "map/plasma",
   projspeed = 200,
   projspread = 0,
   damagetype = DamageType.THERMAL,

@@ -1,6 +1,0 @@
-blend alpha
-offset random
-frame "map/mine0"
-wait 1.25
-frame "map/mine1"
-wait 0.2
