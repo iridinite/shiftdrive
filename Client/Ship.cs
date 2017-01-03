@@ -82,11 +82,10 @@ namespace ShiftDrive {
             if (shield < shieldMax) {
                 if (shieldRegenPause > 0f)
                     shieldRegenPause -= deltaTime;
-                else
-                    // TODO: Check: is local-only change sufficient?
-                    // hopefully client predicts regeneration correctly, so replication is unnecessary.
+                else {
                     shield = Math.Min(shield + deltaTime / 2f, shieldMax);
-                    // changed |= ObjectProperty.Health;
+                    changed |= ObjectProperty.Health;
+                }
             }
 
             // update weapon charge / ammo states
