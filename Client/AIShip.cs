@@ -30,6 +30,9 @@ namespace ShiftDrive {
         public override void Update(float deltaTime) {
             base.Update(deltaTime);
 
+            // AI always uses shields, no fuel so no need to bother with switching
+            shieldActive = true;
+
             // perform AI only on server
             if (!world.IsServer) return;
 
