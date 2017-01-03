@@ -21,12 +21,15 @@ namespace ShiftDrive {
     internal static class ParticleManager {
 
         private static readonly List<Particle> particles = new List<Particle>();
+        private static readonly object particleLock = new object();
 
         /// <summary>
         /// Adds a <seealso cref="Particle"/> to the manager.
         /// </summary>
         public static void Register(Particle p) {
-            particles.Add(p);
+            lock (particleLock) {
+                particles.Add(p);
+            }
         }
 
         /// <summary>
@@ -35,14 +38,16 @@ namespace ShiftDrive {
         /// <param name="min">The upper-left corner of the world view area.</param>
         /// <param name="max">The bottom-right corner of the world view area.</param>
         public static void QueueDraw(Vector2 min, Vector2 max) {
-            foreach (Particle p in particles) {
-                Vector2 screenpos = Utils.CalculateScreenPos(min, max, p.position);
-                SpriteQueue.QueueSprite(
-                    p.sprite,
-                    screenpos,
-                    Color.Lerp(p.colorstart, p.colorend, p.life / p.lifemax),
-                    MathHelper.ToRadians(p.facing),
-                    p.zorder);
+            lock (particleLock) {
+                foreach (Particle p in particles) {
+                    Vector2 screenpos = Utils.CalculateScreenPos(min, max, p.position);
+                    SpriteQueue.QueueSprite(
+                        p.sprite,
+                        screenpos,
+                        Color.Lerp(p.colorstart, p.colorend, p.life / p.lifemax),
+                        MathHelper.ToRadians(p.facing),
+                        p.zorder);
+                }
             }
         }
 
@@ -51,14 +56,16 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="deltaTime">Delta-time value.</param>
         public static void Update(float deltaTime) {
-            for (int i = particles.Count - 1; i >= 0; i--) {
-                Particle p = particles[i];
-                p.sprite.GetLayer(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
-                //p.sprite.GetLayer(0).rotate = p.facing + p.rotateoffset
-                // increment lifetime
-                p.life += deltaTime;
-                if (p.life >= p.lifemax)
-                    particles.RemoveAt(i);
+            lock (particleLock) {
+                for (int i = particles.Count - 1; i >= 0; i--) {
+                    Particle p = particles[i];
+                    p.sprite.GetLayer(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
+                    //p.sprite.GetLayer(0).rotate = p.facing + p.rotateoffset
+                    // increment lifetime
+                    p.life += deltaTime;
+                    if (p.life >= p.lifemax)
+                        particles.RemoveAt(i);
+                }
             }
         }
 
@@ -66,7 +73,9 @@ namespace ShiftDrive {
         /// Removes all registered particles.
         /// </summary>
         public static void Clear() {
-            particles.Clear();
+            lock (particleLock) {
+                particles.Clear();
+            }
         }
 
         /// <summary>
