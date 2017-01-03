@@ -1,5 +1,5 @@
 ﻿title                   = Project ShiftDrive
-credit                  = Programmed by Mika Molenkamp, 2016
+credit                  = Programmed by Mika Molenkamp, 2016-2017
 
 menu_connect            = Connect to a Server
 menu_host               = Host a Server
