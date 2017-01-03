@@ -85,7 +85,7 @@ namespace ShiftDrive {
                 else
                     // TODO: Check: is local-only change sufficient?
                     // hopefully client predicts regeneration correctly, so replication is unnecessary.
-                    shield = Math.Min(shield + 2f * deltaTime, shieldMax);
+                    shield = Math.Min(shield + deltaTime / 2f, shieldMax);
                     // changed |= ObjectProperty.Health;
             }
 
@@ -180,7 +180,7 @@ namespace ShiftDrive {
             changed |= ObjectProperty.Health;
 
             // delay shield recharge
-            shieldRegenPause = 5f;
+            shieldRegenPause = 10f;
 
             // apply damage to shields first, if possible
             if (shieldActive && shield > 0f) {
