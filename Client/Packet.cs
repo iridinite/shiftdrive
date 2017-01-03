@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+** Project ShiftDrive
+** (C) Mika Molenkamp, 2016-2017.
+*/
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
