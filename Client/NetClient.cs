@@ -6,7 +6,6 @@
 using System;
 using System.IO;
 using System.Diagnostics;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
