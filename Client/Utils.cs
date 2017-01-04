@@ -130,20 +130,26 @@ namespace ShiftDrive {
             spriteBatch.DrawString(Assets.fontDefault, versionstr, new Vector2(SDGame.Inst.GameWidth - Assets.fontDefault.MeasureString(versionstr).X - 16, SDGame.Inst.GameHeight - 28), Color.Gray);
         }
 
+        /// <summary>
+        /// Updates the position of the game title, making a smooth animation.
+        /// </summary>
+        /// <param name="deltaTime">The delta-time to interpolate with.</param>
+        /// <param name="target">The target height in pixels.</param>
         public static void UpdateTitle(float deltaTime, float target) {
             logoY += (target - logoY) * 4f * deltaTime;
         }
 
+        /// <summary>
+        /// Returns a string identifying the game version.
+        /// </summary>
         public static string GetVersionString() {
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             return $"v{v.Major}.{v.Minor}.{v.Revision}";
         }
-
-        public static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end) {
-            // TODO
-            throw new NotImplementedException();
-        }
         
+        /// <summary>
+        /// Returns the cross product of two 2D vectors, treating them as 3D vectors where the Z axis is zero for both vectors.
+        /// </summary>
         public static float Cross(this Vector2 a, Vector2 b) {
             return a.X * b.Y - a.Y * b.X;
         }
