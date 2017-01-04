@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
@@ -117,6 +118,10 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="deltaTime">The number of seconds that passed since the previous update.</param>
         public virtual void Update(float deltaTime) {
+            // sanity checks: all objects should always have valid positioning
+            Debug.Assert(!float.IsNaN(position.X) && !float.IsNaN(position.Y), "object position is NaN");
+            Debug.Assert(!float.IsNaN(velocity.X) && !float.IsNaN(velocity.Y), "object velocity is NaN");
+
             // handle collision with objects
             if (bounding > 0f) {
                 var possibleCollisions = world.QueryGrid(this);
