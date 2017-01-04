@@ -62,9 +62,9 @@ namespace ShiftDrive {
             base.Update(gameTime);
 
             // rotate ship towards clicks inside the maneuver ring
-            Vector2 screenCenter = new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f);
-            if (Mouse.GetLeftDown() && Vector2.DistanceSquared(screenCenter, Mouse.Position) < 122500) {
+            if (Mouse.GetLeftDown() && Mouse.IsInArea(100, 100, SDGame.Inst.GameWidth - 100, SDGame.Inst.GameHeight - 100)) {
                 // send a steering message to the server
+                Vector2 screenCenter = new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f);
                 float newbearing = Utils.CalculateBearing(screenCenter, Mouse.Position);
                 using (Packet packet = new Packet(PacketID.HelmSteering)) {
                     packet.Write(newbearing);
