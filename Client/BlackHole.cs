@@ -33,13 +33,19 @@ namespace ShiftDrive {
                 if (gobj.type == ObjectType.BlackHole) continue;
 
                 // exclude objects that have no physics
-                if (gobj.layermask == CollisionLayer.None || gobj.bounding <= 0f) continue;
+                if (gobj.layermask == CollisionLayer.None
+                    || gobj.IsDestroyScheduled()
+                    || gobj.bounding <= 0f) continue;
 
                 // objects closer than 140 units are affected by the grav pull
                 if (!(Vector2.DistanceSquared(gobj.position, this.position) < 19600)) continue;
 
-                // pull this object in closer
+                // find the direction in which to pull the object.
+                // extra check makes sure objects at center don't get pulled to NaN/NaN
                 Vector2 pulldir = Vector2.Normalize(position - gobj.position);
+                if (!(pulldir.LengthSquared() > 0f)) continue;
+
+                // pull this object in closer
                 float pullpower = 1f - Vector2.Distance(gobj.position, this.position) / 140f;
                 gobj.position += pulldir * pullpower * pullpower * deltaTime * 40f;
                 gobj.changed |= ObjectProperty.Position;
