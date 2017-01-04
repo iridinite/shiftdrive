@@ -69,10 +69,13 @@ namespace ShiftDrive {
             grid.Update();
         }
 
-        public void Serialize(Packet outstream) {
+        public void Serialize(Packet outstream, bool forceAll) {
             // write serialized objects that have changed
             foreach (var pair in Objects) {
                 GameObject obj = pair.Value;
+                if (forceAll) // serialize all objects entirely
+                    obj.changed = ObjectProperty.All;
+
                 if (obj.IsDestroyScheduled()) {
                     outstream.Write(pair.Value.id);
                     outstream.Write(true);

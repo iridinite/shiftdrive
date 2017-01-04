@@ -213,7 +213,7 @@ namespace ShiftDrive {
         private static void BroadcastGameState() {
             // send the compressed state out to all connected clients
             using (Packet packet = new Packet(PacketID.GameUpdate)) {
-                world.Serialize(packet);
+                world.Serialize(packet, false);
                 socket.Broadcast(packet.ToArray());
             }
         }
@@ -290,6 +290,11 @@ namespace ShiftDrive {
                             }
                             // inform players of new connection
                             BroadcastLobbyState();
+                            // send this player a copy of the game world
+                            using (Packet worldpacket = new Packet(PacketID.GameUpdate)) {
+                                world.Serialize(worldpacket, true); // client knows nothing about this map yet
+                                socket.Send(clientID, worldpacket.ToArray());
+                            }
                             break;
 
                         case PacketID.SelectRole:
