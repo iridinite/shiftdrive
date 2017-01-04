@@ -134,6 +134,14 @@ namespace ShiftDrive {
         }
 
         public void Open() {
+            // -1 is override to disable animation
+            if (order == -1) {
+                closing = false;
+                opening = false;
+                expand = 1f;
+                return;
+            }
+
             closing = false;
             opening = true;
             expand = 0.1f;
