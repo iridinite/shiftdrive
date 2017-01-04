@@ -85,6 +85,7 @@ namespace ShiftDrive {
             destroyed = true;
             // deplete hull bar, in case it wasn't empty yet
             hull = 0f;
+            shield = 0f;
             // stop moving
             throttle = 0f;
             // disable all collision and physics (black holes, in particular)
