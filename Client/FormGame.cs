@@ -66,7 +66,7 @@ namespace ShiftDrive {
             // unspecified y means just place at the bottom of the list
             if (y == -1) y = consoleButtons.Count * 40 + 4;
             // create a new button and add it to the list
-            ImageButton cbtn = new ImageButton(0, 4, y, 36, 36, Assets.textures["ui/consolebuttons"], Color.Black);
+            ImageButton cbtn = new ImageButton(-1, 4, y, 36, 36, Assets.textures["ui/consolebuttons"], Color.Black);
             cbtn.SetSourceRect(new Rectangle(icon * 32, 0, 32, 32));
             cbtn.SetTooltip(tooltip);
             cbtn.OnClick += onClick;
