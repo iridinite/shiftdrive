@@ -38,9 +38,11 @@ namespace ShiftDrive {
 
         private static float heartbeatMax;
         private static float heartbeatTimer;
+        private static bool simRunning;
 
         public static bool PrepareWorld() {
             GameObject.ResetIds();
+            simRunning = false;
             world = new GameState();
             world.IsServer = true;
 
@@ -86,6 +88,9 @@ namespace ShiftDrive {
         public static void Update(GameTime gameTime) {
             // can only update if hosting
             if (socket == null || !socket.Listening) return;
+
+            // don't update if still in lobby
+            if (!simRunning) return;
 
             // update all gameobjects. use a backwards loop because some
             // objects may be scheduled for deletion and thus change the list order
@@ -192,7 +197,7 @@ namespace ShiftDrive {
         private static void BroadcastLobbyState() {
             // create a packet describing the lobby state
             using (Packet packet = new Packet(PacketID.LobbyState)) {
-                packet.Write(false);
+                packet.Write(simRunning);
                 packet.Write((ushort)players.Count);
                 // sum up all taken role bitmasks
                 PlayerRole taken = 0;
@@ -211,6 +216,14 @@ namespace ShiftDrive {
                 world.Serialize(packet);
                 socket.Broadcast(packet.ToArray());
             }
+        }
+
+        private static void BeginGame() {
+            simRunning = true;
+            BroadcastLobbyState();
+
+            using (Packet reply = new Packet(PacketID.EnterGame))
+                socket.Broadcast(reply.ToArray());
         }
 
         public static void PublishAnnouncement(AnnouncementId annId, string customText = null) {
@@ -286,7 +299,6 @@ namespace ShiftDrive {
                             }
                             // save role choice and confirm back to client
                             player.roles ^= (PlayerRole)recv.ReadByte();
-                            Packet test = new Packet(PacketID.EnterGame);
                             using (Packet reply = new Packet(PacketID.SelectRole)) {
                                 reply.Write((byte)player.roles);
                                 socket.Send(clientID, reply.ToArray());
@@ -303,9 +315,16 @@ namespace ShiftDrive {
                             }
                             player.ready = recv.ReadBoolean();
                             SDGame.Logger.Log($"Client #{clientID} ready: {player.ready}");
-                            // TODO: wait until all players are ready
-                            using (Packet reply = new Packet(PacketID.EnterGame))
-                                socket.Send(clientID, reply.ToArray());
+
+                            if (simRunning) {
+                                // if game already started, invite this player to the game
+                                using (Packet reply = new Packet(PacketID.EnterGame))
+                                    socket.Broadcast(reply.ToArray());
+                            } else {
+                                // start game when all players are ready
+                                // TODO
+                                BeginGame();
+                            }
                             break;
 
                         case PacketID.HelmSteering:
