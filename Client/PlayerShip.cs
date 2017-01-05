@@ -40,6 +40,21 @@ namespace ShiftDrive {
             // base update: throttle, steering, weapons
             base.Update(deltaTime);
 
+            // remove targets that are no longer in view
+            for (int i = targets.Count - 1; i >= 0; i--) {
+                uint targetid = targets[i];
+                // object no longer exists?
+                if (!world.Objects.ContainsKey(targetid)) {
+                    targets.RemoveAt(i);
+                    continue;
+                }
+
+                GameObject obj = world.Objects[targetid];
+                // object about to be deleted, or too far away?
+                if (obj.IsDestroyScheduled() || Vector2.Distance(obj.position, this.position) > 300f)
+                    targets.RemoveAt(i);
+            }
+
             // ship operation and throttle eats up energy
             ConsumeFuel(deltaTime * 0.004f);
             ConsumeFuel(throttle * deltaTime * 0.0083333f);
