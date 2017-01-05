@@ -352,6 +352,17 @@ namespace ShiftDrive {
                             pship.shieldActive = !world.GetPlayerShip().shieldActive;
                             pship.changed |= ObjectProperty.Health;
                             break;
+
+                        case PacketID.WeapTarget:
+                            // Weapons selects or deselects a target
+                            uint targetid = recv.ReadUInt32();
+                            bool targeting = recv.ReadBoolean();
+                            if (targeting)
+                                pship.targets.Add(targetid);
+                            else
+                                pship.targets.Remove(targetid);
+                            pship.changed |= ObjectProperty.Targets;
+                            break;
                     }
 
                 }
