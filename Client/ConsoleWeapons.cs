@@ -69,6 +69,19 @@ namespace ShiftDrive {
             base.Update(gameTime);
 
             btnShields.Update(gameTime);
+            
+            // add targets that the player clicks on
+            if (Mouse.GetLeftDown()) {
+                foreach (TargetableObject tobj in targetables) {
+                    if (Vector2.Distance(Mouse.Position, tobj.screenpos) > 32) continue;
+
+                    using (Packet packet = new Packet(PacketID.WeapTarget)) {
+                        packet.Write(tobj.objid);
+                        packet.Write(!Player.targets.Contains(tobj.objid));
+                        NetClient.Send(packet);
+                    }
+                }
+            }
         }
 
         private void btnShields_Click(Control sender) {
