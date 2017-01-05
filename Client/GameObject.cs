@@ -178,6 +178,7 @@ namespace ShiftDrive {
             // apply minimum translation vector to resolve collision
             this.position += normal * penetration;
             this.velocity += normal * penetration;
+            this.changed |= ObjectProperty.Position | ObjectProperty.Velocity;
         }
 
 #if DEBUG
