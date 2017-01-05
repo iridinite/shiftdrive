@@ -32,7 +32,7 @@ namespace ShiftDrive {
             for (int i = 0; i < Player.mountsNum; i++) {
                 // draw box background
                 int weaponCurrentX = weaponBoxX + i * 160;
-                spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
+                spriteBatch.Draw(Assets.textures["ui/weaponbg"], new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
 
                 // find the weapon in this index
                 Weapon wep = Player.weapons[i];
