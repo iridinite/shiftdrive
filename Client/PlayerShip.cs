@@ -142,16 +142,33 @@ namespace ShiftDrive {
         public override void Serialize(Packet outstream) {
             base.Serialize(outstream);
 
+            if (changed.HasFlag(ObjectProperty.Targets)) {
+                outstream.Write((byte)targets.Count);
+                foreach (var target in targets)
+                    outstream.Write(target);
+            }
+
+            if (changed.HasFlag(ObjectProperty.PlayerData))
+                outstream.Write(player);
+
             outstream.Write(destroyed);
-            outstream.Write(player);
             outstream.Write(fuel);
         }
 
         public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
             base.Deserialize(instream, recvChanged);
 
+            if (recvChanged.HasFlag(ObjectProperty.Targets)) {
+                int targetCount = instream.ReadByte();
+                targets.Clear();
+                for (int i = 0; i < targetCount; i++)
+                    targets.Add(instream.ReadUInt32());
+            }
+
+            if (recvChanged.HasFlag(ObjectProperty.PlayerData))
+                player = instream.ReadByte();
+            
             destroyed = instream.ReadBoolean();
-            player = instream.ReadByte();
             fuel = instream.ReadSingle();
         }
 
