@@ -273,6 +273,9 @@ namespace ShiftDrive {
                         return;
                     }
 
+                    // shorthand reference for the player ship
+                    PlayerShip pship = world.GetPlayerShip();
+
                     // handle the packet
                     switch (recv.GetID()) {
                         case PacketID.Handshake:
@@ -334,20 +337,20 @@ namespace ShiftDrive {
 
                         case PacketID.HelmSteering:
                             // Helm sets ship steering vector.
-                            world.GetPlayerShip().steering = MathHelper.Clamp(recv.ReadSingle(), 0f, 360f);
-                            world.GetPlayerShip().changed |= ObjectProperty.Steering;
+                            pship.steering = MathHelper.Clamp(recv.ReadSingle(), 0f, 360f);
+                            pship.changed |= ObjectProperty.Steering;
                             break;
 
                         case PacketID.HelmThrottle:
                             // Helm sets ship throttle. Clamp to ensure input sanity.
-                            world.GetPlayerShip().throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
-                            world.GetPlayerShip().changed |= ObjectProperty.Throttle;
+                            pship.throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
+                            pship.changed |= ObjectProperty.Throttle;
                             break;
 
                         case PacketID.WeapShields:
                             // Weapons toggles shield status
-                            world.GetPlayerShip().shieldActive = !world.GetPlayerShip().shieldActive;
-                            world.GetPlayerShip().changed |= ObjectProperty.Health;
+                            pship.shieldActive = !world.GetPlayerShip().shieldActive;
+                            pship.changed |= ObjectProperty.Health;
                             break;
                     }
 
