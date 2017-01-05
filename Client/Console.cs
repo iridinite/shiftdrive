@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +16,15 @@ namespace ShiftDrive {
     /// </summary>
     internal abstract class Console {
 
+        protected struct TargetableObject {
+            public uint objid;
+            public Vector2 screenpos;
+        }
+
+        protected readonly List<TargetableObject> targetables = new List<TargetableObject>();
+
         private RenderTarget2D rtAreaHud;
+        private static float reticleSpin;
 
         public abstract void Draw(SpriteBatch spriteBatch);
 
@@ -34,6 +43,7 @@ namespace ShiftDrive {
             Vector2 max = new Vector2(Player.position.X + viewradius, Player.position.Y + viewradius);
 
             // prepare the area HUD render target
+            targetables.Clear();
             GraphicsDevice graphicsDevice = spriteBatch.GraphicsDevice;
             if (rtAreaHud == null || rtAreaHud.IsDisposed || rtAreaHud.IsContentLost)
                 rtAreaHud = new RenderTarget2D(graphicsDevice, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
@@ -49,6 +59,14 @@ namespace ShiftDrive {
                     continue;
                 // calculate screen coordinates for this object
                 Vector2 screenpos = Utils.CalculateScreenPos(min, max, obj.position);
+
+                // remember this object for targeting
+                if (obj.IsTargetable() && obj.id != Player.id) {
+                    TargetableObject tobj = new TargetableObject();
+                    tobj.objid = obj.id;
+                    tobj.screenpos = screenpos;
+                    targetables.Add(tobj);
+                }
 
                 // draw the object
                 switch (obj.type) {
@@ -99,8 +117,16 @@ namespace ShiftDrive {
             SpriteQueue.RenderAlpha(spriteBatch);
             SpriteQueue.RenderAdditive(spriteBatch);
 
-            // draw render target and a radar ring
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            // draw reticles around targeted objects
+            foreach (TargetableObject tobj in targetables) {
+                if (!Player.targets.Contains(tobj.objid)) continue;
+
+                spriteBatch.Draw(Assets.textures["ui/reticle"], tobj.screenpos, null, Color.Red, reticleSpin, new Vector2(32, 32), 1f, SpriteEffects.None, 0f);
+            }
+
+            // draw render target and a radar ring
             spriteBatch.Draw(rtAreaHud, new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
             spriteBatch.Draw(Assets.textures["ui/radar"], new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f), null, Color.White, 0f, new Vector2(256, 256), 1f, SpriteEffects.None, 0f);
             spriteBatch.End();
@@ -122,6 +148,7 @@ namespace ShiftDrive {
         }
 
         public virtual void Update(GameTime gameTime) {
+            reticleSpin += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
     }
