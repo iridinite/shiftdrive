@@ -363,6 +363,10 @@ namespace ShiftDrive {
                                 pship.targets.Remove(targetid);
                             pship.changed |= ObjectProperty.Targets;
                             break;
+
+                        default:
+                            SDGame.Logger.LogError($"Server got unknown packet ({recv.GetID()}), client #{clientID}");
+                            break;
                     }
 
                 }
