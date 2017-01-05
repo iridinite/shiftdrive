@@ -52,12 +52,14 @@ namespace ShiftDrive {
         Weapons         = 1 << 17,
         Faction         = 1 << 18,
         Flares          = 1 << 19,
+        Targets         = 1 << 20,
 
-        ProjectileData  = 1 << 21,
+        PlayerData      = 1 << 21,
+        ProjectileData  = 1 << 22,
 
-        NameShort       = 1 << 22,
-        NameFull        = 1 << 23,
-        Description     = 1 << 24,
+        NameShort       = 1 << 23,
+        NameFull        = 1 << 24,
+        Description     = 1 << 25,
 
         All             = unchecked((uint)-1)
     }
