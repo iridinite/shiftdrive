@@ -159,7 +159,7 @@ namespace ShiftDrive {
                 changed |= ObjectProperty.Velocity | ObjectProperty.Position;
 
             // animate the object sprite
-            if (!world.IsServer) sprite.Update(deltaTime);
+            if (!world.IsServer) sprite?.Update(deltaTime);
         }
 
         /// <summary>

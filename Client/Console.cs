@@ -54,6 +54,9 @@ namespace ShiftDrive {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
+                // don't draw objects with no sprite
+                if (obj.sprite == null)
+                    continue;
                 // don't bother drawing if outside window boundings
                 if (Vector2.DistanceSquared(Player.position, obj.position) > 350f * 350f)
                     continue;
