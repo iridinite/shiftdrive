@@ -13,7 +13,7 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class ConsoleWeapons : Console {
 
-        private readonly Button btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, "Shields");
+        private readonly Button btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
 
         public ConsoleWeapons() {
             btnShields.OnClick += btnShields_Click;
