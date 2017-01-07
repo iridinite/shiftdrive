@@ -41,7 +41,7 @@ namespace ShiftDrive {
             NetClient.Announcement += NetClient_Announcement;
 
             consoleButtons = new List<Button>();
-            AddConsoleButton(0, 4, BtnHelm_OnClick, Locale.Get("console_settings")); // settings
+            AddConsoleButton(0, 4, BtnSettings_OnClick, Locale.Get("console_settings")); // settings
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
                 AddConsoleButton(1, -1, BtnHelm_OnClick, Locale.Get("console_helm"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons))
@@ -71,6 +71,10 @@ namespace ShiftDrive {
             cbtn.SetTooltip(tooltip);
             cbtn.OnClick += onClick;
             consoleButtons.Add(cbtn);
+        }
+
+        private void BtnSettings_OnClick(Control sender) {
+            Console = new ConsoleSettings();
         }
 
         private void BtnHelm_OnClick(Control sender) {
@@ -122,7 +126,7 @@ namespace ShiftDrive {
                     player.shieldActive ? Color.LightSkyBlue : Color.Gray);
                 // outline
                 spriteBatch.Draw(Assets.textures["ui/hullbar"], new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 0, 512, 64), outlineColor);
-                
+
                 //spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 472, 34), Color.Black);
                 //spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 470, 32), outlineColor);
 

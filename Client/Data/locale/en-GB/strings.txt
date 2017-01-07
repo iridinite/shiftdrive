@@ -19,6 +19,7 @@ option_6                = be options here.
 
 cancel                  = Cancel
 returntomenu            = Return to Menu
+returntolobby           = Return to Lobby
 ready                   = Ready
 disconnect              = Disconnect
 role_taken              = Taken
