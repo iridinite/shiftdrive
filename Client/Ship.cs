@@ -128,7 +128,7 @@ namespace ShiftDrive {
                 // if running on server, fire the weapon
                 if (!world.IsServer) continue;
                 float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite,
+                NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite, wep.Ammo,
                     position + mounts[i].Position,
                     Utils.Repeat(Utils.CalculateBearing(this.position, target.position) + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
                     this.faction));

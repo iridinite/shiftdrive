@@ -13,6 +13,7 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class Projectile : GameObject {
 
+        public AmmoType ammotype;
         public float lifetime;
         public float damage;
         public byte faction;
@@ -29,8 +30,8 @@ namespace ShiftDrive {
             layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Station;
         }
 
-        public Projectile(GameState world, string spritename, Vector2 position, float facing, float speed, float damage,
-            byte faction) : this(world) {
+        public Projectile(GameState world, string spritename, AmmoType ammotype, Vector2 position, float facing, float speed,
+            float damage, byte faction) : this(world) {
             this.spritename = spritename;
             this.position = position;
             this.facing = facing;
@@ -40,6 +41,7 @@ namespace ShiftDrive {
             this.faction = faction;
             this.damage = damage;
             this.lifetime = 0f;
+            this.ammotype = ammotype;
         }
 
         public override void Update(float deltaTime) {
@@ -70,6 +72,7 @@ namespace ShiftDrive {
             base.Serialize(outstream);
             if (!changed.HasFlag(ObjectProperty.ProjectileData))
                 return;
+            outstream.Write((byte)ammotype);
             outstream.Write(damage);
             outstream.Write(faction);
         }
@@ -78,6 +81,7 @@ namespace ShiftDrive {
             base.Deserialize(instream, recvChanged);
             if (!recvChanged.HasFlag(ObjectProperty.ProjectileData))
                 return;
+            ammotype = (AmmoType)instream.ReadByte();
             damage = instream.ReadSingle();
             faction = instream.ReadByte();
         }
