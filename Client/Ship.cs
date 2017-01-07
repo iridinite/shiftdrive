@@ -92,7 +92,12 @@ namespace ShiftDrive {
             for (int i = 0; i < weaponsNum; i++) {
                 Weapon wep = weapons[i];
                 if (wep == null) continue;
-                if (mounts[i] == null) continue;
+
+                // decrease charge if not targeting something
+                wep.Charge = Math.Max(0f, wep.Charge - deltaTime);
+                
+                // sanity check, must have a mount
+                Debug.Assert(mounts[i] != null);
 
                 // out-of-ammo processing
                 if (wep.Ammo != AmmoType.None && wep.AmmoLeft < wep.AmmoPerShot) {
@@ -117,7 +122,7 @@ namespace ShiftDrive {
                 if (target == null) continue;
 
                 // increment charge
-                wep.Charge += deltaTime;
+                wep.Charge += deltaTime * 2f;
                 if (wep.Charge < wep.ChargeTime) continue;
                 wep.Charge = 0f;
 
