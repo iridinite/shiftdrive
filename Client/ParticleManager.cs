@@ -12,7 +12,8 @@ namespace ShiftDrive {
     /// Represents a predefined particle effect.
     /// </summary>
     internal enum ParticleEffect {
-        Explosion
+        Explosion,
+        BulletImpact
     }
 
     /// <summary>
@@ -59,6 +60,7 @@ namespace ShiftDrive {
             lock (particleLock) {
                 for (int i = particles.Count - 1; i >= 0; i--) {
                     Particle p = particles[i];
+                    p.sprite.Update(deltaTime);
                     p.sprite.GetLayer(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
                     //p.sprite.GetLayer(0).rotate = p.facing + p.rotateoffset
                     // increment lifetime
@@ -125,6 +127,18 @@ namespace ShiftDrive {
                 p.velocity = new Vector2(Utils.RandomFloat(-16f, 16f), Utils.RandomFloat(-16f, 16f));
                 Register(p);
             }
+        }
+
+        /// <summary>
+        /// Implementation for BulletImpact effect.
+        /// </summary>
+        public static void CreateBulletImpact(Vector2 position, float facing) {
+            Particle impact = new Particle();
+            impact.sprite = Assets.GetSprite("map/bullet-impact").Clone();
+            impact.position = position;
+            impact.facing = facing;
+            impact.lifemax = 0.4f;
+            Register(impact);
         }
 
     }

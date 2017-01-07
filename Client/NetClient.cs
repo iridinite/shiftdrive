@@ -164,6 +164,9 @@ namespace ShiftDrive {
                                 case ParticleEffect.Explosion:
                                     ParticleManager.CreateExplosion(position);
                                     break;
+                                case ParticleEffect.BulletImpact:
+                                    ParticleManager.CreateBulletImpact(position, 0f);
+                                    break;
                             }
                             break;
 
