@@ -118,18 +118,28 @@ namespace ShiftDrive {
             Weapon ret = new Weapon();
             ret.Name = instream.ReadString();
             ret.Description = instream.ReadString();
+            ret.Mount = (MountSize)instream.ReadByte();
             ret.Powered = instream.ReadBoolean();
+
             ret.PowerDraw = instream.ReadSingle();
             ret.DamageType = (DamageType)instream.ReadByte();
             ret.Damage = instream.ReadSingle();
             ret.ChargeTime = instream.ReadSingle();
             ret.Charge = instream.ReadSingle();
+            ret.Range = instream.ReadSingle();
+
+            ret.ProjType = (WeaponType)instream.ReadByte();
+            ret.ProjSprite = instream.ReadString();
+            ret.ProjSpeed = instream.ReadSingle();
+            ret.ProjSpread = instream.ReadSingle();
+
             ret.Ammo = (AmmoType)instream.ReadByte();
             ret.AmmoPerShot = instream.ReadByte();
             ret.AmmoPerClip = instream.ReadUInt16();
             ret.AmmoLeft = instream.ReadUInt16();
             ret.AmmoClipsMax = instream.ReadUInt16();
             ret.AmmoClipsLeft = instream.ReadUInt16();
+
             ret.ReloadTime = instream.ReadSingle();
             ret.ReloadProgress = instream.ReadSingle();
             return ret;
@@ -138,18 +148,28 @@ namespace ShiftDrive {
         public void Serialize(Packet outstream) {
             outstream.Write(Name);
             outstream.Write(Description);
+            outstream.Write((byte)Mount);
             outstream.Write(Powered);
+
             outstream.Write(PowerDraw);
             outstream.Write((byte)DamageType);
             outstream.Write(Damage);
             outstream.Write(ChargeTime);
             outstream.Write(Charge);
+            outstream.Write(Range);
+
+            outstream.Write((byte)ProjType);
+            outstream.Write(ProjSprite);
+            outstream.Write(ProjSpeed);
+            outstream.Write(ProjSpread);
+
             outstream.Write((byte)Ammo);
             outstream.Write((byte)AmmoPerShot);
             outstream.Write((ushort)AmmoPerClip);
             outstream.Write((ushort)AmmoLeft);
             outstream.Write((ushort)AmmoClipsMax);
             outstream.Write((ushort)AmmoClipsLeft);
+
             outstream.Write(ReloadTime);
             outstream.Write(ReloadProgress);
         }
