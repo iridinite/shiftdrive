@@ -46,6 +46,7 @@
     <Compile Include="Button.cs" />
     <Compile Include="CollisionGrid.cs" />
     <Compile Include="CollisionLayer.cs" />
+    <Compile Include="ConsoleSettings.cs" />
     <Compile Include="FormGameOver.cs" />
     <Compile Include="ImageButton.cs" />
     <Compile Include="Locale.cs" />
