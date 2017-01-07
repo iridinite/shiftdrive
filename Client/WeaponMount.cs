@@ -42,6 +42,26 @@ namespace ShiftDrive {
             return ret;
         }
 
+        public static WeaponMount FromStream(Packet instream) {
+            WeaponMount ret = new WeaponMount();
+            ret.Offset = new Vector2(instream.ReadSingle(), instream.ReadSingle());
+            ret.Position = new Vector2(instream.ReadSingle(), instream.ReadSingle());
+            ret.Bearing = instream.ReadSingle();
+            ret.Arc = instream.ReadSingle();
+            ret.Size = (MountSize)instream.ReadByte();
+            return ret;
+        }
+
+        public void Serialize(Packet outstream) {
+            outstream.Write(Offset.X);
+            outstream.Write(Offset.Y);
+            outstream.Write(Position.X);
+            outstream.Write(Position.Y);
+            outstream.Write(Bearing);
+            outstream.Write(Arc);
+            outstream.Write((byte)Size);
+        }
+
     }
 
 }

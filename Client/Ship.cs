@@ -26,7 +26,7 @@ namespace ShiftDrive {
         public float topSpeed;
         public float turnRate;
 
-        public byte mountsNum;
+        public byte weaponsNum;
         public WeaponMount[] mounts;
         public Weapon[] weapons;
         public List<Vector2> flares;
@@ -46,7 +46,7 @@ namespace ShiftDrive {
             shieldMax = 100f;
             shieldActive = false;
             damping = 0.75f;
-            mountsNum = 0;
+            weaponsNum = 0;
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
             flares = new List<Vector2>();
@@ -89,7 +89,7 @@ namespace ShiftDrive {
             }
 
             // update weapon charge / ammo states
-            for (int i = 0; i < mountsNum; i++) {
+            for (int i = 0; i < weaponsNum; i++) {
                 Weapon wep = weapons[i];
                 if (wep == null) continue;
                 if (mounts[i] == null) continue;
@@ -145,7 +145,7 @@ namespace ShiftDrive {
             // server-side stuff
             if (world.IsServer) {
                 // update mount point position
-                for (int i = 0; i < mountsNum; i++) {
+                for (int i = 0; i < weaponsNum; i++) {
                     if (mounts[i] == null) continue;
                     mounts[i].Position = Utils.CalculateRotatedOffset(mounts[i].Offset, facing);
                 }
@@ -313,15 +313,14 @@ namespace ShiftDrive {
 
             // mounts and weapons data
             if (changed.HasFlag(ObjectProperty.Mounts)) {
-                outstream.Write(mountsNum);
-                for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                    if (weapons[i] != null) {
-                        outstream.Write((byte)1);
-                        weapons[i].Serialize(outstream);
-                    } else {
-                        outstream.Write((byte)0);
-                    }
-                }
+                outstream.Write(weaponsNum);
+                for (int i = 0; i < weaponsNum; i++)
+                    mounts[i].Serialize(outstream);
+            }
+            if (changed.HasFlag(ObjectProperty.Weapons)) {
+                outstream.Write(weaponsNum);
+                for (int i = 0; i < weaponsNum; i++)
+                    weapons[i].Serialize(outstream);
             }
 
             // engine flare positions
@@ -363,13 +362,22 @@ namespace ShiftDrive {
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Mounts)) {
-                mountsNum = instream.ReadByte();
+                byte mountsNum = instream.ReadByte();
                 for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                    if (instream.ReadByte() == 1) {
-                        weapons[i] = Weapon.FromStream(instream);
-                    } else {
+                    if (i >= mountsNum)
+                        mounts[i] = null;
+                    else
+                        mounts[i] = WeaponMount.FromStream(instream);
+                }
+            }
+
+            if (recvChanged.HasFlag(ObjectProperty.Weapons)) {
+                weaponsNum = instream.ReadByte();
+                for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
+                    if (i >= weaponsNum)
                         weapons[i] = null;
-                    }
+                    else
+                        weapons[i] = Weapon.FromStream(instream);
                 }
             }
 
@@ -471,7 +479,7 @@ namespace ShiftDrive {
                             mounts[i] = null;
                         } else {
                             mounts[i] = WeaponMount.FromLua(L, 4);
-                            mountsNum++;
+                            weaponsNum++;
                         }
                         LuaAPI.lua_pop(L, 1);
                     }

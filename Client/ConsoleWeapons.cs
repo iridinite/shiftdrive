@@ -28,8 +28,8 @@ namespace ShiftDrive {
             btnShields.Draw(spriteBatch);
 
             // draw a list of currently active weapons
-            int weaponBoxX = SDGame.Inst.GameWidth / 2 - Player.mountsNum * 80;
-            for (int i = 0; i < Player.mountsNum; i++) {
+            int weaponBoxX = SDGame.Inst.GameWidth / 2 - Player.weaponsNum * 80;
+            for (int i = 0; i < Player.weaponsNum; i++) {
                 // draw box background
                 int weaponCurrentX = weaponBoxX + i * 160;
                 spriteBatch.Draw(Assets.textures["ui/weaponbg"], new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
