@@ -2,7 +2,7 @@ return {
   name = localize("weap_autocannon"),
   desc = localize("weap_autocannon_desc"),
   mount = Mount.SMALL,
-  draw = 0.025,
+  draw = 0.00025,
   weapontype = WeaponType.PROJECTILE,
   projsprite = "map/bullet",
   projspeed = 150,

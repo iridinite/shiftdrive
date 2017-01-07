@@ -2,7 +2,7 @@ return {
   name = localize("weap_plasmacannon"),
   desc = localize("weap_plasmacannon_desc"),
   mount = Mount.SMALL,
-  draw = 0.05,
+  draw = 0.005,
   weapontype = WeaponType.PROJECTILE,
   projsprite = "map/plasma",
   projspeed = 200,
