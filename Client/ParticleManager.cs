@@ -13,7 +13,8 @@ namespace ShiftDrive {
     /// </summary>
     internal enum ParticleEffect {
         Explosion,
-        BulletImpact
+        BulletImpact,
+        Beam
     }
 
     /// <summary>
@@ -138,6 +139,37 @@ namespace ShiftDrive {
             impact.position = position;
             impact.facing = facing;
             impact.lifemax = 0.4f;
+            Register(impact);
+        }
+
+        /// <summary>
+        /// Implementation for Beam effect.
+        /// </summary>
+        public static void CreateBeam(Vector2 position, Vector2 target, string beamsprite, string impactsprite) {
+            Vector2 beamLength = target - position;
+            Vector2 deltapos = Vector2.Normalize(beamLength) * 8.5f;
+            float beamLengthToGo = beamLength.Length() * 0.5f;
+            float facing = Utils.CalculateBearing(position, target);
+
+            while (beamLengthToGo > 0f) {
+                Particle beam = new Particle();
+                beam.position = position;
+                beam.facing = facing;
+                beam.lifemax = 0.15f;
+                //beam.colorend = Color.Transparent;
+                beam.sprite = Assets.GetSprite(beamsprite).Clone();
+                Register(beam);
+
+                beamLengthToGo -= 4f; // 32 pixels
+                position += deltapos;
+            }
+
+            Particle impact = new Particle();
+            impact.sprite = Assets.GetSprite(impactsprite).Clone();
+            impact.position = target;
+            impact.lifemax = 0.25f;
+            impact.facing = facing;
+            impact.colorend = Color.Transparent;
             Register(impact);
         }
 
