@@ -162,15 +162,11 @@ namespace ShiftDrive {
                     plr.ConsumeFuel(wep.PowerDraw);
                 }
             }
-
-
-            // server-side stuff
-            if (world.IsServer) {
-                // update mount point position
-                for (int i = 0; i < weaponsNum; i++) {
-                    if (mounts[i] == null) continue;
-                    mounts[i].Position = Utils.CalculateRotatedOffset(mounts[i].Offset, facing);
-                }
+            
+            // update mount point position
+            for (int i = 0; i < weaponsNum; i++) {
+                if (mounts[i] == null) continue;
+                mounts[i].Position = Utils.CalculateRotatedOffset(mounts[i].Offset, facing);
             }
 
             // engine flares
