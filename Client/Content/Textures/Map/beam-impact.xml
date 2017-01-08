@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<sprite>
+    <layer blend="additive">
+        <frame texture="map/beam-impact0" />
+    </layer>
+</sprite>

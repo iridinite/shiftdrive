@@ -650,3 +650,15 @@
 /processorParam:TextureFormat=Color
 /build:Textures/UI/weaponbg.png
 
+#begin Textures/Map/beam-impact.xml
+/copy:Textures/Map/beam-impact.xml
+
+#begin Textures/Map/beam-l.xml
+/copy:Textures/Map/beam-l.xml
+
+#begin Textures/Map/beam-m.xml
+/copy:Textures/Map/beam-m.xml
+
+#begin Textures/Map/beam-s.xml
+/copy:Textures/Map/beam-s.xml
+
