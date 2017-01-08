@@ -126,17 +126,34 @@ namespace ShiftDrive {
                 if (wep.Charge < wep.ChargeTime) continue;
                 wep.Charge = 0f;
 
+                // draw a beam for beam weapons
+                if (!world.IsServer && wep.ProjType == WeaponType.Beam)
+                    ParticleManager.CreateBeam(position + mounts[i].Position, target.position, wep.ProjSprite, "map/beam-impact");
+
                 // remove ammo for this shot
                 if (wep.Ammo != AmmoType.None)
                     wep.AmmoLeft -= wep.AmmoPerShot;
 
-                // if running on server, fire the weapon
+                // here be dragons, no clients beyond this here sign
+                // (we're spawning objects and dealing damage, so server-only access)
                 if (!world.IsServer) continue;
-                float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite, wep.Ammo,
-                    position + mounts[i].Position,
-                    Utils.Repeat(Utils.CalculateBearing(this.position, target.position) + randombearing, 0f, 360f), wep.ProjSpeed, wep.Damage,
-                    this.faction));
+                
+                switch (wep.ProjType) {
+                    case WeaponType.Projectile:
+                        // launch a projectile object
+                        float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
+                        NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite, wep.Ammo,
+                            position + mounts[i].Position,
+                            Utils.Repeat(Utils.CalculateBearing(this.position, target.position) + randombearing, 0f, 360f),
+                            wep.ProjSpeed, wep.Damage,
+                            this.faction));
+                        break;
+                    case WeaponType.Beam:
+                        // beam weapon - visual effect is done on client (see above)
+                        // just deal damage immediately because it's an instant-hit weapon anyway
+                        target.TakeDamage(wep.Damage);
+                        break;
+                }
 
                 // consume fuel for weapon fire
                 if (this.type == ObjectType.PlayerShip) {
