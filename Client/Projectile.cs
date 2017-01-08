@@ -65,6 +65,8 @@ namespace ShiftDrive {
             // TODO: make this dependant on ammo type
             if (!world.IsServer)
                 ParticleManager.CreateBulletImpact(position, facing);
+            // hide my sprite
+            sprite = null;
             // apply damage to whatever we hit
             damageApplied = true;
             other.TakeDamage(damage);
