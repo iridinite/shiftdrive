@@ -63,7 +63,8 @@ namespace ShiftDrive {
                 if (othership?.faction == this.faction) return;
             }
             // TODO: make this dependant on ammo type
-            ParticleManager.CreateBulletImpact(position, facing);
+            if (!world.IsServer)
+                ParticleManager.CreateBulletImpact(position, facing);
             // apply damage to whatever we hit
             damageApplied = true;
             other.TakeDamage(damage);
