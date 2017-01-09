@@ -32,10 +32,6 @@ namespace ShiftDrive {
 
             facing += angularVelocity * deltaTime;
             angularVelocity *= (float)Math.Pow(0.8f, deltaTime);
-
-            // re-transmit object if it's moving around
-            if (Math.Abs(angularVelocity) > 0.001f)
-                changed |= ObjectProperty.AngularVelocity;
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
@@ -45,9 +41,9 @@ namespace ShiftDrive {
             // asteroids shouldn't move so much if ships bump into them, because
             // they should look heavy and sluggish
             this.velocity += normal * penetration;
-            if (!other.IsShip()) {
+            if (!other.IsShip())
                 this.position += normal * penetration;
-            }
+            this.changed |= ObjectProperty.Position | ObjectProperty.Velocity | ObjectProperty.AngularVelocity;
         }
 
         public override void Serialize(Packet outstream) {
