@@ -79,7 +79,6 @@ namespace ShiftDrive {
 
         public string spritename;
         public SpriteSheet sprite;
-        public Color color;
 
         public float damping;
         public float bounding;
@@ -108,7 +107,6 @@ namespace ShiftDrive {
             refLuaDestroy = clua_Destroy;
             refLuaIsShip = clua_IsShip;
             changed = ObjectProperty.All;
-            color = Color.White;
             damping = 1.0f;
             zorder = 127;
             layer = CollisionLayer.Default;
@@ -268,9 +266,6 @@ namespace ShiftDrive {
                 case "zorder":
                     LuaAPI.lua_pushnumber(L, zorder);
                     break;
-                case "color":
-                    LuaAPI.lua_pushnumber(L, color.PackedValue);
-                    break;
 
                 // -- METHODS --
                 case "TakeDamage":
@@ -323,10 +318,6 @@ namespace ShiftDrive {
                     zorder = (byte)LuaAPI.luaL_checknumber(L, 3);
                     changed |= ObjectProperty.ZOrder;
                     break;
-                case "color":
-                    color.PackedValue = (uint)LuaAPI.luaL_checknumber(L, 3);
-                    changed |= ObjectProperty.Color;
-                    break;
                 default:
                     LuaAPI.lua_pushstring(L, "attempt to modify unknown field '" + key + "'");
                     LuaAPI.lua_error(L);
@@ -375,8 +366,6 @@ namespace ShiftDrive {
 
             if (changed.HasFlag(ObjectProperty.Sprite))
                 outstream.Write(spritename);
-            if (changed.HasFlag(ObjectProperty.Color))
-                outstream.Write(color.PackedValue);
         }
 
         /// <summary>
@@ -402,9 +391,6 @@ namespace ShiftDrive {
                 spritename = instream.ReadString();
                 sprite = Assets.GetSprite(spritename).Clone();
             }
-
-            if (recvChanged.HasFlag(ObjectProperty.Color))
-                color.PackedValue = instream.ReadUInt32();
         }
 
         /// <summary>

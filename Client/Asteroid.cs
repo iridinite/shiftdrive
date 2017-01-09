@@ -19,7 +19,6 @@ namespace ShiftDrive {
             type = ObjectType.Asteroid;
             facing = Utils.RNG.Next(0, 360);
             spritename = "map/asteroid";
-            color = Color.White;
             bounding = 8f;
             damping = 0.85f;
             zorder = 96;

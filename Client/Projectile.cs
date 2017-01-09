@@ -22,7 +22,6 @@ namespace ShiftDrive {
 
         public Projectile(GameState world) : base(world) {
             type = ObjectType.Projectile;
-            color = Color.White;
             bounding = 1f;
             damageApplied = false;
             zorder = 32;
