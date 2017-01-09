@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -160,8 +161,17 @@ namespace ShiftDrive {
         /// Returns a specified <see cref="SpriteLayer"/> from this sheet.
         /// </summary>
         /// <param name="index">The layer index to look up.</param>
-        public SpriteLayer GetLayer(int index) {
+        public SpriteLayer GetLayerByIndex(int index) {
             return layers[index];
+        }
+
+        /// <summary>
+        /// Returns a <see cref="SpriteLayer"/> based on the specified tag string.
+        /// </summary>
+        /// <param name="tag">The tag string to look up. Case-sensitive.</param>
+        public SpriteLayer GetLayerByTag(string tag) {
+            if (String.IsNullOrEmpty(tag)) throw new ArgumentException(nameof(tag));
+            return layers.FirstOrDefault(layer => tag.Equals(layer.tag));
         }
 
         /// <summary>

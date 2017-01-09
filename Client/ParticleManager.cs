@@ -62,7 +62,7 @@ namespace ShiftDrive {
                 for (int i = particles.Count - 1; i >= 0; i--) {
                     Particle p = particles[i];
                     p.sprite.Update(deltaTime);
-                    p.sprite.GetLayer(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
+                    p.sprite.GetLayerByIndex(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
                     //p.sprite.GetLayer(0).rotate = p.facing + p.rotateoffset
                     // increment lifetime
                     p.life += deltaTime;
