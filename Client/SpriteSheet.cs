@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
@@ -43,6 +44,7 @@ namespace ShiftDrive {
 
             public List<SpriteFrame> frames = new List<SpriteFrame>();
             public SpriteBlend blend;
+            public Color color = Color.White;
             public float rotate;
             public float rotateSpeed;
             public float scale;
@@ -149,6 +151,7 @@ namespace ShiftDrive {
                 clonelayer.rotate = 0f;
                 clonelayer.rotateSpeed = protlayer.rotateSpeed;
                 clonelayer.scale = protlayer.scale;
+                clonelayer.color = protlayer.color;
                 ret.layers.Add(clonelayer);
             }
             if (offsetRandom) // randomize offsets

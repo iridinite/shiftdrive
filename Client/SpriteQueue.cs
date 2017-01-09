@@ -34,7 +34,7 @@ namespace ShiftDrive {
         /// <summary>
         /// Draws this sprite using the specified <see cref="SpriteBatch"/>.
         /// </summary>
-        public static void QueueSprite(SpriteSheet spr, Vector2 position, Color color, float rotation, byte zorder) {
+        public static void QueueSprite(SpriteSheet spr, Vector2 position, float rotation, byte zorder) {
             Debug.Assert(!spr.isPrototype, "Cannot queue sprite prototype, use Clone() to duplicate it");
 
             foreach (SpriteSheet.SpriteLayer layer in spr.layers) {
@@ -44,7 +44,7 @@ namespace ShiftDrive {
                 queuedFrame.position = position;
                 queuedFrame.rotation = layer.rotate + rotation;
                 queuedFrame.scale = layer.scale;
-                queuedFrame.color = color;
+                queuedFrame.color = layer.color;
                 queuedFrame.zorder = zorder;
 
                 switch (layer.blend) {
@@ -55,9 +55,9 @@ namespace ShiftDrive {
                         drawQueueAdditive.Add(queuedFrame);
                         break;
                     case SpriteSheet.SpriteBlend.HalfBlend:
-                        queuedFrame.color.R = (byte)(color.R * (color.A / 255f));
-                        queuedFrame.color.G = (byte)(color.G * (color.A / 255f));
-                        queuedFrame.color.B = (byte)(color.B * (color.A / 255f));
+                        queuedFrame.color.R = (byte)(layer.color.R * (layer.color.A / 255f));
+                        queuedFrame.color.G = (byte)(layer.color.G * (layer.color.A / 255f));
+                        queuedFrame.color.B = (byte)(layer.color.B * (layer.color.A / 255f));
                         queuedFrame.color.A /= 2;
                         drawQueueAlpha.Add(queuedFrame);
                         break;

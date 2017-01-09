@@ -46,7 +46,6 @@ namespace ShiftDrive {
                     SpriteQueue.QueueSprite(
                         p.sprite,
                         screenpos,
-                        Color.Lerp(p.colorstart, p.colorend, p.life / p.lifemax),
                         MathHelper.ToRadians(p.facing),
                         p.zorder);
                 }
@@ -63,6 +62,7 @@ namespace ShiftDrive {
                     Particle p = particles[i];
                     p.sprite.Update(deltaTime);
                     p.sprite.GetLayerByIndex(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
+                    p.sprite.GetLayerByIndex(0).color = Color.Lerp(p.colorstart, p.colorend, p.life / p.lifemax);
                     //p.sprite.GetLayer(0).rotate = p.facing + p.rotateoffset
                     // increment lifetime
                     p.life += deltaTime;

@@ -97,7 +97,7 @@ namespace ShiftDrive {
                         goto default;
 
                     default:
-                        SpriteQueue.QueueSprite(obj.sprite, screenpos, obj.color, MathHelper.ToRadians(obj.facing), obj.zorder);
+                        SpriteQueue.QueueSprite(obj.sprite, screenpos, MathHelper.ToRadians(obj.facing), obj.zorder);
                         break;
                 }
             }
