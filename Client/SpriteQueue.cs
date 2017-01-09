@@ -37,6 +37,7 @@ namespace ShiftDrive {
         public static void QueueSprite(SpriteSheet spr, Vector2 position, float rotation, byte zorder) {
             Debug.Assert(!spr.isPrototype, "Cannot queue sprite prototype, use Clone() to duplicate it");
 
+            int zorderOffset = 0;
             foreach (SpriteSheet.SpriteLayer layer in spr.layers) {
                 SpriteSheet.SpriteFrame currentFrame = layer.frames[layer.frameNo];
                 QueuedFrame queuedFrame = new QueuedFrame();
@@ -45,7 +46,8 @@ namespace ShiftDrive {
                 queuedFrame.rotation = layer.rotate + rotation;
                 queuedFrame.scale = layer.scale;
                 queuedFrame.color = layer.color;
-                queuedFrame.zorder = zorder;
+                queuedFrame.zorder = unchecked((byte)(zorder - zorderOffset));
+                zorderOffset++;
 
                 switch (layer.blend) {
                     case SpriteSheet.SpriteBlend.AlphaBlend:
