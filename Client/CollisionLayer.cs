@@ -8,15 +8,15 @@ using System;
 namespace ShiftDrive {
 
     [Flags]
-    internal enum CollisionLayer {
-        None = 0,
-        Default = 1,
-        Ship = 2,
-        Asteroid = 4,
-        Projectile = 8,
-        Station = 16,
+    internal enum CollisionLayer : uint {
+        None =          0,
+        Default =       1 << 0,
+        Ship =          1 << 1,
+        Asteroid =      1 << 2,
+        Projectile =    1 << 3,
+        Station =       1 << 4,
 
-        All = 2147483647
+        All =           unchecked((uint)-1)
     }
 
 }
