@@ -17,7 +17,7 @@ namespace ShiftDrive {
 
         public Asteroid(GameState world) : base(world) {
             type = ObjectType.Asteroid;
-            facing = Utils.RNG.Next(0, 360);
+            facing = Utils.RandomFloat(0f, 360f);
             spritename = "map/asteroid";
             bounding = 8f;
             damping = 0.85f;
