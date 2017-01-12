@@ -72,6 +72,8 @@ namespace ShiftDrive {
 
             heartbeatMax = 0.1f;
             heartbeatTimer = 0f;
+
+            players = new Dictionary<int, NetPlayer>();
             announceCooldown = new Dictionary<AnnouncementId, float>();
 
             SDGame.Logger.Log("Starting server...");
@@ -170,7 +172,6 @@ namespace ShiftDrive {
 
         private static void Socket_OnServerStart() {
             SDGame.Logger.Log("Server socket started.");
-            players = new Dictionary<int, NetPlayer>();
         }
 
         private static void Socket_OnServerStop() {
