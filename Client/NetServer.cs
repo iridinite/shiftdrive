@@ -13,18 +13,19 @@ using Iridinite.Networking;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Represents a single connected player with associated state.
-    /// </summary>
-    internal sealed class NetPlayer {
-        public bool authorized;
-        public bool ready;
-        public PlayerRole roles;
-    }
-
-    /// <summary>
     /// Manages a game server and associated game state.
     /// </summary>
     internal static class NetServer {
+
+        /// <summary>
+        /// Represents a single connected player with associated state.
+        /// </summary>
+        private sealed class NetPlayer {
+            public bool authorized;
+            public bool ready;
+            public PlayerRole roles;
+        }
+
         internal static GameState world { get; private set; }
         internal static bool Active { get { return socket != null && socket.Listening; } }
 
