@@ -18,6 +18,17 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class LuaState : IDisposable {
 
+        /// <summary>
+        /// Describes creation parameters for a set of nameless objects.
+        /// </summary>
+        private struct NamelessObjectParams {
+            public Vector2 startpoint;
+            public Vector2 endpoint;
+            public Vector2 increment;
+            public float range;
+            public int count;
+        }
+
         internal readonly IntPtr L;
 
         private readonly Dictionary<string, int> compiledfns;
@@ -119,6 +130,26 @@ namespace ShiftDrive {
         public void RegisterFunction(string name, lua_CFunction fn) {
             PushDelegate(fn);
             lua_setglobal(L, name);
+        }
+
+        private NamelessObjectParams GetNamelessParams(int tableidx) {
+            NamelessObjectParams ret = new NamelessObjectParams();
+
+            // require metadata table as the second parameter
+            luaL_checktype(L, tableidx, LUA_TTABLE);
+
+            lua_getfield(L, tableidx, "startpoint");
+            lua_getfield(L, tableidx, "endpoint");
+            lua_checkfieldtype(L, tableidx, "startpoint", -2, LUA_TTABLE);
+            lua_checkfieldtype(L, tableidx, "endpoint", -1, LUA_TTABLE);
+            ret.startpoint = lua_tovec2(L, -2);
+            ret.endpoint = lua_tovec2(L, -1);
+            lua_pop(L, 2); // remove the table fields from the stack
+            ret.range = luaH_gettablefloat(L, tableidx, "range");
+            ret.count = luaH_gettableint(L, tableidx, "count");
+            ret.increment = (ret.endpoint - ret.startpoint) / (ret.count - 1);
+
+            return ret;
         }
 
         public void LoadFile(string filename) {
@@ -336,24 +367,11 @@ namespace ShiftDrive {
                 // -- Nameless Objects --
             } else if (objtype.Equals("asteroid", StringComparison.InvariantCultureIgnoreCase)) {
                 // Asteroid Belt
-                // require metadata table as the second parameter
-                luaL_checktype(L, 2, LUA_TTABLE);
-                lua_getfield(L, 2, "startpoint");
-                lua_getfield(L, 2, "endpoint");
-                lua_checkfieldtype(L, 2, "startpoint", 3, LUA_TTABLE);
-                lua_checkfieldtype(L, 2, "endpoint", 4, LUA_TTABLE);
-                Vector2 start = lua_tovec2(L, 3);
-                Vector2 end = lua_tovec2(L, 4);
-                lua_pop(L, 2); // remove the table fields from the stack
-                int range = luaH_gettableint(L, 2, "range");
-                int count = luaH_gettableint(L, 2, "count");
-
-                // now that we parsed the Lua table's info, we can create the objects
-                Vector2 increment = (end - start) / (count - 1);
-                for (int i = 0; i < count; i++) {
+                NamelessObjectParams nparam = GetNamelessParams(2);
+                for (int i = 0; i < nparam.count; i++) {
                     Asteroid rock = new Asteroid(NetServer.world);
-                    rock.position = start + (increment * i) + // base movement along the start-end line, plus random range
-                                    new Vector2(Utils.RandomFloat(-range, range), Utils.RandomFloat(-range, range));
+                    rock.position = nparam.startpoint + (nparam.increment * i) + // base movement along the start-end line, plus random range
+                                    new Vector2(Utils.RandomFloat(nparam.range, -nparam.range), Utils.RandomFloat(nparam.range, -nparam.range));
                     NetServer.world.AddObject(rock);
                 }
                 return 0;
