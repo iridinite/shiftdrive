@@ -118,6 +118,7 @@ namespace ShiftDrive {
                         case ObjectType.AIShip: obj = new AIShip(this); break;
                         case ObjectType.Station: obj = new SpaceStation(this); break;
                         case ObjectType.Asteroid: obj = new Asteroid(this); break;
+                        case ObjectType.Mine: obj = new Mine(this); break;
                         case ObjectType.BlackHole: obj = new BlackHole(this); break;
                         case ObjectType.Projectile: obj = new Projectile(this); break;
                         default:
