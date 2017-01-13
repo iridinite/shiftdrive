@@ -376,6 +376,17 @@ namespace ShiftDrive {
                 }
                 return 0;
 
+            } else if (objtype.Equals("mine", StringComparison.InvariantCultureIgnoreCase)) {
+                // Mine Field
+                NamelessObjectParams nparam = GetNamelessParams(2);
+                for (int i = 0; i < nparam.count; i++) {
+                    Mine mine = new Mine(NetServer.world);
+                    mine.position = nparam.startpoint + (nparam.increment * i) + // base movement along the start-end line, plus random range
+                                    new Vector2(Utils.RandomFloat(nparam.range, -nparam.range), Utils.RandomFloat(nparam.range, -nparam.range));
+                    NetServer.world.AddObject(mine);
+                }
+                return 0;
+
             } else {
                 lua_pushstring(L, "Unknown object type '" + objtype + "'");
                 lua_error(L);
