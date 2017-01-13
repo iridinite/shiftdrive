@@ -26,6 +26,16 @@ namespace ShiftDrive {
             public PlayerRole roles;
         }
 
+        /// <summary>
+        /// Contains information about the progress of a damaging explosion.
+        /// </summary>
+        private sealed class ExplosionData {
+            public Vector2 position;
+            public float range;
+            public float damage;
+            public float life;
+        }
+
         internal static GameState world { get; private set; }
         internal static bool Active { get { return socket != null && socket.Listening; } }
 
@@ -36,6 +46,7 @@ namespace ShiftDrive {
 
         private static Dictionary<int, NetPlayer> players;
         private static Dictionary<AnnouncementId, float> announceCooldown;
+        private static List<ExplosionData> explosions;
 
         private static float heartbeatMax;
         private static float heartbeatTimer;
@@ -75,6 +86,7 @@ namespace ShiftDrive {
 
             players = new Dictionary<int, NetPlayer>();
             announceCooldown = new Dictionary<AnnouncementId, float>();
+            explosions = new List<ExplosionData>();
 
             SDGame.Logger.Log("Starting server...");
             socket = new Host();
@@ -106,6 +118,25 @@ namespace ShiftDrive {
 
             // update collision grid
             world.UpdateGrid();
+
+            // update explosion advances
+            for (int i = explosions.Count - 1; i >= 0; i--) {
+                ExplosionData expl = explosions[i];
+                foreach (uint key in keys) {
+                    // iterate over all objects (QueryGrid is too unreliable)
+                    GameObject gobj = world.Objects[key];
+                    // object within range?
+                    float dist = Vector2.DistanceSquared(gobj.position, expl.position);
+                    if (dist > expl.range * expl.life)
+                        continue;
+                    // deal damage based on distance and time
+                    //dist = (float)Math.Sqrt(dist);
+                    gobj.TakeDamage(expl.damage * (1f - expl.life) * dt);
+                }
+                // remove explosions that are >1 sec old
+                expl.life += dt;
+                if (expl.life >= 1f) explosions.RemoveAt(i);
+            }
 
             // update announcement cooldowns
             var announceKeys = announceCooldown.Keys.OrderBy(a => a);
@@ -246,6 +277,23 @@ namespace ShiftDrive {
 
                 socket.Broadcast(packet.ToArray());
             }
+        }
+
+        /// <summary>
+        /// Simulates an explosion by damaging nearby objects and publishing a particle effect.
+        /// </summary>
+        /// <param name="position">The world position of the explosion.</param>
+        /// <param name="range">The maximum damaging range of the explosion in world units.</param>
+        /// <param name="damage">The maximum damage applied to objects per second of exposure.</param>
+        public static void DoDamagingExplosion(Vector2 position, float range, float damage) {
+            ExplosionData expl = new ExplosionData();
+            expl.position = position;
+            expl.damage = damage;
+            expl.range = range * range; // DistanceSquared
+            expl.life = 0f;
+            explosions.Add(expl);
+
+            PublishParticleEffect(ParticleEffect.Explosion, position);
         }
 
         /// <summary>
