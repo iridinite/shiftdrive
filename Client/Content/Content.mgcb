@@ -86,12 +86,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures/UI/skybox.png
 
-#begin Fx/Diffuse.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Fx/Diffuse.fx
-
 #begin Fx/Unlit.fx
 /importer:EffectImporter
 /processor:EffectProcessor
