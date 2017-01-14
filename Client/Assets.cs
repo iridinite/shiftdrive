@@ -32,6 +32,9 @@ namespace ShiftDrive {
         public static Model
             mdlSkybox;
 
+        public static TextureCube
+            tecSkybox;
+
         public static Effect
             fxUnlit,
             fxSkybox;
@@ -82,6 +85,21 @@ namespace ShiftDrive {
             foreach (FileInfo file in texturesDir.GetFiles("*.xml", SearchOption.AllDirectories)) {
                 string shortname = CleanFilename(file, texturesDir);
                 sprites.Add(shortname, SpriteSheet.FromFile(file.FullName));
+            }
+
+            // set up skybox
+            mdlSkybox = content.Load<Model>("Models/Skybox");
+            tecSkybox = new TextureCube(graphicsDevice, 1024, false, SurfaceFormat.Color);
+
+            // assemble skybox cubemap from individual textures
+            int skyNum = Utils.RNG.Next(1, 4);
+            string[] cubeFaces = { "RT", "LF", "UP", "DN", "FT", "BK" };
+            for (int i = 0; i < 6; i++) {
+                using (Texture2D skyFace = content.Load<Texture2D>("Skyboxes/sky" + skyNum + cubeFaces[i])) {
+                    Color[] skyData = new Color[1024 * 1024];
+                    skyFace.GetData(skyData);
+                    tecSkybox.SetData((CubeMapFace)i, skyData);
+                }
             }
 
             // load shaders
