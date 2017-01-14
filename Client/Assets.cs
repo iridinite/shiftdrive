@@ -4,8 +4,11 @@
 */
 
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
@@ -30,7 +33,8 @@ namespace ShiftDrive {
             mdlSkybox;
 
         public static Effect
-            fxUnlit;
+            fxUnlit,
+            fxSkybox;
 
         public static SoundEffect
             sndUIConfirm,
@@ -50,6 +54,47 @@ namespace ShiftDrive {
             if (!sprites.ContainsKey(name.ToLowerInvariant()))
                 throw new KeyNotFoundException($"Sprite '{name}' was not found.");
             return sprites[name.ToLowerInvariant()];
+        }
+        
+        private static string CleanFilename(FileInfo file, DirectoryInfo dir) {
+            string shortname = file.FullName.Substring(dir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
+            shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
+            return shortname;
+        }
+
+        public static void LoadContent(GraphicsDevice graphicsDevice, ContentManager content) {
+            // load font textures
+            fontDefault = content.Load<SpriteFont>("Fonts/Default");
+            fontDefault.LineSpacing = 20;
+            fontBold = content.Load<SpriteFont>("Fonts/Bold");
+            fontTooltip = content.Load<SpriteFont>("Fonts/Tooltip");
+            fontQuote = content.Load<SpriteFont>("Fonts/Quote");
+
+            // get folder containing texture and sprite files
+            DirectoryInfo texturesDir = new DirectoryInfo($"{content.RootDirectory}{Path.DirectorySeparatorChar}Textures{Path.DirectorySeparatorChar}");
+
+            // enumerate and load all textures
+            foreach (FileInfo file in texturesDir.GetFiles("*.xnb", SearchOption.AllDirectories)) {
+                string shortname = CleanFilename(file, texturesDir);
+                textures.Add(shortname, content.Load<Texture2D>("Textures/" + shortname));
+            }
+            // parse sprite sheet definitions
+            foreach (FileInfo file in texturesDir.GetFiles("*.xml", SearchOption.AllDirectories)) {
+                string shortname = CleanFilename(file, texturesDir);
+                sprites.Add(shortname, SpriteSheet.FromFile(file.FullName));
+            }
+
+            // load shaders
+            fxUnlit = content.Load<Effect>("Shaders/Unlit");
+            fxSkybox = content.Load<Effect>("Shaders/Skybox");
+
+            // sound effects
+            sndUIConfirm = content.Load<SoundEffect>("Audio/SFX/ui_confirm");
+            sndUICancel = content.Load<SoundEffect>("Audio/SFX/ui_cancel");
+            sndUIAppear1 = content.Load<SoundEffect>("Audio/SFX/ui_appear1");
+            sndUIAppear2 = content.Load<SoundEffect>("Audio/SFX/ui_appear2");
+            sndUIAppear3 = content.Load<SoundEffect>("Audio/SFX/ui_appear3");
+            sndUIAppear4 = content.Load<SoundEffect>("Audio/SFX/ui_appear4");
         }
 
     }

@@ -82,39 +82,9 @@ namespace ShiftDrive {
 
             // load string table
             Locale.LoadStrings("Data//locale//en-GB//strings.txt");
-            //loc.LoadPhrases("Data//locale//en-GB//phrases.txt");
 
             // load game assets
-            Assets.fontDefault = Content.Load<SpriteFont>("Fonts/Default");
-            Assets.fontDefault.LineSpacing = 20;
-            Assets.fontBold = Content.Load<SpriteFont>("Fonts/Bold");
-            Assets.fontTooltip = Content.Load<SpriteFont>("Fonts/Tooltip");
-            Assets.fontQuote = Content.Load<SpriteFont>("Fonts/Quote");
-
-            DirectoryInfo spritedir = new DirectoryInfo("Content/Textures/");
-            foreach (FileInfo file in spritedir.GetFiles("*.xnb", SearchOption.AllDirectories)) {
-                // load all textures
-                string shortname = file.FullName.Substring(spritedir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
-                shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
-                Assets.textures.Add(shortname, Content.Load<Texture2D>("Textures/" + shortname));
-            }
-            foreach (FileInfo file in spritedir.GetFiles("*.xml", SearchOption.AllDirectories)) {
-                // then parse all sprite sheet prototypes
-                string shortname = file.FullName.Substring(spritedir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
-                shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
-                Assets.sprites.Add(shortname, SpriteSheet.FromFile(file.FullName));
-            }
-
-            Assets.mdlSkybox = Content.Load<Model>("Models/Skybox");
-
-            Assets.fxUnlit = Content.Load<Effect>("Shaders/Unlit");
-
-            Assets.sndUIConfirm = Content.Load<SoundEffect>("Audio/SFX/ui_confirm");
-            Assets.sndUICancel = Content.Load<SoundEffect>("Audio/SFX/ui_cancel");
-            Assets.sndUIAppear1 = Content.Load<SoundEffect>("Audio/SFX/ui_appear1");
-            Assets.sndUIAppear2 = Content.Load<SoundEffect>("Audio/SFX/ui_appear2");
-            Assets.sndUIAppear3 = Content.Load<SoundEffect>("Audio/SFX/ui_appear3");
-            Assets.sndUIAppear4 = Content.Load<SoundEffect>("Audio/SFX/ui_appear4");
+            Assets.LoadContent(GraphicsDevice, Content);
         }
 
         protected override void UnloadContent() {
