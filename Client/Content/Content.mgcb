@@ -86,12 +86,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures/UI/skybox.png
 
-#begin Fx/Unlit.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Fx/Unlit.fx
-
 #begin Textures/UI/title.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -655,4 +649,10 @@
 
 #begin Textures/Map/beam-s.xml
 /copy:Textures/Map/beam-s.xml
+
+#begin Shaders/Unlit.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/Unlit.fx
 

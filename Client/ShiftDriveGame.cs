@@ -107,7 +107,7 @@ namespace ShiftDrive {
 
             Assets.mdlSkybox = Content.Load<Model>("Models/Skybox");
 
-            Assets.fxUnlit = Content.Load<Effect>("Fx/Unlit");
+            Assets.fxUnlit = Content.Load<Effect>("Shaders/Unlit");
 
             Assets.sndUIConfirm = Content.Load<SoundEffect>("Audio/SFX/ui_confirm");
             Assets.sndUICancel = Content.Load<SoundEffect>("Audio/SFX/ui_cancel");
