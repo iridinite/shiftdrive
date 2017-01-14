@@ -74,18 +74,6 @@
 /processorParam:TextureFormat=DxtCompressed
 /build:Models/Skybox.FBX
 
-#begin Textures/UI/skybox.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/UI/skybox.png
-
 #begin Textures/UI/title.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -655,6 +643,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Shaders/Unlit.fx
+
+#begin Shaders/Skybox.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/Skybox.fx
 
 #begin Skyboxes/sky2BK.png
 /importer:TextureImporter
