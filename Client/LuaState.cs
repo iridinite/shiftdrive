@@ -147,7 +147,7 @@ namespace ShiftDrive {
             lua_pop(L, 2); // remove the table fields from the stack
             ret.range = luaH_gettablefloat(L, tableidx, "range");
             ret.count = luaH_gettableint(L, tableidx, "count");
-            ret.increment = (ret.endpoint - ret.startpoint) / (ret.count - 1);
+            ret.increment = (ret.endpoint - ret.startpoint) / Math.Max(1, ret.count - 1);
 
             return ret;
         }
