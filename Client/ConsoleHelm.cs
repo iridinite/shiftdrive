@@ -45,7 +45,7 @@ namespace ShiftDrive {
             // bar outline
             spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(40, throttleBarY, 64, 24), new Rectangle(0, 0, 64, 24), Color.White);
             spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(40, throttleBarY + baseBarHeight - 24, 64, 24), new Rectangle(0, 24, 64, 24), Color.White);
-            spriteBatch.DrawString(Assets.fontDefault, "Throttle", new Vector2(32, throttleBarY - 25), Color.White);
+            spriteBatch.DrawString(Assets.fontDefault, Locale.Get("throttle"), new Vector2(32, throttleBarY - 25), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, (int)(targetThrottle * 100f) + "%", new Vector2(128, throttleBarY + throttleFillY - 10), Color.White);
 
             // fuel bar
