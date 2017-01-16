@@ -4,6 +4,7 @@
 */
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -40,21 +41,31 @@ namespace ShiftDrive {
             // subscribe to networking events
             NetClient.Announcement += NetClient_Announcement;
 
+            // create console switch buttons
             consoleButtons = new List<Button>();
             AddConsoleButton(0, 4, BtnSettings_OnClick, Locale.Get("console_settings")); // settings
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm)) {
                 AddConsoleButton(1, -1, BtnHelm_OnClick, Locale.Get("console_helm"));
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons))
+                if (Console == null) Console = new ConsoleHelm();
+            }
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons)) {
                 AddConsoleButton(2, -1, BtnWeap_OnClick, Locale.Get("console_wep"));
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Engineering))
-                AddConsoleButton(3, -1, BtnWeap_OnClick, Locale.Get("console_eng"));
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster))
-                AddConsoleButton(4, -1, BtnWeap_OnClick, Locale.Get("console_quar"));
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence))
-                AddConsoleButton(5, -1, BtnWeap_OnClick, Locale.Get("console_intel"));
+                if (Console == null) Console = new ConsoleWeapons();
+            }
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Engineering)) {
+                AddConsoleButton(3, -1, null, Locale.Get("console_eng"));
+                if (Console == null) Console = new ConsoleHelm();
+            }
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster)) {
+                AddConsoleButton(4, -1, null, Locale.Get("console_quar"));
+                if (Console == null) Console = new ConsoleHelm();
+            }
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence)) {
+                AddConsoleButton(5, -1, null, Locale.Get("console_intel"));
+                if (Console == null) Console = new ConsoleHelm();
+            }
+            Debug.Assert(Console != null, "no Console after FormGame init");
             AddConsoleButton(6, -1, BtnLRS_OnClick, Locale.Get("console_lrs")); // debug LRS
-
-            Console = new ConsoleHelm();
         }
 
         private void NetClient_Announcement(string text) {
