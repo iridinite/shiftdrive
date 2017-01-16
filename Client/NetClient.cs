@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Net.Sockets;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
@@ -92,8 +93,9 @@ namespace ShiftDrive {
 
         private static void Client_OnError(Exception ex) {
             if (IsConnecting) {
-                SDGame.Logger.LogError("Failed to connect: " + ex.Message);
-                connectCallback(false, ex.Message);
+                SocketException sockex = ex as SocketException;
+                Debug.Assert(sockex != null);
+                connectCallback(false, $"({sockex.SocketErrorCode}){Environment.NewLine}{sockex.Message}");
             } else {
                 SDGame.Logger.LogError("Client error: " + ex);
 #if DEBUG
