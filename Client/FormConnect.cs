@@ -13,21 +13,38 @@ namespace ShiftDrive {
     /// </summary>
     internal class FormConnect : IForm {
 
-        private readonly TextField txtIP;
-        private readonly TextButton btnConnect, btnCancel;
-        private int leaveAction;
+        /// <summary>
+        /// Determines which UI segments to display.
+        /// </summary>
+        private enum FormState {
+            Default,
+            Connecting,
+            ConnectFailed
+        }
 
+        private readonly TextField txtIP;
+        private readonly TextButton
+            btnConnect,
+            btnConnectFailConfirm,
+            btnBackToMenu;
+
+        private FormState state;
         private string connectErrorMsg;
 
         public FormConnect() {
+            int centerY = SDGame.Inst.GameHeight / 2;
+            state = FormState.Default;
+
             // create UI controls
-            txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, SDGame.Inst.GameHeight / 2 + 50, 250);
+            txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, centerY + 50, 250);
             txtIP.text = "localhost";
-            btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 110, 250, 40, Locale.Get("connect"));
+            btnConnect = new TextButton(0, -1, centerY + 110, 250, 40, Locale.Get("connect"));
             btnConnect.OnClick += btnConnect_Click;
-            btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 160, 250, 40, Locale.Get("cancel"));
-            btnCancel.CancelSound = true;
-            btnCancel.OnClick += btnCancel_Click;
+            btnConnectFailConfirm = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("ok"));
+            btnConnectFailConfirm.OnClick += btnConnectFailConfirm_Click;
+            btnBackToMenu = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("cancel"));
+            btnBackToMenu.CancelSound = true;
+            btnBackToMenu.OnClick += btnBackToMenu_Click;
         }
 
         public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
@@ -37,20 +54,26 @@ namespace ShiftDrive {
 
             Utils.DrawTitle(spriteBatch);
 
-            if (btnCancel.IsClosed) {
-                spriteBatch.DrawString(Assets.fontBold, Locale.Get("connecting"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("connecting")).X / 2), SDGame.Inst.GameHeight / 2f), Color.White);
+            switch (state) {
+                case FormState.Default:
+                    spriteBatch.DrawString(Assets.fontBold, Locale.Get("menu_connect"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("menu_connect")).X / 2), SDGame.Inst.GameHeight / 2f - 100), Color.White);
 
-            } else {
-                spriteBatch.DrawString(Assets.fontBold, Locale.Get("menu_connect"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("menu_connect")).X / 2), SDGame.Inst.GameHeight / 2f - 100), Color.White);
-                if (connectErrorMsg != null) {
+                    spriteBatch.DrawString(Assets.fontDefault, Locale.Get("serverip"), new Vector2(SDGame.Inst.GameWidth / 2f - 125, SDGame.Inst.GameHeight / 2f + 30), Color.White);
+                    txtIP.Draw(spriteBatch);
+                    btnConnect.Draw(spriteBatch);
+                    btnBackToMenu.Draw(spriteBatch);
+                    break;
+
+                case FormState.Connecting:
+                    spriteBatch.DrawString(Assets.fontBold, Locale.Get("connecting"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("connecting")).X / 2), SDGame.Inst.GameHeight / 2f), Color.White);
+                    break;
+
+                case FormState.ConnectFailed:
                     // if we had a connection error, draw the error text
-                    spriteBatch.DrawString(Assets.fontDefault, Locale.Get("err_connfailed"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(Locale.Get("err_connfailed")).X / 2), SDGame.Inst.GameHeight / 2f - 50), Color.White);
-                    spriteBatch.DrawString(Assets.fontDefault, connectErrorMsg, new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(connectErrorMsg).X / 2), SDGame.Inst.GameHeight / 2f - 20), Color.White);
-                }
-                spriteBatch.DrawString(Assets.fontDefault, Locale.Get("serverip"), new Vector2(SDGame.Inst.GameWidth / 2f - 125, SDGame.Inst.GameHeight / 2f + 30), Color.White);
-                txtIP.Draw(spriteBatch);
-                btnConnect.Draw(spriteBatch);
-                btnCancel.Draw(spriteBatch);
+                    spriteBatch.DrawString(Assets.fontBold, Locale.Get("err_connfailed"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("err_connfailed")).X / 2), SDGame.Inst.GameHeight / 2f - 50), Color.White);
+                    spriteBatch.DrawString(Assets.fontDefault, connectErrorMsg, new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(connectErrorMsg).X / 2), SDGame.Inst.GameHeight / 2f), Color.White);
+                    btnConnectFailConfirm.Draw(spriteBatch);
+                    break;
             }
 
             spriteBatch.End();
@@ -60,18 +83,30 @@ namespace ShiftDrive {
             Skybox.Update(gameTime);
             Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, -100f);
 
-            txtIP.Update(gameTime);
-            btnConnect.Update(gameTime);
-            btnCancel.Update(gameTime);
+            switch (state) {
+                case FormState.Default:
+                    txtIP.Update(gameTime);
+                    btnConnect.Update(gameTime);
+                    btnBackToMenu.Update(gameTime);
 
-            if (btnCancel.IsClosed) {
-                if (leaveAction == 0) {
-                    SDGame.Inst.ActiveForm = new FormMainMenu();
-                }
+                    if (btnBackToMenu.IsClosed)
+                        SDGame.Inst.ActiveForm = new FormMainMenu();
+                    break;
+
+                case FormState.Connecting:
+                    break;
+
+                case FormState.ConnectFailed:
+                    btnConnectFailConfirm.Update(gameTime);
+                    if (btnConnectFailConfirm.IsClosed)
+                        state = FormState.Default;
+                    break;
             }
         }
 
         private void btnConnect_Click(Control sender) {
+            state = FormState.Connecting;
+
             // TODO: remove this later. temp server creation for easy local testing
             if (NetServer.Active) NetServer.Stop();
             if (!NetServer.PrepareWorld())
@@ -80,15 +115,19 @@ namespace ShiftDrive {
             // connect to the remote server
             NetClient.Connect(txtIP.text, ConnectResult);
             // hide UI
-            leaveAction = 1;
             btnConnect.Close();
-            btnCancel.Close();
+            btnBackToMenu.Close();
         }
 
-        private void btnCancel_Click(Control sender) {
-            leaveAction = 0;
+        private void btnBackToMenu_Click(Control sender) {
             btnConnect.Close();
-            btnCancel.Close();
+            btnBackToMenu.Close();
+        }
+
+        private void btnConnectFailConfirm_Click(Control sender) {
+            btnConnect.Open();
+            btnBackToMenu.Open();
+            btnConnectFailConfirm.Close();
         }
 
         private void ConnectResult(bool success, string errmsg) {
@@ -96,9 +135,13 @@ namespace ShiftDrive {
                 SDGame.Inst.ActiveForm = new FormLobby();
 
             } else {
-                btnConnect.Open();
-                btnCancel.Open();
-                connectErrorMsg = errmsg;
+                connectErrorMsg = Utils.WrapText(
+                    Assets.fontDefault,
+                    errmsg,
+                    MathHelper.Min(SDGame.Inst.GameWidth - 400, 1000));
+
+                btnConnectFailConfirm.Open();
+                state = FormState.ConnectFailed;
             }
         }
 
