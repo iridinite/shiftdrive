@@ -60,10 +60,13 @@ namespace ShiftDrive {
             lock (particleLock) {
                 for (int i = particles.Count - 1; i >= 0; i--) {
                     Particle p = particles[i];
+                    // advance the animation
                     p.sprite.Update(deltaTime);
+                    // update properties
+                    p.position += p.velocity * deltaTime;
                     p.sprite.GetLayerByIndex(0).scale = MathHelper.Lerp(p.scalestart, p.scaleend, p.life / p.lifemax);
                     p.sprite.GetLayerByIndex(0).color = Color.Lerp(p.colorstart, p.colorend, p.life / p.lifemax);
-                    //p.sprite.GetLayer(0).rotate = p.facing + p.rotateoffset
+                    p.sprite.GetLayerByIndex(0).rotateSpeed = p.rotatespeed;
                     // increment lifetime
                     p.life += deltaTime;
                     if (p.life >= p.lifemax)
