@@ -94,7 +94,7 @@ namespace ShiftDrive {
         public void Precompile() {
             lua_createtable(L, 0, 0);
 
-            DirectoryInfo dir = new DirectoryInfo("Data");
+            DirectoryInfo dir = new DirectoryInfo("Data/Scripts");
             IOrderedEnumerable<FileInfo> files = dir.GetFiles("*.lua", SearchOption.AllDirectories).OrderBy(f => f.Name);
             foreach (FileInfo file in files) {
                 try {
