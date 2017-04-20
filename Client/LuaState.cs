@@ -104,7 +104,7 @@ namespace ShiftDrive {
                         script = r.ReadToEnd();
                     }
                     // strip the script file name of the scripts folder path and the lua extension
-                    string scriptname = file.FullName.Substring(dir.FullName.Length + 1);
+                    string scriptname = file.FullName.Substring(dir.FullName.Length + 1).ToLowerInvariant();
                     scriptname = scriptname.Substring(0, scriptname.Length - file.Extension.Length).Replace('\\', '/');
                     // compile the string as a Lua chunk
                     if (luaL_loadstringex(L, script, scriptname) != 0)
@@ -153,7 +153,7 @@ namespace ShiftDrive {
         }
 
         public void LoadFile(string filename) {
-            if (!compiledfns.ContainsKey(filename))
+            if (!compiledfns.ContainsKey(filename.ToLowerInvariant()))
                 throw new LuaException(lua_getwhere(L, 0) + "no such script exists '" + filename + "'");
 
             lua_getregistry(L, "precompiled");
