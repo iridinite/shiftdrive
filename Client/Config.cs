@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ShiftDrive {
 
@@ -16,11 +17,20 @@ namespace ShiftDrive {
         private const string cfgFileName = "config.dat";
         private const byte cfgVersion = 1;
 
+        private static byte _volumeSound = 10;
+
         public static ushort ResolutionW { get; set; } = 1280;
         public static ushort ResolutionH { get; set; } = 720;
         public static bool FullScreen { get; set; } = false;
 
-        public static byte VolumeSound { get; set; } = 10;
+        public static byte VolumeSound {
+            get { return _volumeSound; }
+            set {
+                _volumeSound = value;
+                SoundEffect.MasterVolume = value / 10f;
+            }
+        }
+
         public static byte VolumeMusic { get; set; } = 8;
         
         public static void Load() {
@@ -71,21 +81,7 @@ namespace ShiftDrive {
                 SDGame.Logger.LogError("Failed to write config: " + ex);
             }
         }
-
-        /// <summary>
-        /// Calculates a volume multiplier.
-        /// </summary>
-        public static float GetVolumeSound() {
-            return VolumeSound / 10f;
-        }
-
-        /// <summary>
-        /// Calculates a volume multiplier.
-        /// </summary>
-        public static float GetVolumeMusic() {
-            return VolumeMusic / 10f;
-        }
-
+        
     }
 
 }
