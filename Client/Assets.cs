@@ -54,7 +54,7 @@ namespace ShiftDrive {
                 throw new KeyNotFoundException($"Sprite '{name}' was not found.");
             return sprites[name.ToLowerInvariant()];
         }
-        
+
         private static string CleanFilename(FileInfo file, DirectoryInfo dir) {
             string shortname = file.FullName.Substring(dir.FullName.Length).Replace('\\', '/').ToLowerInvariant();
             shortname = shortname.Substring(0, shortname.Length - file.Extension.Length);
@@ -89,7 +89,7 @@ namespace ShiftDrive {
 
             // assemble skybox cubemap from individual textures
             int skyNum = Utils.RNG.Next(1, 4);
-            string[] cubeFaces = { "RT", "LF", "UP", "DN", "FT", "BK" };
+            string[] cubeFaces = {"RT", "LF", "UP", "DN", "FT", "BK"};
             for (int i = 0; i < 6; i++) {
                 using (Texture2D skyFace = content.Load<Texture2D>("Skyboxes/sky" + skyNum + cubeFaces[i])) {
                     Color[] skyData = new Color[1024 * 1024];
