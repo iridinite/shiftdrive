@@ -37,6 +37,7 @@ namespace ShiftDrive {
         public byte faction;
 
         private float flaretime;
+        private float damageSoundTime;
         private float shieldRegenPause;
 
         protected Ship(GameState world) : base(world) {
@@ -47,6 +48,7 @@ namespace ShiftDrive {
             shieldActive = false;
             damping = 0.75f;
             weaponsNum = 0;
+            damageSoundTime = 0f;
             mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
             weapons = new Weapon[WEAPON_ARRAY_SIZE];
             flares = new List<Vector2>();
@@ -134,6 +136,11 @@ namespace ShiftDrive {
                 if (wep.Ammo != AmmoType.None)
                     wep.AmmoLeft -= wep.AmmoPerShot;
 
+                // play firing sound effect
+                if (!world.IsServer) {
+                    Assets.GetSound(wep.FireSound).Play();
+                }
+
                 // here be dragons, no clients beyond this here sign
                 // (we're spawning objects and dealing damage, so server-only access)
                 if (!world.IsServer) continue;
@@ -169,6 +176,10 @@ namespace ShiftDrive {
                 mounts[i].Position = Utils.CalculateRotatedOffset(mounts[i].Offset, facing);
             }
 
+            // damage sound cooldown
+            if (damageSoundTime > 0f)
+                damageSoundTime -= deltaTime;
+
             // engine flares
             if (!(throttle > 0f) || world.IsServer) return;
             if (flaretime > 0f) { // space out evenly
@@ -192,6 +203,12 @@ namespace ShiftDrive {
             }
         }
 
+        private void PlayDamageSound(string cue) {
+            if (damageSoundTime > 0f) return;
+            damageSoundTime = 0.15f;
+            Assets.GetSound(cue).Play();
+        }
+
         public override void TakeDamage(float damage) {
             // need to resend hull and shields
             changed |= ObjectProperty.Health;
@@ -201,10 +218,14 @@ namespace ShiftDrive {
 
             // apply damage to shields first, if possible
             if (shieldActive && shield > 0f) {
+                if (!world.IsServer)
+                    PlayDamageSound("DamageShield");
                 shield = MathHelper.Clamp(shield - damage, 0f, shieldMax);
                 return;
             }
             // otherwise, apply damage to hull
+            if (!world.IsServer)
+                PlayDamageSound("DamageHull");
             hull = MathHelper.Clamp(hull - damage, 0f, hullMax);
             // zero hull = ship destruction
             if (hull <= 0f && world.IsServer) Destroy();
