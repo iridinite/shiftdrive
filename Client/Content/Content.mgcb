@@ -866,3 +866,93 @@
 /processorParam:TextureFormat=Color
 /build:Skyboxes/sky3UP.png
 
+#begin Audio/SFX/DamageHull.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/DamageHull.wav
+
+#begin Audio/SFX/DamageHull2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/DamageHull2.wav
+
+#begin Audio/SFX/DamageShield.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/DamageShield.wav
+
+#begin Audio/SFX/DamageShield2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/DamageShield2.wav
+
+#begin Audio/SFX/DamageShield3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/DamageShield3.wav
+
+#begin Audio/SFX/ExplosionMedium.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/ExplosionMedium.wav
+
+#begin Audio/SFX/ExplosionSmall.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/ExplosionSmall.wav
+
+#begin Audio/SFX/Gun1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Gun1.wav
+
+#begin Audio/SFX/Gun2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Gun2.wav
+
+#begin Audio/SFX/Gun3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Gun3.wav
+
+#begin Audio/SFX/LaserBurst1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/LaserBurst1.wav
+
+#begin Audio/SFX/LaserBurst2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/LaserBurst2.wav
+
+#begin Audio/SFX/LaserBurst3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/LaserBurst3.wav
+
+#begin Audio/SFX/MissileHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/MissileHit.wav
+
+#begin Audio/SFX/MissileLaunch.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/MissileLaunch.wav
+
