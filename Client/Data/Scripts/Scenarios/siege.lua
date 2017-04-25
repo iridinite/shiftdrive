@@ -5,7 +5,7 @@ player.position = {500, 500}
 player.fuel = 11
 player.faction = 1
 
-local npc = CreateShip(require("ships/broadside"))
+local npc = CreateShip(require("ships/mdfrigate"))
 npc.position = {600, 500}
 npc.faction = 2
 
