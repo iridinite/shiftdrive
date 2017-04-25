@@ -8,7 +8,7 @@ return {
   projspeed = 200,
   projspread = 0,
   damagetype = DamageType.THERMAL,
-  damage = 3.5,
+  damage = 8,
   range = 200,
   chargetime = 1.5,
   ammotype = AmmoType.NONE
