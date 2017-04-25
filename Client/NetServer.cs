@@ -421,7 +421,8 @@ namespace ShiftDrive {
 
                 }
 
-            } catch (Exception) {
+            } catch (Exception ex) {
+                SDGame.Logger.LogError($"Server exception: {ex}");
 #if DEBUG
                 System.Diagnostics.Debugger.Break();
 #endif
