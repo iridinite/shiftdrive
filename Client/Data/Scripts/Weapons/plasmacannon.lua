@@ -4,6 +4,7 @@ return {
   mount = Mount.SMALL,
   draw = 0.005,
   weapontype = WeaponType.PROJECTILE,
+  firesound = "FireLaser",
   projsprite = "map/plasma",
   projspeed = 200,
   projspread = 0,

@@ -4,6 +4,7 @@ return {
   mount = Mount.SMALL,
   draw = 0.00025,
   weapontype = WeaponType.PROJECTILE,
+  firesound = "FireAutocannon",
   projsprite = "map/bullet",
   projspeed = 150,
   projspread = 1,

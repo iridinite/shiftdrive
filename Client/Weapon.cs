@@ -57,6 +57,8 @@ namespace ShiftDrive {
         public bool Powered;
         public float PowerDraw;
 
+        public string FireSound;
+
         public DamageType DamageType;
         public float Damage;
         public float ChargeTime;
@@ -84,6 +86,8 @@ namespace ShiftDrive {
             ret.Name = LuaAPI.luaH_gettablestring(L, tableidx, "name");
             ret.Description = LuaAPI.luaH_gettablestring(L, tableidx, "desc");
             ret.Mount = (MountSize)LuaAPI.luaH_gettableint(L, tableidx, "mount");
+
+            ret.FireSound = LuaAPI.luaH_gettablestring(L, tableidx, "firesound");
 
             ret.DamageType = (DamageType)LuaAPI.luaH_gettableint(L, tableidx, "damagetype");
             ret.PowerDraw = LuaAPI.luaH_gettablefloat(L, tableidx, "draw");
@@ -121,6 +125,8 @@ namespace ShiftDrive {
             ret.Mount = (MountSize)instream.ReadByte();
             ret.Powered = instream.ReadBoolean();
 
+            ret.FireSound = instream.ReadString();
+
             ret.PowerDraw = instream.ReadSingle();
             ret.DamageType = (DamageType)instream.ReadByte();
             ret.Damage = instream.ReadSingle();
@@ -150,6 +156,8 @@ namespace ShiftDrive {
             outstream.Write(Description);
             outstream.Write((byte)Mount);
             outstream.Write(Powered);
+
+            outstream.Write(FireSound);
 
             outstream.Write(PowerDraw);
             outstream.Write((byte)DamageType);
