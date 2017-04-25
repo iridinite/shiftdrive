@@ -122,7 +122,7 @@ namespace ShiftDrive {
         /// Draws the game title at the specified height, along with version info in the corner.
         /// </summary>
         public static void DrawTitle(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Assets.textures["ui/title"], new Vector2(SDGame.Inst.GameWidth / 2 - 128, SDGame.Inst.GameHeight / 4f + logoY), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/title"), new Vector2(SDGame.Inst.GameWidth / 2 - 128, SDGame.Inst.GameHeight / 4f + logoY), Color.White);
 
             string versionstr = GetVersionString() +
                                 " / Protocol " + NetShared.ProtocolVersion;

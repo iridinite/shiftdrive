@@ -32,7 +32,7 @@ namespace ShiftDrive {
             for (int i = 0; i < Player.weaponsNum; i++) {
                 // draw box background
                 int weaponCurrentX = weaponBoxX + i * 160;
-                spriteBatch.Draw(Assets.textures["ui/weaponbg"], new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
+                spriteBatch.Draw(Assets.GetTexture("ui/weaponbg"), new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
 
                 // find the weapon in this index
                 Weapon wep = Player.weapons[i];
@@ -45,8 +45,8 @@ namespace ShiftDrive {
                 int chargeWidth = (int)(128 * (wep.Charge / wep.ChargeTime));
                 if (wep.ChargeTime > 0.5f || wep.Ammo == AmmoType.None) {
                     // for weapons with a long charge, draw a charge bar
-                    spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, chargeWidth, 16), new Rectangle(0, 0, chargeWidth, 16), Color.LightGoldenrodYellow);
-                    spriteBatch.Draw(Assets.textures["ui/chargebar"], new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, 128, 16), new Rectangle(0, 16, 128, 16), Color.White);
+                    spriteBatch.Draw(Assets.GetTexture("ui/chargebar"), new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, chargeWidth, 16), new Rectangle(0, 0, chargeWidth, 16), Color.LightGoldenrodYellow);
+                    spriteBatch.Draw(Assets.GetTexture("ui/chargebar"), new Rectangle(weaponCurrentX + 11, SDGame.Inst.GameHeight - 32, 128, 16), new Rectangle(0, 16, 128, 16), Color.White);
                 } else {
                     // for rapid fire weapons, a charge bar is pointless, so draw ammo tally instead
                     //int ammoInClip = wep.AmmoLeft - (wep.AmmoLeft / wep.AmmoPerClip - 1) * wep.AmmoPerClip;

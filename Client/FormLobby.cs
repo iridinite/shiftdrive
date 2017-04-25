@@ -49,7 +49,7 @@ namespace ShiftDrive {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             spriteBatch.DrawString(Assets.fontDefault, "Connected.", new Vector2(50, 50), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, "Players: " + NetClient.PlayerCount, new Vector2(50, 150), Color.White);
-            spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(SDGame.Inst.GameWidth - 270, SDGame.Inst.GameHeight - 60, 40, 40), isReady ? Color.Green : Color.Red);
+            spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(SDGame.Inst.GameWidth - 270, SDGame.Inst.GameHeight - 60, 40, 40), isReady ? Color.Green : Color.Red);
 
             btnHelm.Draw(spriteBatch);
             btnWeap.Draw(spriteBatch);
@@ -61,7 +61,7 @@ namespace ShiftDrive {
                 PlayerRole thisrole = (PlayerRole)(1 << i);
                 if (NetClient.TakenRoles.HasFlag(thisrole))
                     spriteBatch.DrawString(Assets.fontDefault, Locale.Get("role_taken"), new Vector2(SDGame.Inst.GameWidth / 2 + 130, SDGame.Inst.GameHeight / 2 - 138 + (i * 50)), Color.White);
-                spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 - 150 + (i * 50), 40, 40), NetClient.MyRoles.HasFlag(thisrole) ? Color.Green : Color.Red);
+                spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 - 150 + (i * 50), 40, 40), NetClient.MyRoles.HasFlag(thisrole) ? Color.Green : Color.Red);
             }
 
             btnDisconnect.Draw(spriteBatch);

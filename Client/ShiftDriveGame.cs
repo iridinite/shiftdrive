@@ -150,7 +150,7 @@ namespace ShiftDrive {
             if (debugPanelShown) {
                 int dbgPanelX = GameWidth - 400;
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle(dbgPanelX, 0, 400, GameHeight), Color.Black * 0.6f);
+                spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(dbgPanelX, 0, 400, GameHeight), Color.Black * 0.6f);
                 spriteBatch.DrawString(Assets.fontTooltip, Utils.GetDebugInfo(), new Vector2(dbgPanelX + 10, 10), Color.White);
                 spriteBatch.End();
             }

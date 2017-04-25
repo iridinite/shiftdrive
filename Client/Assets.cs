@@ -16,18 +16,14 @@ namespace ShiftDrive {
     /// A simple static container, for holding game assets like textures and meshes.
     /// </summary>
     internal static class Assets {
+        private static readonly Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, SpriteSheet> sprites = new Dictionary<string, SpriteSheet>();
 
         public static SpriteFont
             fontDefault,
             fontBold,
             fontTooltip,
             fontQuote;
-
-        public static readonly Dictionary<string, Texture2D>
-            textures = new Dictionary<string, Texture2D>();
-
-        public static readonly Dictionary<string, SpriteSheet>
-            sprites = new Dictionary<string, SpriteSheet>();
 
         public static Model
             mdlSkybox;

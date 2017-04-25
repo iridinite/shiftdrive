@@ -60,7 +60,7 @@ namespace ShiftDrive {
         }
 
         public static void DrawQueued(SpriteBatch spriteBatch) {
-            Texture2D tex = Assets.textures["ui/tooltip"];
+            Texture2D tex = Assets.GetTexture("ui/tooltip");
 
             foreach (Tooltip tt in renderQueue) {
                 spriteBatch.Draw(tex, new Rectangle(tt.posx, tt.posy, 16, 16), new Rectangle(0, 0, 16, 16), Color.White); // top left

@@ -93,7 +93,7 @@ namespace ShiftDrive {
                         spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(-1, 1), Color.Black);
                         spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(1, 1), Color.Black);
                         spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos, shipobj.GetFactionColor(Player));
-                        spriteBatch.Draw(Assets.textures["ui/rect"], new Rectangle((int)screenpos.X - hullBarWidth / 2, (int)screenpos.Y - 45, hullBarWidth, 8), shipobj.GetFactionColor(Player));
+                        spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle((int)screenpos.X - hullBarWidth / 2, (int)screenpos.Y - 45, hullBarWidth, 8), shipobj.GetFactionColor(Player));
                         goto default;
 
                     default:
@@ -126,12 +126,12 @@ namespace ShiftDrive {
             foreach (TargetableObject tobj in targetables) {
                 if (!Player.targets.Contains(tobj.objid)) continue;
 
-                spriteBatch.Draw(Assets.textures["ui/reticle"], tobj.screenpos, null, Color.Red, reticleSpin, new Vector2(32, 32), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Assets.GetTexture("ui/reticle"), tobj.screenpos, null, Color.Red, reticleSpin, new Vector2(32, 32), 1f, SpriteEffects.None, 0f);
             }
 
             // draw render target and a radar ring
             spriteBatch.Draw(rtAreaHud, new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
-            spriteBatch.Draw(Assets.textures["ui/radar"], new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f), null, Color.White, 0f, new Vector2(256, 256), 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Assets.GetTexture("ui/radar"), new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f), null, Color.White, 0f, new Vector2(256, 256), 1f, SpriteEffects.None, 0f);
             spriteBatch.End();
         }
 
@@ -142,12 +142,12 @@ namespace ShiftDrive {
         protected void DrawFuelGauge(SpriteBatch spriteBatch) {
             // the fuel value's decimal part is the reservoir contents
             float reservoir = Player.fuel - (float)Math.Floor(Player.fuel);
-            spriteBatch.Draw(Assets.textures["ui/itemicons"], new Rectangle(SDGame.Inst.GameWidth - 90, 75, 32, 32), new Rectangle(32, 0, 32, 32), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/itemicons"), new Rectangle(SDGame.Inst.GameWidth - 90, 75, 32, 32), new Rectangle(32, 0, 32, 32), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, ((int)Math.Floor(Player.fuel)).ToString(), new Vector2(SDGame.Inst.GameWidth - 55, 84), Color.White);
 
-            spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(SDGame.Inst.GameWidth - 88, (int)(119f + 200f * (1f - reservoir)), 48, (int)(200f * reservoir)), new Rectangle(64, (int)(119f + 200f * (1f - reservoir)), 64, (int)(200f * reservoir)), Color.White);
-            spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(SDGame.Inst.GameWidth - 88, 119, 48, 24), new Rectangle(0, 0, 64, 24), Color.White);
-            spriteBatch.Draw(Assets.textures["ui/fillbar"], new Rectangle(SDGame.Inst.GameWidth - 88, 295, 48, 24), new Rectangle(0, 24, 64, 24), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/fillbar"), new Rectangle(SDGame.Inst.GameWidth - 88, (int)(119f + 200f * (1f - reservoir)), 48, (int)(200f * reservoir)), new Rectangle(64, (int)(119f + 200f * (1f - reservoir)), 64, (int)(200f * reservoir)), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/fillbar"), new Rectangle(SDGame.Inst.GameWidth - 88, 119, 48, 24), new Rectangle(0, 0, 64, 24), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/fillbar"), new Rectangle(SDGame.Inst.GameWidth - 88, 295, 48, 24), new Rectangle(0, 24, 64, 24), Color.White);
         }
 
         public virtual void Update(GameTime gameTime) {

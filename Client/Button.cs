@@ -52,7 +52,7 @@ namespace ShiftDrive {
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (expand <= .1f) return;
-            Texture2D txButton = Assets.textures["ui/button"];
+            Texture2D txButton = Assets.GetTexture("ui/button");
 
             spriteBatch.Draw(txButton, new Rectangle(x, EffY, 8, 8), new Rectangle(state * 24, 0, 8, 8), Color.White); // top left
             spriteBatch.Draw(txButton, new Rectangle(x + 8, EffY, width - 16, 8), new Rectangle(state * 24 + 8, 0, 8, 8), Color.White); // top middle
