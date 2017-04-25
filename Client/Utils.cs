@@ -93,19 +93,21 @@ namespace ShiftDrive {
         /// <returns></returns>
         public static string WrapText(SpriteFont font, string text, float width) {
             StringBuilder result = new StringBuilder();
+            StringBuilder totalline = new StringBuilder();
             string[] lines = text.Replace("\x0D", "").Split('\x0A'); // strip \r, split on \n
 
             for (int i = 0; i < lines.Length; i++) {
                 // add words until overflow, then line-break
+                totalline.Clear();
                 string line = lines[i];
-                string totalline = "";
                 string[] words = line.Split(' ');
                 foreach (string word in words) {
                     if (font.MeasureString(totalline + word).X > width) {
-                        result.AppendLine(totalline);
-                        totalline = "";
+                        result.AppendLine(totalline.ToString());
+                        totalline.Clear();
                     }
-                    totalline += word + " ";
+                    totalline.Append(word);
+                    totalline.Append(' ');
                 }
                 // don't leave off the last line
                 if (totalline.Length > 0)
