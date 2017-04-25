@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<cues>
+    <cue name="UIConfirm">
+        <sound name="sfx/ui_confirm" />
+    </cue>
+    <cue name="UICancel">
+        <sound name="sfx/ui_cancel" />
+    </cue>
+    <cue name="UIAppear">
+        <sound name="sfx/ui_appear1" />
+        <sound name="sfx/ui_appear2" />
+        <sound name="sfx/ui_appear3" />
+        <sound name="sfx/ui_appear4" />
+    </cue>
+    <cue name="DamageHull">
+        <sound name="sfx/DamageHull" />
+        <sound name="sfx/DamageHull2" />
+    </cue>
+    <cue name="DamageShield">
+        <sound name="sfx/DamageShield" />
+        <sound name="sfx/DamageShield2" />
+        <sound name="sfx/DamageShield3" />
+    </cue>
+    <cue name="FireLaser">
+        <sound name="sfx/LaserBurst1" />
+    </cue>
+    <cue name="FireLaserSmall">
+        <sound name="sfx/LaserBurst2" />
+        <sound name="sfx/LaserBurst3" />
+    </cue>
+    <cue name="FireAutocannon">
+        <sound name="sfx/Gun1" />
+        <sound name="sfx/Gun2" />
+        <sound name="sfx/Gun3" />
+    </cue>
+    <cue name="MissileLaunch">
+        <sound name="sfx/MissileLaunch" />
+    </cue>
+    <cue name="MissileHit">
+        <sound name="sfx/MissileHit" />
+    </cue>
+    <cue name="ExplosionSmall">
+        <sound name="sfx/ExplosionSmall" />
+    </cue>
+    <cue name="ExplosionMedium">
+        <sound name="sfx/ExplosionMedium" />
+    </cue>
+</cues>

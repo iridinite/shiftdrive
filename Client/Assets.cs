@@ -3,10 +3,11 @@
 ** (C) Mika Molenkamp, 2016-2017.
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +19,7 @@ namespace ShiftDrive {
     internal static class Assets {
         private static readonly Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         private static readonly Dictionary<string, SpriteSheet> sprites = new Dictionary<string, SpriteSheet>();
+        private static readonly Dictionary<string, SoundCue> sounds = new Dictionary<string, SoundCue>();
 
         public static SpriteFont
             fontDefault,
@@ -35,14 +37,6 @@ namespace ShiftDrive {
             fxUnlit,
             fxSkybox;
 
-        public static SoundEffect
-            sndUIConfirm,
-            sndUICancel,
-            sndUIAppear1,
-            sndUIAppear2,
-            sndUIAppear3,
-            sndUIAppear4;
-
         public static Texture2D GetTexture(string name) {
             if (!textures.ContainsKey(name.ToLowerInvariant()))
                 throw new KeyNotFoundException($"Texture '{name}' was not found.");
@@ -53,6 +47,13 @@ namespace ShiftDrive {
             if (!sprites.ContainsKey(name.ToLowerInvariant()))
                 throw new KeyNotFoundException($"Sprite '{name}' was not found.");
             return sprites[name.ToLowerInvariant()];
+        }
+
+        public static SoundCue GetSound(string name) {
+            name = name.ToLowerInvariant();
+            if (!sounds.ContainsKey(name))
+                throw new KeyNotFoundException($"Sound '{name}' was not found.");
+            return sounds[name];
         }
 
         private static string CleanFilename(FileInfo file, DirectoryInfo dir) {
@@ -103,14 +104,51 @@ namespace ShiftDrive {
             fxSkybox = content.Load<Effect>("Shaders/Skybox");
 
             // sound effects
-            sndUIConfirm = content.Load<SoundEffect>("Audio/SFX/ui_confirm");
-            sndUICancel = content.Load<SoundEffect>("Audio/SFX/ui_cancel");
-            sndUIAppear1 = content.Load<SoundEffect>("Audio/SFX/ui_appear1");
-            sndUIAppear2 = content.Load<SoundEffect>("Audio/SFX/ui_appear2");
-            sndUIAppear3 = content.Load<SoundEffect>("Audio/SFX/ui_appear3");
-            sndUIAppear4 = content.Load<SoundEffect>("Audio/SFX/ui_appear4");
+            LoadSoundCues(content);
         }
 
+        private static void LoadSoundCues(ContentManager content) {
+            // load manifest file
+            XmlDocument cueManifest = new XmlDocument();
+            cueManifest.Load(content.RootDirectory + "/Audio/cuemanifest.xml");
+
+            XmlNode xmlRoot = cueManifest.DocumentElement;
+            if (xmlRoot == null || !String.Equals(xmlRoot.Name, "cues", StringComparison.InvariantCultureIgnoreCase))
+                throw new InvalidDataException("Sound cue manifest does not have root element named 'cues'.");
+
+            // go over each child node
+            XmlNode xmlCue = xmlRoot.FirstChild;
+            while (xmlCue != null) {
+                // sanity test
+                if (!String.Equals(xmlCue.Name, "cue", StringComparison.InvariantCultureIgnoreCase))
+                    throw new InvalidDataException("Child elements of 'cues' must be named 'cue'.");
+
+                // grab cue name
+                string cueName = xmlCue.Attributes?["name"]?.Value;
+                if (cueName == null)
+                    throw new InvalidDataException("Cue element must have an attribute named 'name'.");
+
+                // go over the sound list
+                SoundCue newCue = new SoundCue();
+                XmlNode xmlCueSound = xmlCue.FirstChild;
+                while (xmlCueSound != null) {
+                    string soundName = xmlCueSound.Attributes?["name"]?.Value;
+                    if (soundName == null)
+                        throw new InvalidDataException("Sound element must have an attribute named 'name'.");
+                    newCue.LoadSound(content, soundName);
+
+                    xmlCueSound = xmlCueSound.NextSibling;
+                }
+
+                if (newCue.Count < 1)
+                    throw new InvalidDataException("Cue element must have at least one sound");
+
+                // save the cue
+                sounds.Add(cueName.ToLowerInvariant(), newCue);
+
+                xmlCue = xmlCue.NextSibling;
+            }
+        }
     }
 
 }

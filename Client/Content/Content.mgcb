@@ -866,6 +866,9 @@
 /processorParam:TextureFormat=Color
 /build:Skyboxes/sky3UP.png
 
+#begin Audio/cuemanifest.xml
+/copy:Audio/cuemanifest.xml
+
 #begin Audio/SFX/DamageHull.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
