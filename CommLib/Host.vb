@@ -149,7 +149,6 @@ Public Class Host
     End Sub
 
     Private Sub ServerLoop()
-        Dim Iterations As Integer = 0
         While Not Kill
             ' reboot the listener thread
             If ListenerStopped Then
@@ -165,15 +164,8 @@ Public Class Host
                     ListenerStopped = Not ThreadPool.QueueUserWorkItem(AddressOf ListenThread)
                 End If
             End If
-
-            ' 10 loops per 1 ms
-            Iterations += 1
-            If Iterations >= 10 Then
-                Iterations = 0
-                Thread.Sleep(1)
-            Else
-                Thread.Sleep(0)
-            End If
+            
+            Thread.Sleep(1)
         End While
     End Sub
 
