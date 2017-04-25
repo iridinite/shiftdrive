@@ -38,15 +38,17 @@ namespace ShiftDrive {
             fxSkybox;
 
         public static Texture2D GetTexture(string name) {
-            if (!textures.ContainsKey(name.ToLowerInvariant()))
+            name = name.ToLowerInvariant();
+            if (!textures.ContainsKey(name))
                 throw new KeyNotFoundException($"Texture '{name}' was not found.");
-            return textures[name.ToLowerInvariant()];
+            return textures[name];
         }
 
         public static SpriteSheet GetSprite(string name) {
-            if (!sprites.ContainsKey(name.ToLowerInvariant()))
+            name = name.ToLowerInvariant();
+            if (!sprites.ContainsKey(name))
                 throw new KeyNotFoundException($"Sprite '{name}' was not found.");
-            return sprites[name.ToLowerInvariant()];
+            return sprites[name];
         }
 
         public static SoundCue GetSound(string name) {
