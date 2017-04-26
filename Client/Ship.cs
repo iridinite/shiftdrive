@@ -209,7 +209,8 @@ namespace ShiftDrive {
             Assets.GetSound(cue).Play();
         }
 
-        public override void TakeDamage(float damage) {
+        
+        public override void TakeDamage(float damage, bool sound = false) {
             // need to resend hull and shields
             changed |= ObjectProperty.Health;
 

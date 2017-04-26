@@ -38,7 +38,7 @@ namespace ShiftDrive {
             }
         }
 
-        public override void TakeDamage(float damage) {
+        public override void TakeDamage(float damage, bool sound = false) {
             // any damage causes the mine to immediately explode
             this.Destroy();
         }

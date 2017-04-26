@@ -165,7 +165,8 @@ namespace ShiftDrive {
         /// damage affects the object, if at all.
         /// </summary>
         /// <param name="damage">The damage total to apply.</param>
-        public virtual void TakeDamage(float damage) {
+        /// <param name="sound">Indicates whether to play a sound, if applicable.</param>
+        public virtual void TakeDamage(float damage, bool sound = false) {
             // breakable objects should override this
         }
 
