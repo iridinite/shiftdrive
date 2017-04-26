@@ -93,79 +93,12 @@ namespace ShiftDrive {
                 Weapon wep = weapons[i];
                 if (wep == null) continue;
 
-                // decrease charge if not targeting something
-                wep.Charge = Math.Max(0f, wep.Charge - deltaTime);
-                
-                // sanity check, must have a mount
+                // sanity check, active weapons must have a mount
                 Debug.Assert(mounts[i] != null);
-
-                // out-of-ammo processing
-                if (wep.Ammo != AmmoType.None && wep.AmmoLeft < wep.AmmoPerShot) {
-                    // need ammo reserve
-                    if (wep.AmmoClipsLeft < 1 && wep.Ammo != AmmoType.Dummy)
-                        continue;
-
-                    // begin reloading
-                    if (wep.ReloadProgress < wep.ReloadTime) {
-                        wep.ReloadProgress += deltaTime;
-                        continue;
-                    }
-                    wep.ReloadProgress = 0f;
-                    wep.AmmoLeft = wep.AmmoPerClip;
-                    if (this.type == ObjectType.PlayerShip && // AI ships have unlimited clips
-                        wep.Ammo != AmmoType.Dummy) // dummy ammo has no clips
-                        wep.AmmoClipsLeft--;
-                }
-
-                // find a target to fire upon
-                GameObject target = SelectTarget(mounts[i], wep);
-                if (target == null) continue;
-
-                // increment charge
-                wep.Charge += deltaTime * 2f;
-                if (wep.Charge < wep.ChargeTime) continue;
-                wep.Charge = 0f;
-
-                // draw a beam for beam weapons
-                if (!world.IsServer && wep.ProjType == WeaponType.Beam)
-                    ParticleManager.CreateBeam(position + mounts[i].Position, target.position, wep.ProjSprite, "map/beam-impact");
-
-                // remove ammo for this shot
-                if (wep.Ammo != AmmoType.None)
-                    wep.AmmoLeft -= wep.AmmoPerShot;
-                
-                // here be dragons, no clients beyond this here sign
-                // (we're spawning objects and dealing damage, so server-only access)
-                if (!world.IsServer) continue;
-
-                // firing sound effect
-                Assets.GetSound(wep.FireSound).Play3D(world.GetPlayerShip().position, position);
-
-                switch (wep.ProjType) {
-                    case WeaponType.Projectile:
-                        // launch a projectile object
-                        float randombearing = (float)Utils.RNG.NextDouble() * wep.ProjSpread * 2 - wep.ProjSpread;
-                        NetServer.world.AddObject(new Projectile(NetServer.world, wep.ProjSprite, wep.Ammo,
-                            position + mounts[i].Position,
-                            Utils.Repeat(Utils.CalculateBearing(this.position, target.position) + randombearing, 0f, 360f),
-                            wep.ProjSpeed, wep.Damage,
-                            this.faction));
-                        break;
-                    case WeaponType.Beam:
-                        // beam weapon - visual effect is done on client (see above)
-                        // just deal damage immediately because it's an instant-hit weapon anyway
-                        target.TakeDamage(wep.Damage, true);
-                        break;
-                }
-
-                // consume fuel for weapon fire
-                if (this.type == ObjectType.PlayerShip) {
-                    PlayerShip plr = this as PlayerShip;
-                    Debug.Assert(plr != null);
-                    plr.ConsumeFuel(wep.PowerDraw);
-                }
+                // charge and fire the weapon
+                wep.Update(deltaTime, this, mounts[i]);
             }
-            
+
             // update mount point position
             for (int i = 0; i < weaponsNum; i++) {
                 if (mounts[i] == null) continue;
@@ -242,7 +175,7 @@ namespace ShiftDrive {
             return IsAlly(observer) ? Color.LightGreen : Color.Red;
         }
 
-        protected virtual GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
+        public virtual GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
             GameObject target = null;
             float closest = float.MaxValue;
 

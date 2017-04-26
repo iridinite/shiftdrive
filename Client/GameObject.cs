@@ -85,7 +85,7 @@ namespace ShiftDrive {
         public CollisionLayer layer;
         public CollisionLayer layermask;
 
-        protected readonly GameState world;
+        public readonly GameState world;
 
         private readonly lua_CFunction
             refLuaGet,

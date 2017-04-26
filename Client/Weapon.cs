@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Diagnostics;
 
 namespace ShiftDrive {
 
@@ -49,7 +50,6 @@ namespace ShiftDrive {
     /// Represents a weapon on a ship.
     /// </summary>
     internal sealed class Weapon {
-
         public string Name;
         public string Description;
 
@@ -78,6 +78,80 @@ namespace ShiftDrive {
         public int AmmoClipsLeft;
         public float ReloadTime;
         public float ReloadProgress;
+
+        public void Update(float deltaTime, Ship owner, WeaponMount mount) {
+            // out-of-ammo / reloading processing
+            if (Ammo != AmmoType.None && AmmoLeft < AmmoPerShot) {
+                // need ammo reserve
+                if (AmmoClipsLeft < 1 && Ammo != AmmoType.Dummy)
+                    return;
+
+                // begin reloading
+                if (ReloadProgress < ReloadTime) {
+                    ReloadProgress += deltaTime;
+                    return;
+                }
+                ReloadProgress = 0f;
+                AmmoLeft = AmmoPerClip;
+                if (owner.type == ObjectType.PlayerShip && // AI ships have unlimited clips
+                    Ammo != AmmoType.Dummy) // dummy ammo has no clips
+                    AmmoClipsLeft--;
+            }
+
+            // find a target to fire upon
+            GameObject target = owner.SelectTarget(mount, this);
+            if (target == null) {
+                // decrease charge if not targeting something
+                Charge = Math.Max(0f, Charge - deltaTime);
+                return;
+            };
+
+            // increment charge
+            Charge += deltaTime;
+            if (Charge < ChargeTime) return;
+            Charge = 0f;
+
+            // draw a beam for beam weapons
+            bool serverside = owner.world.IsServer;
+            if (!serverside && ProjType == WeaponType.Beam)
+                ParticleManager.CreateBeam(owner.position + mount.Position, target.position, ProjSprite, "map/beam-impact");
+
+            // remove ammo for this shot
+            if (Ammo != AmmoType.None)
+                AmmoLeft -= AmmoPerShot;
+
+
+            // here be dragons, no clients beyond this here sign
+            // (we're spawning objects and dealing damage, so server-only access)
+            if (!serverside) return;
+
+            // firing sound effect
+            Assets.GetSound(FireSound).Play3D(owner.world.GetPlayerShip().position, owner.position);
+
+            switch (ProjType) {
+                case WeaponType.Projectile:
+                    // launch a projectile object
+                    float randombearing = (float)Utils.RNG.NextDouble() * ProjSpread * 2 - ProjSpread;
+                    NetServer.world.AddObject(new Projectile(NetServer.world, ProjSprite, Ammo,
+                        owner.position + mount.Position,
+                        Utils.Repeat(Utils.CalculateBearing(owner.position, target.position) + randombearing, 0f, 360f),
+                        ProjSpeed, Damage,
+                        owner.faction));
+                    break;
+                case WeaponType.Beam:
+                    // beam weapon - visual effect is done on client (see above)
+                    // just deal damage immediately because it's an instant-hit weapon anyway
+                    target.TakeDamage(Damage, true);
+                    break;
+            }
+
+            // consume fuel for weapon fire
+            if (owner.type == ObjectType.PlayerShip) {
+                PlayerShip plr = owner as PlayerShip;
+                Debug.Assert(plr != null);
+                plr.ConsumeFuel(PowerDraw);
+            }
+        }
 
         public static Weapon FromLua(IntPtr L, int tableidx) {
             LuaAPI.luaL_checktype(L, tableidx, LuaAPI.LUA_TTABLE);
@@ -181,7 +255,6 @@ namespace ShiftDrive {
             outstream.Write(ReloadTime);
             outstream.Write(ReloadProgress);
         }
-
     }
 
 }

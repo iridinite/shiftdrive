@@ -116,7 +116,7 @@ namespace ShiftDrive {
             base.OnCollision(other, normal, penetration);
         }
 
-        protected override GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
+        public override GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
             GameObject bestTarget = null;
             float closest = float.MaxValue;
 
