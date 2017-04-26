@@ -22,6 +22,7 @@ namespace ShiftDrive {
         private readonly Logger loggerInst;
         private readonly DeveloperConsole console;
 
+        private GameTime time;
         private float deltaTime;
 
 #if DEBUG
@@ -93,6 +94,7 @@ namespace ShiftDrive {
             // update viewport info
             GameWidth = GraphicsDevice.Viewport.Width;
             GameHeight = GraphicsDevice.Viewport.Height;
+            time = gameTime;
             deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // gather user input
@@ -103,7 +105,8 @@ namespace ShiftDrive {
             NetServer.Update(gameTime);
 
             // update client objects; movement prediction removes the jarred look
-            if (NetClient.Connected) { // TODO && NetClient.SimRunning)
+            if (NetClient.Connected) {
+                // TODO && NetClient.SimRunning)
                 lock (NetClient.worldLock) {
                     NetClient.World.UpdateGrid();
                     foreach (GameObject gobj in NetClient.World.Objects.Values) {
@@ -178,6 +181,13 @@ namespace ShiftDrive {
         /// </summary>
         public float GetDeltaTime() {
             return deltaTime;
+        }
+
+        /// <summary>
+        /// A public accessor for the current time.
+        /// </summary>
+        public GameTime GetTime() {
+            return time;
         }
 
     }
