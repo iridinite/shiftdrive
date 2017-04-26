@@ -18,7 +18,6 @@ namespace ShiftDrive {
     /// Represents an animated sprite.
     /// </summary>
     internal sealed class SpriteSheet {
-
         /// <summary>
         /// Specifies a style with which to render a sprite.
         /// </summary>
@@ -76,25 +75,14 @@ namespace ShiftDrive {
             if (!xmlRoot.HasChildNodes)
                 throw new InvalidDataException($"In sprite sheet '{filename}': sprite must have at least one layer");
 
-            // helper for getting attribute and dealing with defaults / invalid data
-            Func<XmlNode, string, float, float> getFloatAttr = (node, attrname, defval) => {
-                float outval;
-                XmlAttribute attr = node.Attributes?[attrname];
-                if (attr == null) return defval;
-                if (float.TryParse(attr.Value, NumberStyles.Float,
-                    CultureInfo.InvariantCulture.NumberFormat, out outval))
-                    return outval;
-                throw new InvalidDataException($"In sprite sheet '{filename}': in node '{node.Name}': attribute '{attrname}' has invalid value '{attr.Value}'");
-            };
-
             // walk through all layer definitions
             XmlNode xmlLayer = xmlRoot.FirstChild;
             while (xmlLayer != null) {
                 // parse basic layer settings
                 SpriteLayer layer = new SpriteLayer();
                 layer.tag = xmlLayer.Attributes?["tag"]?.Value;
-                layer.rotateSpeed = getFloatAttr(xmlLayer, "rotate", 0f);
-                layer.scale = getFloatAttr(xmlLayer, "scale", 1f);
+                layer.rotateSpeed = xmlLayer.GetAttrFloat("rotate", 0f, $"In sprite sheet '{filename}': ");
+                layer.scale = xmlLayer.GetAttrFloat("scale", 1f, $"In sprite sheet '{filename}': ");
 
                 // parse blend mode string
                 string blendmode = xmlLayer.Attributes?["blend"]?.Value ?? "alpha";
@@ -104,7 +92,7 @@ namespace ShiftDrive {
                     layer.blend = SpriteBlend.Additive;
                 else if (blendmode.Equals("half", StringComparison.InvariantCultureIgnoreCase))
                     layer.blend = SpriteBlend.HalfBlend;
-                else 
+                else
                     throw new InvalidDataException($"In sprite sheet '{filename}': in layer '{layer.tag ?? "unnamed"}': invalid blend mode '{blendmode}'");
 
                 if (!xmlLayer.HasChildNodes)
@@ -118,7 +106,7 @@ namespace ShiftDrive {
 
                     SpriteFrame frame = new SpriteFrame();
                     frame.texture = Assets.GetTexture(xmlFrame.Attributes["texture"].Value);
-                    frame.hold = getFloatAttr(xmlFrame, "hold", 1f);
+                    frame.hold = xmlFrame.GetAttrFloat("hold", 1f, $"In sprite sheet '{filename}': ");
                     layer.frames.Add(frame);
                     xmlFrame = xmlFrame.NextSibling;
                 }
@@ -198,7 +186,6 @@ namespace ShiftDrive {
                 if (layer.frameNo >= layer.frames.Count) layer.frameNo = 0;
             }
         }
-
     }
 
 }

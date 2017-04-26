@@ -4,8 +4,11 @@
 */
 
 using System;
+using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -154,6 +157,23 @@ namespace ShiftDrive {
         /// </summary>
         public static float Cross(this Vector2 a, Vector2 b) {
             return a.X * b.Y - a.Y * b.X;
+        }
+
+        /// <summary>
+        /// Helper for reading a float attribute with error handling and default support.
+        /// </summary>
+        /// <param name="node">The XML object to read the attribute from.</param>
+        /// <param name="attrname">The name of the attribute.</param>
+        /// <param name="defval">The default value of the attribute if missing.</param>
+        /// <param name="errprefix">A string to prefix to parsing error messages.</param>
+        public static float GetAttrFloat(this XmlNode node, string attrname, float defval, string errprefix = "") {
+            float outval;
+            XmlAttribute attr = node.Attributes?[attrname];
+            if (attr == null) return defval;
+            if (float.TryParse(attr.Value, NumberStyles.Float,
+                CultureInfo.InvariantCulture.NumberFormat, out outval))
+                return outval;
+            throw new InvalidDataException($"{errprefix}In node '{node.Name}': attribute '{attrname}' has invalid value '{attr.Value}'");
         }
 
 #if DEBUG
