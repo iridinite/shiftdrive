@@ -12,23 +12,23 @@
         <sound name="sfx/ui_appear3" />
         <sound name="sfx/ui_appear4" />
     </cue>
-    <cue name="DamageHull">
+    <cue name="DamageHull" cooldown="0.25" falloff="1.25">
         <sound name="sfx/DamageHull" />
         <sound name="sfx/DamageHull2" />
     </cue>
-    <cue name="DamageShield">
+    <cue name="DamageShield" cooldown="0.25" falloff="1.25">
         <sound name="sfx/DamageShield" />
         <sound name="sfx/DamageShield2" />
         <sound name="sfx/DamageShield3" />
     </cue>
-    <cue name="FireLaser">
+    <cue name="FireLaser" cooldown="0.05" falloff="1.1">
         <sound name="sfx/LaserBurst1" />
     </cue>
-    <cue name="FireLaserSmall">
+    <cue name="FireLaserSmall" cooldown="0.05" falloff="1.25">
         <sound name="sfx/LaserBurst2" />
         <sound name="sfx/LaserBurst3" />
     </cue>
-    <cue name="FireAutocannon">
+    <cue name="FireAutocannon" cooldown="0.05" falloff="1.25">
         <sound name="sfx/Gun1" />
         <sound name="sfx/Gun2" />
         <sound name="sfx/Gun3" />
@@ -39,10 +39,10 @@
     <cue name="MissileHit">
         <sound name="sfx/MissileHit" />
     </cue>
-    <cue name="ExplosionSmall">
+    <cue name="ExplosionSmall" falloff="0.4">
         <sound name="sfx/ExplosionSmall" />
     </cue>
-    <cue name="ExplosionMedium">
+    <cue name="ExplosionMedium" falloff="0.4">
         <sound name="sfx/ExplosionMedium" />
     </cue>
 </cues>

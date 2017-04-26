@@ -126,12 +126,16 @@ namespace ShiftDrive {
                     throw new InvalidDataException("Child elements of 'cues' must be named 'cue'.");
 
                 // grab cue name
+                SoundCue newCue = new SoundCue();
                 string cueName = xmlCue.Attributes?["name"]?.Value;
                 if (cueName == null)
                     throw new InvalidDataException("Cue element must have an attribute named 'name'.");
 
+                // additional settings
+                newCue.Cooldown = xmlCue.GetAttrFloat("cooldown", 0f, $"In cue '{cueName}': ");
+                newCue.Falloff = xmlCue.GetAttrFloat("falloff", 1f, $"In cue '{cueName}': ");
+
                 // go over the sound list
-                SoundCue newCue = new SoundCue();
                 XmlNode xmlCueSound = xmlCue.FirstChild;
                 while (xmlCueSound != null) {
                     string soundName = xmlCueSound.Attributes?["name"]?.Value;
