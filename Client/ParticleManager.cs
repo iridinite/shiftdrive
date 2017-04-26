@@ -95,10 +95,6 @@ namespace ShiftDrive {
         /// Implementation for Explosion effect.
         /// </summary>
         public static void CreateExplosion(Vector2 position) {
-            // play sound effect
-            // TODO: temporary. maybe move to a separate packet?
-            Assets.GetSound("ExplosionMedium").Play();
-
             // shockwave
             Particle wave = new Particle();
             wave.sprite = Assets.GetSprite("map/shockwave").Clone();

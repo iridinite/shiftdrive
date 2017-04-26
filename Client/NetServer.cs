@@ -131,7 +131,7 @@ namespace ShiftDrive {
                         continue;
                     // deal damage based on distance and time
                     //dist = (float)Math.Sqrt(dist);
-                    gobj.TakeDamage(expl.damage * (1f - expl.life) * dt);
+                    gobj.TakeDamage(expl.damage * (1f - expl.life) * dt, true);
                 }
                 // remove explosions that are >1 sec old
                 expl.life += dt;

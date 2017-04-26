@@ -68,7 +68,7 @@ namespace ShiftDrive {
             sprite = null;
             // apply damage to whatever we hit
             damageApplied = true;
-            other.TakeDamage(damage);
+            other.TakeDamage(damage, true);
             this.Destroy();
         }
 

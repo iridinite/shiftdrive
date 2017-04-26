@@ -48,6 +48,7 @@ namespace ShiftDrive {
             base.Destroy();
 
             if (!world.IsServer) return;
+            Assets.GetSound("ExplosionMedium").Play();
             NetServer.DoDamagingExplosion(this.position, 90f, 150f);
         }
 
