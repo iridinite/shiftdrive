@@ -47,7 +47,7 @@ namespace ShiftDrive {
 
                 // pull this object in closer
                 float pullpower = 1f - Vector2.Distance(gobj.position, this.position) / 140f;
-                gobj.position += pulldir * pullpower * pullpower * deltaTime * 40f;
+                gobj.position += pulldir * pullpower * pullpower * deltaTime * 60f;
                 gobj.changed |= ObjectProperty.Position;
 
                 // notify player ship
@@ -55,7 +55,7 @@ namespace ShiftDrive {
                     NetServer.PublishAnnouncement(AnnouncementId.BlackHole);
 
                 // objects that are too close to the center are damaged
-                if (pullpower >= 0.2f) gobj.TakeDamage(pullpower * pullpower * deltaTime * 10f);
+                if (pullpower >= 0.2f) gobj.TakeDamage(pullpower * pullpower * deltaTime * 35f);
 
                 // and stuff at the center is simply destroyed
                 if (pullpower >= 0.95f) gobj.Destroy();
