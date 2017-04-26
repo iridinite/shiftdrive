@@ -12,11 +12,11 @@
         <sound name="sfx/ui_appear3" />
         <sound name="sfx/ui_appear4" />
     </cue>
-    <cue name="DamageHull" cooldown="0.25" falloff="1.25">
+    <cue name="DamageHull" cooldown="0.25">
         <sound name="sfx/DamageHull" />
         <sound name="sfx/DamageHull2" />
     </cue>
-    <cue name="DamageShield" cooldown="0.25" falloff="1.25">
+    <cue name="DamageShield" cooldown="0.25">
         <sound name="sfx/DamageShield" />
         <sound name="sfx/DamageShield2" />
         <sound name="sfx/DamageShield3" />
