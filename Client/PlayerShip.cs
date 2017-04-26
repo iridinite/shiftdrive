@@ -108,6 +108,7 @@ namespace ShiftDrive {
             layer = CollisionLayer.None;
             layermask = CollisionLayer.None;
             // fancy display
+            Assets.GetSound("ExplosionMedium").Play3D(world.GetPlayerShip().position, position);
             NetServer.PublishParticleEffect(ParticleEffect.Explosion, position);
         }
 
