@@ -418,6 +418,7 @@ namespace ShiftDrive {
 
                         default:
                             SDGame.Logger.LogError($"Server got unknown packet ({recv.GetID()}), client #{clientID}");
+                            socket.Kick(clientID);
                             break;
                     }
 
