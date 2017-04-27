@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
@@ -131,10 +132,11 @@ namespace ShiftDrive {
             switch (ProjType) {
                 case WeaponType.Projectile:
                     // launch a projectile object
+                    Vector2 fireAt = GetFiringSolution(owner, target);
                     float randombearing = (float)Utils.RNG.NextDouble() * ProjSpread * 2 - ProjSpread;
                     NetServer.world.AddObject(new Projectile(NetServer.world, ProjSprite, Ammo,
                         owner.position + mount.Position,
-                        Utils.Repeat(Utils.CalculateBearing(owner.position, target.position) + randombearing, 0f, 360f),
+                        Utils.Repeat(Utils.CalculateBearing(owner.position, fireAt) + randombearing, 0f, 360f),
                         ProjSpeed, Damage,
                         owner.faction));
                     break;
@@ -151,6 +153,29 @@ namespace ShiftDrive {
                 Debug.Assert(plr != null);
                 plr.ConsumeFuel(PowerDraw);
             }
+        }
+        
+        /// <summary>
+        /// Calculates the point where the weapon must fire to hit the target by the time the projectiles arrive.
+        /// </summary>
+        /// <param name="self">The object where the projectiles originate from.</param>
+        /// <param name="target">The object that should be hit.</param>
+        public Vector2 GetFiringSolution(GameObject self, GameObject target) {
+            Vector2 velocity = target.movement;
+            Vector2 delta = target.position - self.position;
+
+            float a = velocity.LengthSquared() - ProjSpeed * ProjSpeed;
+            if (a >= 0) return target.position;
+
+            float b = 2 * Vector2.Dot(delta, velocity);
+            float c = delta.LengthSquared();
+
+            float rt = (float)Math.Sqrt(b * b - 4 * a * c);
+            float dt1 = (-b + rt) / (2 * a);
+            float dt2 = (-b - rt) / (2 * a);
+            float dt = dt1 < 0 ? dt2 : dt1;
+
+            return target.position + velocity * dt;
         }
 
         public static Weapon FromLua(IntPtr L, int tableidx) {
