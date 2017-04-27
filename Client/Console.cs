@@ -19,6 +19,7 @@ namespace ShiftDrive {
         protected struct TargetableObject {
             public uint objid;
             public Vector2 screenpos;
+            public Vector2 leadingpos;
         }
 
         protected readonly List<TargetableObject> targetables = new List<TargetableObject>();
@@ -68,6 +69,7 @@ namespace ShiftDrive {
                     TargetableObject tobj = new TargetableObject();
                     tobj.objid = obj.id;
                     tobj.screenpos = screenpos;
+                    tobj.leadingpos = Utils.CalculateScreenPos(min, max, Player.weapons[0].GetFiringSolution(Player, obj));
                     targetables.Add(tobj);
                 }
 
@@ -126,7 +128,8 @@ namespace ShiftDrive {
             foreach (TargetableObject tobj in targetables) {
                 if (!Player.targets.Contains(tobj.objid)) continue;
 
-                spriteBatch.Draw(Assets.GetTexture("ui/reticle"), tobj.screenpos, null, Color.Red, reticleSpin, new Vector2(32, 32), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Assets.GetTexture("ui/reticle"), tobj.screenpos, null, Color.White, reticleSpin, new Vector2(32, 32), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Assets.GetTexture("ui/leadingreticle"), tobj.leadingpos, null, Color.White, reticleSpin, new Vector2(16, 16), 1f, SpriteEffects.None, 0f);
             }
 
             // draw render target and a radar ring
