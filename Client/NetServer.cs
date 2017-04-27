@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using Microsoft.Xna.Framework;
 using Iridinite.Networking;
 
@@ -96,6 +97,7 @@ namespace ShiftDrive {
             socket.OnServerStop += Socket_OnServerStop;
             socket.OnDataReceived += Socket_OnDataReceived;
             socket.OnError += Socket_OnError;
+            socket.LocalIP = IPAddress.Any;
             socket.MaxClients = 100;
             socket.Start();
         }
