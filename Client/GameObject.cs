@@ -73,6 +73,7 @@ namespace ShiftDrive {
 
         public Vector2 position;
         public Vector2 velocity;
+        public Vector2 movement;
         public float facing;
         public byte sector;
         public byte zorder;
@@ -148,7 +149,8 @@ namespace ShiftDrive {
 
             // integrate velocity into position
             Vector2 oldVelocity = velocity;
-            position += velocity * deltaTime;
+            movement = velocity;
+            position += movement * deltaTime;
             velocity *= (float)Math.Pow(damping, deltaTime);
 
             // retransmit velocity only if velocity changes, and include position as safeguard against desync.

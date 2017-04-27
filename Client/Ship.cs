@@ -62,10 +62,12 @@ namespace ShiftDrive {
             velocity = Vector2.Zero;
 
             // apply throttle velocity based on the ship's facing
-            position += new Vector2(
+            Vector2 movementByEngine = new Vector2(
                 (float)Math.Cos(MathHelper.ToRadians(facing - 90f)),
                 (float)Math.Sin(MathHelper.ToRadians(facing - 90f)))
-                * throttle * topSpeed * deltaTime;
+                * throttle * topSpeed;
+            movement += movementByEngine;
+            position += movementByEngine * deltaTime;
             position.X = MathHelper.Clamp(position.X, 0f, 1000f);
             position.Y = MathHelper.Clamp(position.Y, 0f, 1000f);
             // apply maneuver: find whether turning left or right is fastest
