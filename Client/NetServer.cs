@@ -98,6 +98,7 @@ namespace ShiftDrive {
             socket.OnDataReceived += Socket_OnDataReceived;
             socket.OnError += Socket_OnError;
             socket.LocalIP = IPAddress.Any;
+            socket.LocalPort = Config.ServerPort;
             socket.MaxClients = 100;
             socket.Start();
         }

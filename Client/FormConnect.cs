@@ -37,7 +37,7 @@ namespace ShiftDrive {
 
             // create UI controls
             txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, centerY + 50, 250);
-            txtIP.text = "localhost";
+            txtIP.text = Config.ServerIP;
             btnConnect = new TextButton(0, -1, centerY + 110, 250, 40, Locale.Get("connect"));
             btnConnect.OnClick += btnConnect_Click;
             btnConnectFailConfirm = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("ok"));

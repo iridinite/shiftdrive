@@ -61,7 +61,7 @@ namespace ShiftDrive {
             // connect to remote host
             SDGame.Logger.Log("Connecting...");
             socket.RemoteIP = host;
-            socket.RemotePort = 8080;
+            socket.RemotePort = Config.ServerPort;
             socket.Connect();
         }
 
