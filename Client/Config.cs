@@ -32,6 +32,9 @@ namespace ShiftDrive {
         }
 
         public static byte VolumeMusic { get; set; } = 8;
+
+        public static string ServerIP { get; set; } = "localhost";
+        public static ushort ServerPort { get; set; } = 7777;
         
         public static void Load() {
             if (!Logger.HasWritePermission())
