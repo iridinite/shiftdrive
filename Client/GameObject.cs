@@ -42,6 +42,7 @@ namespace ShiftDrive {
         Color           = 1 << 7,
         Damping         = 1 << 8,
         Bounding        = 1 << 9,
+        Layer           = 1 << 10,
 
         Health          = 1 << 11,
         HealthMax       = 1 << 12,
@@ -366,6 +367,10 @@ namespace ShiftDrive {
                 outstream.Write(bounding);
             if (changed.HasFlag(ObjectProperty.Damping))
                 outstream.Write(damping);
+            if (changed.HasFlag(ObjectProperty.Layer)) {
+                outstream.Write((uint)layer);
+                outstream.Write((uint)layermask);
+            }
 
             if (changed.HasFlag(ObjectProperty.Sprite))
                 outstream.Write(spritename);
@@ -389,6 +394,10 @@ namespace ShiftDrive {
                 bounding = instream.ReadSingle();
             if (recvChanged.HasFlag(ObjectProperty.Damping))
                 damping = instream.ReadSingle();
+            if (recvChanged.HasFlag(ObjectProperty.Layer)) {
+                layer = (CollisionLayer)instream.ReadUInt32();
+                layermask = (CollisionLayer)instream.ReadUInt32();
+            }
 
             if (recvChanged.HasFlag(ObjectProperty.Sprite)) {
                 spritename = instream.ReadString();
