@@ -107,6 +107,8 @@ namespace ShiftDrive {
             bounding = 0f;
             layer = CollisionLayer.None;
             layermask = CollisionLayer.None;
+            // all the stuff changed
+            changed |= ObjectProperty.Health | ObjectProperty.Layer | ObjectProperty.Throttle | ObjectProperty.Bounding;
             // fancy display
             Assets.GetSound("ExplosionMedium").Play3D(world.GetPlayerShip().position, position);
             NetServer.PublishParticleEffect(ParticleEffect.Explosion, position);
