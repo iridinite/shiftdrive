@@ -1,7 +1,6 @@
 ﻿Imports System.Threading
 Imports System.Net
 Imports System.Net.Sockets
-Imports System.Text
 
 ''' <summary>Represents a TCP/IP listen server.</summary>
 ''' <remarks></remarks>

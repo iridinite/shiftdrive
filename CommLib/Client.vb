@@ -1,7 +1,4 @@
-﻿Imports System.Threading
-Imports System.Net
-Imports System.Net.Sockets
-Imports System.Text
+﻿Imports System.Net.Sockets
 
 ''' <summary>Represents a client that can connect to a TCP/IP server.</summary>
 ''' <remarks></remarks>
