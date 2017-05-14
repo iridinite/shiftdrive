@@ -5,7 +5,7 @@
 /intermediateDir:obj/Windows
 /platform:Windows
 /config:
-/profile:Reach
+/profile:HiDef
 /compress:True
 
 #-------------------------------- References --------------------------------#
@@ -52,6 +52,7 @@
 #begin Fonts/Default.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Default.spritefont
 
@@ -113,6 +114,7 @@
 #begin Fonts/Bold.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Bold.spritefont
 
@@ -419,12 +421,14 @@
 #begin Fonts/Tooltip.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Tooltip.spritefont
 
 #begin Fonts/Quote.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Quote.spritefont
 

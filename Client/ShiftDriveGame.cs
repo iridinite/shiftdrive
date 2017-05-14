@@ -58,10 +58,13 @@ namespace ShiftDrive {
             Window.AllowUserResizing = false;
             IsMouseVisible = true;
 
-            graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = Config.ResolutionW;
-            graphics.PreferredBackBufferHeight = Config.ResolutionH;
-            graphics.IsFullScreen = Config.FullScreen;
+            graphics = new GraphicsDeviceManager(this)
+            {
+                GraphicsProfile = GraphicsProfile.HiDef,
+                PreferredBackBufferWidth = Config.ResolutionW,
+                PreferredBackBufferHeight = Config.ResolutionH,
+                IsFullScreen = Config.FullScreen
+            };
 
             Content.RootDirectory = "Content";
 
