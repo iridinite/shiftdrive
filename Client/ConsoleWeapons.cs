@@ -71,9 +71,9 @@ namespace ShiftDrive {
             btnShields.Update(gameTime);
             
             // add targets that the player clicks on
-            if (Mouse.GetLeftDown()) {
+            if (Input.GetMouseLeftDown()) {
                 foreach (TargetableObject tobj in targetables) {
-                    if (Vector2.Distance(Mouse.Position, tobj.screenpos) > 32) continue;
+                    if (Vector2.Distance(Input.MousePosition, tobj.screenpos) > 32) continue;
 
                     using (Packet packet = new Packet(PacketID.WeapTarget)) {
                         packet.Write(tobj.objid);

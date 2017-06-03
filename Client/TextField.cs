@@ -49,8 +49,8 @@ namespace ShiftDrive {
             }
 
             // test for input focus
-            if (Mouse.GetLeftDown()) {
-                if (Mouse.IsInArea(x, y, width, height)) {
+            if (Input.GetMouseLeftDown()) {
+                if (Input.GetMouseInArea(x, y, width, height)) {
                     focus = true;
                     blinkmode = true;
                     blinktime = 1.0;

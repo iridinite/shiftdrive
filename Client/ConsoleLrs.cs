@@ -26,13 +26,13 @@ namespace ShiftDrive {
             }
 
             // draw info underneath mouse cursor
-            int mouseMapX = (int)((Mouse.X - gridPos.X) / gridSize * NetServer.MAPSIZE);
-            int mouseMapY = (int)((Mouse.Y - gridPos.Y) / gridSize * NetServer.MAPSIZE);
-            spriteBatch.DrawString(Assets.fontDefault, "POS " + mouseMapX + ", " + mouseMapY, new Vector2(Mouse.X, Mouse.Y + 25), Color.LightYellow);
+            int mouseMapX = (int)((Input.MouseX - gridPos.X) / gridSize * NetServer.MAPSIZE);
+            int mouseMapY = (int)((Input.MouseY - gridPos.Y) / gridSize * NetServer.MAPSIZE);
+            spriteBatch.DrawString(Assets.fontDefault, "POS " + mouseMapX + ", " + mouseMapY, new Vector2(Input.MouseX, Input.MouseY + 25), Color.LightYellow);
             spriteBatch.DrawString(Assets.fontDefault, "DIR " +
                 (int)Utils.CalculateBearing(new Vector2(Player.position.X, Player.position.Y),
                 new Vector2(mouseMapX, mouseMapY)),
-                new Vector2(Mouse.X, Mouse.Y + 50),
+                new Vector2(Input.MouseX, Input.MouseY + 50),
                 Color.LightYellow);
 
             spriteBatch.End();

@@ -100,19 +100,19 @@ namespace ShiftDrive {
 
             switch (state) {
                 case 0: // normal
-                    if (Mouse.IsInArea(x, y, width, height)) state = 1;
+                    if (Input.GetMouseInArea(x, y, width, height)) state = 1;
                     break;
                 case 1: // hover
-                    if (!Mouse.IsInArea(x, y, width, height)) {
+                    if (!Input.GetMouseInArea(x, y, width, height)) {
                         state = 0;
                         break;
                     }
-                    if (Mouse.GetLeftDown()) state = 2;
+                    if (Input.GetMouseLeftDown()) state = 2;
                     break;
                 case 2: // down
-                    if (Mouse.GetLeftUp()) {
+                    if (Input.GetMouseLeftUp()) {
                         state = 0;
-                        if (Mouse.IsInArea(x, y, width, height) && OnClick != null) {
+                        if (Input.GetMouseInArea(x, y, width, height) && OnClick != null) {
                             if (CancelSound)
                                 Assets.GetSound("UICancel").Play();
                             else

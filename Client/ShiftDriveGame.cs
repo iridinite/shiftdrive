@@ -101,8 +101,7 @@ namespace ShiftDrive {
             deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // gather user input
-            Mouse.Update();
-            KeyInput.Update();
+            Input.Update();
 
             // server heartbeat
             NetServer.Update(gameTime);
@@ -132,7 +131,7 @@ namespace ShiftDrive {
 
 #if DEBUG
             // toggle debug tools with F3
-            if (KeyInput.GetDown(Keys.F3))
+            if (Input.GetKeyDown(Keys.F3))
                 debugPanelShown = !debugPanelShown;
 #endif
 

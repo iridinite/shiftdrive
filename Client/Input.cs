@@ -9,81 +9,70 @@ using Microsoft.Xna.Framework.Input;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Exposes functionality for obtaining mouse state.
+    /// Exposes functionality for obtaining mouse and keyboard state.
     /// </summary>
-    internal static class Mouse {
-        private static MouseState prev;
-        private static MouseState curr;
+    internal static class Input {
+        private static MouseState mousePrev;
+        private static MouseState mouseCurr;
+        private static KeyboardState keyPrev;
+        private static KeyboardState keyCurr;
 
-        public static int X { get { return curr.X; } }
-        public static int Y { get { return curr.Y; } }
-        public static Vector2 Position { get { return new Vector2(curr.X, curr.Y); } }
+        public static int MouseX => mouseCurr.X;
+        public static int MouseY => mouseCurr.Y;
+        public static Vector2 MousePosition => new Vector2(mouseCurr.X, mouseCurr.Y);
 
         public static void Update() {
-            prev = curr;
-            curr = Microsoft.Xna.Framework.Input.Mouse.GetState();
+            mousePrev = mouseCurr;
+            mouseCurr = Mouse.GetState();
+            keyPrev = keyCurr;
+            keyCurr = Keyboard.GetState();
         }
 
-        public static bool IsInArea(Rectangle rect) {
-            return curr.X >= rect.X &&
-                curr.X <= rect.X + rect.Width &&
-                curr.Y >= rect.Y &&
-                curr.Y <= rect.Y + rect.Height;
+        public static bool GetMouseInArea(Rectangle rect) {
+            return mouseCurr.X >= rect.X &&
+                mouseCurr.X <= rect.X + rect.Width &&
+                mouseCurr.Y >= rect.Y &&
+                mouseCurr.Y <= rect.Y + rect.Height;
         }
 
-        public static bool IsInArea(int x, int y, int w, int h) {
-            return IsInArea(new Rectangle(x, y, w, h));
+        public static bool GetMouseInArea(int x, int y, int w, int h) {
+            return GetMouseInArea(new Rectangle(x, y, w, h));
         }
 
-        public static bool GetLeft() {
-            return curr.LeftButton == ButtonState.Pressed;
+        public static bool GetMouseLeft() {
+            return mouseCurr.LeftButton == ButtonState.Pressed;
         }
 
-        public static bool GetLeftDown() {
-            return curr.LeftButton == ButtonState.Pressed &&
-                prev.LeftButton == ButtonState.Released;
+        public static bool GetMouseLeftDown() {
+            return mouseCurr.LeftButton == ButtonState.Pressed &&
+                mousePrev.LeftButton == ButtonState.Released;
         }
 
-        public static bool GetLeftUp() {
-            return prev.LeftButton == ButtonState.Pressed &&
-                curr.LeftButton == ButtonState.Released;
+        public static bool GetMouseLeftUp() {
+            return mousePrev.LeftButton == ButtonState.Pressed &&
+                mouseCurr.LeftButton == ButtonState.Released;
         }
 
-        public static bool GetRight() {
-            return curr.RightButton == ButtonState.Pressed;
+        public static bool GetMouseRight() {
+            return mouseCurr.RightButton == ButtonState.Pressed;
         }
 
-        public static bool GetRightDown() {
-            return curr.RightButton == ButtonState.Pressed &&
-                prev.RightButton == ButtonState.Released;
-        }
-    }
-
-    /// <summary>
-    /// Exposes functionality for obtaining keyboard state.
-    /// </summary>
-    internal static class KeyInput {
-
-        private static KeyboardState prev;
-        private static KeyboardState cur;
-
-        public static void Update() {
-            prev = cur;
-            cur = Keyboard.GetState();
+        public static bool GetMouseRightDown() {
+            return mouseCurr.RightButton == ButtonState.Pressed &&
+                mousePrev.RightButton == ButtonState.Released;
         }
 
-        public static bool GetHeld(Keys k) {
-            return cur.IsKeyDown(k);
+        public static bool GetKey(Keys k) {
+            return keyCurr.IsKeyDown(k);
         }
 
-        public static bool GetDown(Keys k) {
-            return cur.IsKeyDown(k) && prev.IsKeyUp(k);
+        public static bool GetKeyDown(Keys k) {
+            return keyCurr.IsKeyDown(k) && keyPrev.IsKeyUp(k);
         }
 
-        public static bool GetUp(Keys k) {
-            return cur.IsKeyUp(k) && prev.IsKeyDown(k);
+        public static bool GetKeyUp(Keys k) {
+            return keyCurr.IsKeyUp(k) && keyPrev.IsKeyDown(k);
         }
-
     }
 
 }

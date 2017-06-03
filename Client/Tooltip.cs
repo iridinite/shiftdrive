@@ -42,12 +42,12 @@ namespace ShiftDrive {
 
         public void Update(float deltaTime) {
             // is the user hovering over the trigger area?
-            if (Mouse.IsInArea(trigger)) {
+            if (Input.GetMouseInArea(trigger)) {
                 // apply mouse coordinates
-                posx = Mouse.X + 16;
-                posy = Mouse.Y + 16;
+                posx = Input.MouseX + 16;
+                posy = Input.MouseY + 16;
                 // if mouse overlaps tooltip itself, hide it
-                if (Mouse.IsInArea(posx, posy, boxwidth, boxheight)) {
+                if (Input.GetMouseInArea(posx, posy, boxwidth, boxheight)) {
                     visible = false;
                     return;
                 }
