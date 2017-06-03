@@ -98,7 +98,7 @@ namespace ShiftDrive {
             Vector2 delta = emitter - listener;
             float dist = delta.Length();
             float instPanning = MathHelper.Clamp((emitter.X - listener.X) / 128f, -1f, 1f);
-            float instVolume = MathHelper.Clamp(1f - (dist / 200f * Falloff), 0.1f, 1f);
+            float instVolume = MathHelper.Clamp(1f - (dist / 300f * Falloff), 0.1f, 1f);
 
             SelectSound()?.Play(instVolume * Volume, Pitch, instPanning);
         }
