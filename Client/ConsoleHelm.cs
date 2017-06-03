@@ -78,9 +78,9 @@ namespace ShiftDrive {
 
             // throttle input
             float oldThrottle = targetThrottle;
-            if (KeyInput.GetHeld(Keys.W)) {
+            if (Input.GetKey(Keys.W)) {
                 targetThrottle += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            } else if (KeyInput.GetHeld(Keys.S)) {
+            } else if (Input.GetKey(Keys.S)) {
                 targetThrottle -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             targetThrottle = MathHelper.Clamp(targetThrottle, 0f, 1f);
