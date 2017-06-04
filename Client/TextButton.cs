@@ -24,14 +24,14 @@ namespace ShiftDrive {
             base.OnDraw(spriteBatch);
             if (expand < 1f) return;
 
-            int textOffset = (state == 2) ? 7 : 4;
-            Vector2 txtSize = Assets.fontDefault.MeasureString(Caption);
+            var offset = state == 2 ? 1 : 0;
+            var size = Assets.fontDefault.MeasureString(Caption);
             spriteBatch.DrawString(
                 Assets.fontDefault,
                 Caption,
                 new Vector2(
-                    (int)(X + Width / 2 - txtSize.X / 2),
-                    (int)(Y + Height / 2 - txtSize.Y / 2 + textOffset)),
+                    (int)(X + Width / 2 - size.X / 2 + offset),
+                    (int)(Y + Height / 2 - size.Y / 2 + 4 + offset)), // +4 compensates for line spacing
                 Color.Black);
         }
 
