@@ -32,11 +32,36 @@ namespace ShiftDrive {
 
         protected readonly List<Control> Children = new List<Control>();
 
+        /// <summary>
+        /// Called when the control should compose images to the screen.
+        /// </summary>
+        /// <remarks>
+        /// You cannot change SpriteBatch or GraphicsDevice state in OnDraw. If you need to draw something
+        /// with a different blend mode or shader, use OnRender.
+        /// </remarks>
         protected virtual void OnDraw(SpriteBatch spriteBatch) {}
+
+        /// <summary>
+        /// Called when the control should perform a logic update.
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected virtual void OnUpdate(GameTime gameTime) {}
+
+        /// <summary>
+        /// Called when the control should render to any render targets.
+        /// </summary>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="spriteBatch"></param>
         protected virtual void OnRender(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {}
+
+        /// <summary>
+        /// Called when the control should clean up after itself, in preparation for deletion.
+        /// </summary>
         protected virtual void OnDestroy() {}
 
+        /// <summary>
+        /// Instructs the control and its children to perform any render target drawing operations.
+        /// </summary>
         public void Render(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
             if (!Visible) return;
             if (DrawMode == ControlDrawMode.ChildrenLast)
@@ -46,6 +71,10 @@ namespace ShiftDrive {
                 OnRender(graphicsDevice, spriteBatch);
         }
 
+        /// <summary>
+        /// Instructs the control and its children to compose 2D images to the screen.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch) {
             if (!Visible) return;
             if (DrawMode == ControlDrawMode.ChildrenLast)
@@ -55,15 +84,23 @@ namespace ShiftDrive {
                 OnDraw(spriteBatch);
         }
 
+        /// <summary>
+        /// Runs an update cycle on the control and its children.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime) {
             OnUpdate(gameTime);
             Children.ForEach(ctl => ctl.Update(gameTime));
         }
 
+        /// <summary>
+        /// Instructs the control and its children to perform cleanup.
+        /// </summary>
         public void Destroy() {
             OnDestroy();
             Children.ForEach(ctl => ctl.Destroy());
         }
+
     }
 
 }
