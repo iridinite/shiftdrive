@@ -21,6 +21,7 @@ namespace ShiftDrive {
         internal static SDGame Inst { get; private set; }
         internal static Logger Logger => Inst.loggerInst;
 
+        private readonly object uiRootLock = new object();
         private readonly Logger loggerInst;
         private readonly DeveloperConsole console;
 
@@ -121,10 +122,13 @@ namespace ShiftDrive {
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60.0f), GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
 
             // open a default form if none is active
-            if (UIRoot == null)
-                UIRoot = new FormMainMenu();
-            // update the active form
-            UIRoot.Update(gameTime);
+            lock (uiRootLock) {
+                if (UIRoot == null)
+                    UIRoot = new FormMainMenu();
+                // update the active form
+                UIRoot.Update(gameTime);
+            }
+
             console.Update(deltaTime);
 
 #if DEBUG
@@ -137,14 +141,16 @@ namespace ShiftDrive {
         }
 
         protected override void Draw(GameTime gameTime) {
-            // some controls may want to draw to rendertargets
-            UIRoot?.Render(GraphicsDevice, spriteBatch);
-            // active form should draw its contents
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            UIRoot?.Draw(spriteBatch);
-            spriteBatch.End();
+            lock (uiRootLock) {
+                // some controls may want to draw to rendertargets
+                UIRoot?.Render(GraphicsDevice, spriteBatch);
+                // active form should draw its contents
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                UIRoot?.Draw(spriteBatch);
+                spriteBatch.End();
+            }
 
             // draw always-on-top UI elements
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -184,8 +190,10 @@ namespace ShiftDrive {
         /// Sets the game's currently active root UI object to the specified object.
         /// </summary>
         public void SetUIRoot(Control val) {
-            UIRoot?.Destroy();
-            UIRoot = val;
+            lock (uiRootLock) {
+                UIRoot?.Destroy();
+                UIRoot = val;
+            }
         }
 
         /// <summary>
