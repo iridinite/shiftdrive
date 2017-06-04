@@ -26,7 +26,6 @@ namespace ShiftDrive {
             // create console switch buttons
             var switcher = new PanelConsoleSwitcher();
             switcher.AddConsoleButton(0, sender => Console = new ConsoleSettings(), Locale.Get("console_settings")); // settings
-            switcher.AddConsoleButton(6, sender => Console = new ConsoleLrs(), Locale.Get("console_lrs")); // debug LRS
 
             // add buttons for each selected role
             Debug.Assert(NetClient.TakenRoles != 0, "no roles selected");
@@ -41,6 +40,7 @@ namespace ShiftDrive {
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence))
                 switcher.AddConsoleButton(5, null, Locale.Get("console_intel"));
 
+            switcher.AddConsoleButton(6, sender => Console = new ConsoleLrs(), Locale.Get("console_lrs")); // debug LRS
             Children.Add(switcher);
         }
 
