@@ -179,7 +179,7 @@ namespace ShiftDrive {
         }
 
         public static Weapon FromLua(IntPtr L, int tableidx) {
-            LuaAPI.luaL_checktype(L, tableidx, LuaAPI.LUA_TTABLE);
+            LuaAPI.luaL_checktype(L, tableidx, LuaType.Table);
 
             Weapon ret = new Weapon();
             ret.Name = LuaAPI.luaH_gettablestring(L, tableidx, "name");

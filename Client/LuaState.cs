@@ -136,12 +136,12 @@ namespace ShiftDrive {
             NamelessObjectParams ret = new NamelessObjectParams();
 
             // require metadata table as the second parameter
-            luaL_checktype(L, tableidx, LUA_TTABLE);
+            luaL_checktype(L, tableidx, LuaType.Table);
 
             lua_getfield(L, tableidx, "startpoint");
             lua_getfield(L, tableidx, "endpoint");
-            lua_checkfieldtype(L, tableidx, "startpoint", -2, LUA_TTABLE);
-            lua_checkfieldtype(L, tableidx, "endpoint", -1, LUA_TTABLE);
+            lua_checkfieldtype(L, tableidx, "startpoint", -2, LuaType.Table);
+            lua_checkfieldtype(L, tableidx, "endpoint", -1, LuaType.Table);
             ret.startpoint = lua_tovec2(L, -2);
             ret.endpoint = lua_tovec2(L, -1);
             lua_pop(L, 2); // remove the table fields from the stack
@@ -167,17 +167,17 @@ namespace ShiftDrive {
             StringBuilder sb = new StringBuilder();
             int top = lua_gettop(L);
             sb.Append(">> Stack dump (");
-            sb.Append(top + " items): ");
+            sb.Append(top.ToString() + " items): ");
 
             for (int i = 1; i <= top; i++) {
                 switch (lua_type(L, i)) {
-                    case LUA_TSTRING:
+                    case LuaType.String:
                         sb.Append("string: \"" + lua_tostring(L, i) + "\"");
                         break;
-                    case LUA_TBOOLEAN:
+                    case LuaType.Boolean:
                         sb.Append("boolean: " + (lua_toboolean(L, i) == 1 ? "true" : "false"));
                         break;
-                    case LUA_TNUMBER:
+                    case LuaType.Number:
                         sb.Append("number: " + lua_tonumber(L, i));
                         break;
                     default:
@@ -218,7 +218,7 @@ namespace ShiftDrive {
             // pull up the events table
             lua_settop(L, 0);
             lua_getregistry(L, "events");
-            if (lua_type(L, -1) != LUA_TTABLE) {
+            if (lua_type(L, -1) != LuaType.Table) {
                 // if it doesn't exist, there's nothing for us to do
                 lua_pop(L, 1);
                 return;
@@ -316,12 +316,12 @@ namespace ShiftDrive {
 
         private int clua_event(IntPtr L) {
             // expect two function arguments
-            luaL_checktype(L, 1, LUA_TFUNCTION);
-            luaL_checktype(L, 2, LUA_TFUNCTION);
+            luaL_checktype(L, 1, LuaType.Function);
+            luaL_checktype(L, 2, LuaType.Function);
 
             // pull up the event registry table, create if it doesn't exist
             lua_getregistry(L, "events");
-            if (lua_type(L, -1) != LUA_TTABLE) {
+            if (lua_type(L, -1) != LuaType.Table) {
                 lua_pop(L, 1); // get rid of the faux events table
                 lua_createtable(L, 0, 0); // create a new table
             }

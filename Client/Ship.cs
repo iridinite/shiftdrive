@@ -425,9 +425,9 @@ namespace ShiftDrive {
                     // table of engine flare points
                     for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                         LuaAPI.lua_rawgeti(L, 3, i + 1);
-                        if (LuaAPI.lua_type(L, 4) == LuaAPI.LUA_TNIL)
+                        if (LuaAPI.lua_type(L, 4) == LuaType.Nil)
                             break;
-                        if (LuaAPI.lua_type(L, 4) != LuaAPI.LUA_TTABLE) {
+                        if (LuaAPI.lua_type(L, 4) != LuaType.Table) {
                             LuaAPI.lua_pushstring(L, "expected tables in flares list");
                             LuaAPI.lua_error(L);
                         }
@@ -439,7 +439,7 @@ namespace ShiftDrive {
                     // table of weapon mount points
                     for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                         LuaAPI.lua_rawgeti(L, 3, i + 1);
-                        if (LuaAPI.lua_type(L, 4) == LuaAPI.LUA_TNIL) {
+                        if (LuaAPI.lua_type(L, 4) == LuaType.Nil) {
                             mounts[i] = null;
                         } else {
                             mounts[i] = WeaponMount.FromLua(L, 4);
@@ -453,7 +453,7 @@ namespace ShiftDrive {
                     // parse the table of weapon tables
                     for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                         LuaAPI.lua_rawgeti(L, 3, i + 1);
-                        if (LuaAPI.lua_type(L, 4) == LuaAPI.LUA_TNIL)
+                        if (LuaAPI.lua_type(L, 4) == LuaType.Nil)
                             weapons[i] = null;
                         else
                             weapons[i] = Weapon.FromLua(L, 4);

@@ -29,11 +29,11 @@ namespace ShiftDrive {
         public MountSize Size;
 
         public static WeaponMount FromLua(IntPtr L, int tableidx) {
-            LuaAPI.luaL_checktype(L, tableidx, LuaAPI.LUA_TTABLE);
+            LuaAPI.luaL_checktype(L, tableidx, LuaType.Table);
 
             WeaponMount ret = new WeaponMount();
             LuaAPI.lua_getfield(L, tableidx, "position");
-            LuaAPI.lua_checkfieldtype(L, tableidx, "position", -1, LuaAPI.LUA_TTABLE);
+            LuaAPI.lua_checkfieldtype(L, tableidx, "position", -1, LuaType.Table);
             ret.Offset = LuaAPI.lua_tovec2(L, -1);
             LuaAPI.lua_pop(L, 1);
             ret.Bearing = LuaAPI.luaH_gettablefloat(L, tableidx, "bearing");
