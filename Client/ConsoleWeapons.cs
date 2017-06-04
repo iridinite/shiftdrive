@@ -13,11 +13,13 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class ConsoleWeapons : Console {
 
-        private PanelWorldView worldView;
+        private readonly PanelWorldView worldView;
 
         public ConsoleWeapons() {
             worldView = new PanelWorldView();
             Children.Add(worldView);
+            Children.Add(new PanelHullBar());
+            Children.Add(new PanelAnnounce());
             Children.Add(new PanelFuelGauge());
 
             var btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
