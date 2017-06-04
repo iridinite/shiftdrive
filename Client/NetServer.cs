@@ -74,7 +74,7 @@ namespace ShiftDrive {
             } catch (LuaException e) {
                 SDGame.Logger.LogError("Script execution failed.");
                 SDGame.Logger.LogError(e.ToString());
-                SDGame.Inst.ActiveForm = new FormMessage(e.ToString());
+                SDGame.Inst.SetUIRoot(new FormMessage(e.ToString()));
                 return false;
             }
         }

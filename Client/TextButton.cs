@@ -20,8 +20,8 @@ namespace ShiftDrive {
             this.Caption = caption;
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            base.Draw(spriteBatch);
+        protected override void OnDraw(SpriteBatch spriteBatch) {
+            base.OnDraw(spriteBatch);
             if (expand < 1f) return;
 
             int textOffset = (state == 2) ? 7 : 4;
@@ -30,8 +30,8 @@ namespace ShiftDrive {
                 Assets.fontDefault,
                 Caption,
                 new Vector2(
-                    (int)(x + width / 2 - txtSize.X / 2),
-                    (int)(y + height / 2 - txtSize.Y / 2 + textOffset)),
+                    (int)(X + Width / 2 - txtSize.X / 2),
+                    (int)(Y + Height / 2 - txtSize.Y / 2 + textOffset)),
                 Color.Black);
         }
 

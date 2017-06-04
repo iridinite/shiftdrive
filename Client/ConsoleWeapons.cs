@@ -12,20 +12,19 @@ namespace ShiftDrive {
     /// Implements a <seealso cref="Console"/> for the weapon officer's station.
     /// </summary>
     internal sealed class ConsoleWeapons : Console {
-
-        private readonly Button btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
+        private readonly Button btnShields;
 
         public ConsoleWeapons() {
+            btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
             btnShields.OnClick += btnShields_Click;
+            Children.Add(btnShields);
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             DrawLocalArea(spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             DrawFuelGauge(spriteBatch);
-
-            btnShields.Draw(spriteBatch);
 
             // draw a list of currently active weapons
             int weaponBoxX = SDGame.Inst.GameWidth / 2 - Player.weaponsNum * 80;
@@ -65,11 +64,9 @@ namespace ShiftDrive {
             spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
+        protected override void OnUpdate(GameTime gameTime) {
+            base.OnUpdate(gameTime);
 
-            btnShields.Update(gameTime);
-            
             // add targets that the player clicks on
             if (Input.GetMouseLeftDown()) {
                 foreach (TargetableObject tobj in targetables) {
@@ -88,7 +85,6 @@ namespace ShiftDrive {
             using (Packet packet = new Packet(PacketID.WeapShields))
                 NetClient.Send(packet);
         }
-
     }
 
 }

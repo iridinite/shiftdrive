@@ -11,8 +11,9 @@ namespace ShiftDrive {
     /// <summary>
     /// Contains static utilities to render a skybox.
     /// </summary>
-    internal static class Skybox {
+    internal sealed class Skybox : Control {
 
+        private static RenderTarget2D rtSkybox;
         private static float rotation = Utils.RandomFloat(0f, MathHelper.TwoPi);
 
         private static readonly Matrix view = Matrix.CreateLookAt(
@@ -20,8 +21,12 @@ namespace ShiftDrive {
             new Vector3(0f, -0.25f, 1.5f),
             Vector3.Up);
 
-        public static void Draw() {
-            // Use the unlit shader to render a skybox.
+        protected override void OnRender(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
+            if (rtSkybox == null || rtSkybox.IsContentLost || rtSkybox.IsDisposed)
+                rtSkybox = new RenderTarget2D(graphicsDevice, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight, false, SurfaceFormat.Color, DepthFormat.None);
+
+            // draw the skybox to a render target so we can show it using the SpriteBatch later
+            graphicsDevice.SetRenderTarget(rtSkybox);
             Effect fx = Assets.fxSkybox; // shortcut
             fx.Parameters["View"].SetValue(Matrix.CreateRotationY(rotation) * Matrix.CreateRotationZ(rotation) * view);
             fx.Parameters["Projection"].SetValue(SDGame.Inst.Projection);
@@ -36,7 +41,11 @@ namespace ShiftDrive {
             }
         }
 
-        public static void Update(GameTime gameTime) {
+        protected override void OnDraw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(rtSkybox, Vector2.Zero, Color.White);
+        }
+
+        protected override void OnUpdate(GameTime gameTime) {
             rotation += (float)(gameTime.ElapsedGameTime.TotalSeconds * 0.04);
             while (rotation >= MathHelper.TwoPi) rotation -= MathHelper.TwoPi;
         }

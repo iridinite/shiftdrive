@@ -21,10 +21,10 @@ namespace ShiftDrive {
         private bool blinkmode;
 
         public TextField(int x, int y, int width) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = 24;
+            this.X = x;
+            this.Y = y;
+            this.Width = width;
+            this.Height = 24;
             text = "";
             blinktime = 1.0;
             blinkmode = true;
@@ -33,14 +33,20 @@ namespace ShiftDrive {
             SDGame.Inst.Window.TextInput += Window_TextInput;
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(x, y, 8, 24), new Rectangle(0, 0, 8, 24), Color.White);
-            spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(x + 8, y, width - 16, 24), new Rectangle(8, 0, 8, 24), Color.White);
-            spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(x + width - 8, y, 8, 24), new Rectangle(16, 0, 8, 24), Color.White);
-            spriteBatch.DrawString(Assets.fontDefault, blinkmode && focus ? text + "|" : text, new Vector2(x + 6, y + 6), Color.Black);
+        protected override void OnDraw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(X, Y, 8, 24), new Rectangle(0, 0, 8, 24), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(X + 8, Y, Width - 16, 24), new Rectangle(8, 0, 8, 24), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(X + Width - 8, Y, 8, 24), new Rectangle(16, 0, 8, 24), Color.White);
+            spriteBatch.DrawString(Assets.fontDefault, blinkmode && focus ? text + "|" : text, new Vector2(X + 6, Y + 6), Color.Black);
         }
 
-        public override void Update(GameTime gameTime) {
+        protected override void OnUpdate(GameTime gameTime) {
+            // do not accept input if invisible
+            if (!Visible) {
+                focus = false;
+                return;
+            }
+
             // animate the blinking cursor
             blinktime -= gameTime.ElapsedGameTime.TotalSeconds;
             if (blinktime <= 0.0) {
@@ -50,7 +56,7 @@ namespace ShiftDrive {
 
             // test for input focus
             if (Input.GetMouseLeftDown()) {
-                if (Input.GetMouseInArea(x, y, width, height)) {
+                if (Input.GetMouseInArea(X, Y, Width, Height)) {
                     focus = true;
                     blinkmode = true;
                     blinktime = 1.0;
@@ -60,7 +66,7 @@ namespace ShiftDrive {
             }
         }
 
-        public override void OnDestroy() {
+        protected override void OnDestroy() {
             SDGame.Inst.Window.TextInput -= Window_TextInput;
             base.OnDestroy();
         }

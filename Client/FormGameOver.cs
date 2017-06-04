@@ -11,9 +11,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Implements an <seealso cref="IForm"/> showing game-over state before returning to the <seealso cref="FormLobby"/>.
+    /// Implements a form showing a game-over message before returning to the <seealso cref="FormLobby"/>.
     /// </summary>
-    internal class FormGameOver : IForm {
+    internal class FormGameOver : Control {
 
         private enum GameOverAnimState {
             HoldPre,
@@ -57,7 +57,7 @@ namespace ShiftDrive {
             quoteLines.Add(sb.ToString());
         }
 
-        public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             // draw each line from the selected quote
@@ -81,7 +81,7 @@ namespace ShiftDrive {
             spriteBatch.End();
         }
 
-        public void Update(GameTime gameTime) {
+        protected override void OnUpdate(GameTime gameTime) {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             switch (state) {
                 case GameOverAnimState.HoldPre:
@@ -119,7 +119,7 @@ namespace ShiftDrive {
                 case GameOverAnimState.HoldOut:
                     // hold black screen for a few seconds
                     holdTime -= dt;
-                    if (holdTime < 0f) SDGame.Inst.ActiveForm = new FormLobby();
+                    if (holdTime < 0f) SDGame.Inst.SetUIRoot(new FormLobby());
                     break;
             }
         }

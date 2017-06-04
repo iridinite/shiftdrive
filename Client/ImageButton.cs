@@ -30,15 +30,15 @@ namespace ShiftDrive {
             imageColor = color;
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            base.Draw(spriteBatch);
+        protected override void OnDraw(SpriteBatch spriteBatch) {
+            base.OnDraw(spriteBatch);
             if (expand < 1f) return;
 
             int textOffset = (state == 2) ? 2 : 0;
             spriteBatch.Draw(image,
                 new Rectangle(
-                    (int)(x + width / 2 - imageSize.X / 2),
-                    (int)(y + height / 2 - imageSize.Y / 2 + textOffset),
+                    (int)(X + Width / 2 - imageSize.X / 2),
+                    (int)(Y + Height / 2 - imageSize.Y / 2 + textOffset),
                     (int)imageSize.X,
                     (int)imageSize.Y),
                 imageSource,

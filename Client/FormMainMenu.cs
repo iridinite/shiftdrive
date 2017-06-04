@@ -9,67 +9,39 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Implements an <seealso cref="IForm"/> showing the main menu.
+    /// Implements a form showing the main menu.
     /// </summary>
-    internal class FormMainMenu : IForm {
+    internal class FormMainMenu : Control {
 
         private readonly TextButton btnConnect, btnHost, btnOptions, btnQuit;
         private int leaveAction;
 
         public FormMainMenu() {
+            Children.Add(new Skybox());
+
             // create UI controls
             btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 100, 260, 40, Locale.Get("menu_connect"));
             btnConnect.OnClick += btnConnect_Click;
+            Children.Add(btnConnect);
             btnHost = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 150, 260, 40, Locale.Get("menu_host"));
             btnHost.OnClick += btnHost_OnClick;
             btnHost.Enabled = false;
+            Children.Add(btnHost);
             btnOptions = new TextButton(2, SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Locale.Get("menu_options"));
             btnOptions.OnClick += btnOptions_OnClick;
+            Children.Add(btnOptions);
             btnQuit = new TextButton(3, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Locale.Get("menu_exit"));
             btnQuit.OnClick += btnClose_Click;
+            btnQuit.OnClosed += btnClose_Closed;
+            Children.Add(btnQuit);
         }
 
-        public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            Skybox.Draw();
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             Utils.DrawTitle(spriteBatch);
-
-            btnConnect.Draw(spriteBatch);
-            btnHost.Draw(spriteBatch);
-            btnOptions.Draw(spriteBatch);
-            btnQuit.Draw(spriteBatch);
-
-            spriteBatch.End();
         }
 
-        public void Update(GameTime gameTime) {
-            Skybox.Update(gameTime);
+        protected override void OnUpdate(GameTime gameTime) {
             Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, 0f);
-
-            btnConnect.Update(gameTime);
-            btnHost.Update(gameTime);
-            btnOptions.Update(gameTime);
-            btnQuit.Update(gameTime);
-
-            // leave this form if the user clicked a button
-            if (btnQuit.IsClosed) { // last button to close
-                switch (leaveAction) {
-                    case 0:
-                        SDGame.Inst.ActiveForm = new FormConnect();
-                        break;
-                    case 1:
-                        SDGame.Inst.ActiveForm = new FormMainMenu();
-                        break;
-                    case 2:
-                        SDGame.Inst.ActiveForm = new FormOptions();
-                        break;
-                    case 3:
-                        SDGame.Inst.ActiveForm = new FormConfirmExit();
-                        break;
-                }
-            }
         }
 
         private void CloseButtons() {
@@ -97,6 +69,23 @@ namespace ShiftDrive {
         private void btnClose_Click(Control sender) {
             leaveAction = 3;
             CloseButtons();
+        }
+
+        private void btnClose_Closed(Control sender) {
+            switch (leaveAction) {
+                case 0:
+                    SDGame.Inst.SetUIRoot(new FormConnect());
+                    break;
+                case 1:
+                    SDGame.Inst.SetUIRoot(new FormMainMenu());
+                    break;
+                case 2:
+                    SDGame.Inst.SetUIRoot(new FormOptions());
+                    break;
+                case 3:
+                    SDGame.Inst.SetUIRoot(new FormConfirmExit());
+                    break;
+            }
         }
 
     }

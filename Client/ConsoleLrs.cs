@@ -13,7 +13,7 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class ConsoleLrs : Console {
 
-        public override void Draw(SpriteBatch spriteBatch) {
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             int gridSize = MathHelper.Min(SDGame.Inst.GameWidth, SDGame.Inst.GameHeight) - 128;
@@ -38,7 +38,7 @@ namespace ShiftDrive {
             spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime) {
+        protected override void OnUpdate(GameTime gameTime) {
         }
 
     }

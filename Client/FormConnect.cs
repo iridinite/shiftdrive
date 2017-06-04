@@ -9,9 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Implements an <seealso cref="IForm"/> showing a menu for connecting to a game server.
+    /// Implements a form showing a menu for connecting to a game server.
     /// </summary>
-    internal class FormConnect : IForm {
+    internal class FormConnect : Control {
 
         /// <summary>
         /// Determines which UI segments to display.
@@ -23,6 +23,7 @@ namespace ShiftDrive {
         }
 
         private readonly TextField txtIP;
+
         private readonly TextButton
             btnConnect,
             btnConnectFailConfirm,
@@ -32,26 +33,33 @@ namespace ShiftDrive {
         private string connectErrorMsg;
 
         public FormConnect() {
+            Children.Add(new Skybox());
+
             int centerY = SDGame.Inst.GameHeight / 2;
             state = FormState.Default;
 
             // create UI controls
             txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, centerY + 50, 250);
             txtIP.text = Config.ServerIP;
+            Children.Add(txtIP);
             btnConnect = new TextButton(0, -1, centerY + 110, 250, 40, Locale.Get("connect"));
             btnConnect.OnClick += btnConnect_Click;
+            Children.Add(btnConnect);
             btnConnectFailConfirm = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("ok"));
+            btnConnectFailConfirm.Visible = false;
             btnConnectFailConfirm.OnClick += btnConnectFailConfirm_Click;
+            Children.Add(btnConnectFailConfirm);
             btnBackToMenu = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("cancel"));
             btnBackToMenu.CancelSound = true;
+            btnBackToMenu.OnClosed += sender => {
+                if (state == FormState.Default)
+                    SDGame.Inst.SetUIRoot(new FormMainMenu());
+            };
             btnBackToMenu.OnClick += btnBackToMenu_Click;
+            Children.Add(btnBackToMenu);
         }
 
-        public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            Skybox.Draw();
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             Utils.DrawTitle(spriteBatch);
 
             switch (state) {
@@ -59,9 +67,6 @@ namespace ShiftDrive {
                     spriteBatch.DrawString(Assets.fontBold, Locale.Get("menu_connect"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("menu_connect")).X / 2), SDGame.Inst.GameHeight / 2f - 100), Color.White);
 
                     spriteBatch.DrawString(Assets.fontDefault, Locale.Get("serverip"), new Vector2(SDGame.Inst.GameWidth / 2f - 125, SDGame.Inst.GameHeight / 2f + 30), Color.White);
-                    txtIP.Draw(spriteBatch);
-                    btnConnect.Draw(spriteBatch);
-                    btnBackToMenu.Draw(spriteBatch);
                     break;
 
                 case FormState.Connecting:
@@ -72,36 +77,12 @@ namespace ShiftDrive {
                     // if we had a connection error, draw the error text
                     spriteBatch.DrawString(Assets.fontBold, Locale.Get("err_connfailed"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("err_connfailed")).X / 2), SDGame.Inst.GameHeight / 2f - 50), Color.White);
                     spriteBatch.DrawString(Assets.fontDefault, connectErrorMsg, new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(connectErrorMsg).X / 2), SDGame.Inst.GameHeight / 2f), Color.White);
-                    btnConnectFailConfirm.Draw(spriteBatch);
                     break;
             }
-
-            spriteBatch.End();
         }
 
-        public void Update(GameTime gameTime) {
-            Skybox.Update(gameTime);
+        protected override void OnUpdate(GameTime gameTime) {
             Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, -100f);
-
-            switch (state) {
-                case FormState.Default:
-                    txtIP.Update(gameTime);
-                    btnConnect.Update(gameTime);
-                    btnBackToMenu.Update(gameTime);
-
-                    if (btnBackToMenu.IsClosed)
-                        SDGame.Inst.ActiveForm = new FormMainMenu();
-                    break;
-
-                case FormState.Connecting:
-                    break;
-
-                case FormState.ConnectFailed:
-                    btnConnectFailConfirm.Update(gameTime);
-                    if (btnConnectFailConfirm.IsClosed)
-                        state = FormState.Default;
-                    break;
-            }
         }
 
         private void btnConnect_Click(Control sender) {
@@ -115,6 +96,7 @@ namespace ShiftDrive {
             // connect to the remote server
             NetClient.Connect(txtIP.text, ConnectResult);
             // hide UI
+            txtIP.Visible = false;
             btnConnect.Close();
             btnBackToMenu.Close();
         }
@@ -128,18 +110,25 @@ namespace ShiftDrive {
             btnConnect.Open();
             btnBackToMenu.Open();
             btnConnectFailConfirm.Close();
+            btnConnectFailConfirm.Visible = false;
+            btnBackToMenu.Visible = true;
+            btnConnect.Visible = true;
+            txtIP.Visible = true;
+            state = FormState.Default;
         }
 
         private void ConnectResult(bool success, string errmsg) {
             if (success) {
-                SDGame.Inst.ActiveForm = new FormLobby();
-
+                SDGame.Inst.SetUIRoot(new FormLobby());
             } else {
                 connectErrorMsg = Utils.WrapText(
                     Assets.fontDefault,
                     errmsg,
                     MathHelper.Min(SDGame.Inst.GameWidth - 400, 1000));
 
+                btnConnectFailConfirm.Visible = true;
+                btnBackToMenu.Visible = false;
+                btnConnect.Visible = false;
                 btnConnectFailConfirm.Open();
                 state = FormState.ConnectFailed;
             }

@@ -92,7 +92,6 @@
     <Compile Include="Tooltip.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Skybox.cs" />
-    <Compile Include="IForm.cs" />
     <Compile Include="ShiftDriveGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

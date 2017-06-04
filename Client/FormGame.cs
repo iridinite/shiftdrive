@@ -11,9 +11,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Implements an <seealso cref="IForm"/> displaying in-game client state and a linked <seealso cref="ShiftDrive.Console"/>.
+    /// Implements a form displaying in-game client state and a linked <seealso cref="ShiftDrive.Console"/>.
     /// </summary>
-    internal class FormGame : IForm {
+    internal class FormGame : Control {
         public Console Console { get; set; }
 
         private readonly List<Button> consoleButtons;
@@ -43,29 +43,22 @@ namespace ShiftDrive {
 
             // create console switch buttons
             consoleButtons = new List<Button>();
-            AddConsoleButton(0, 4, BtnSettings_OnClick, Locale.Get("console_settings")); // settings
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm)) {
-                AddConsoleButton(1, -1, BtnHelm_OnClick, Locale.Get("console_helm"));
-                if (Console == null) Console = new ConsoleHelm();
-            }
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons)) {
-                AddConsoleButton(2, -1, BtnWeap_OnClick, Locale.Get("console_wep"));
-                if (Console == null) Console = new ConsoleWeapons();
-            }
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Engineering)) {
+            AddConsoleButton(0, 4, sender => Console = new ConsoleSettings(), Locale.Get("console_settings")); // settings
+
+            //
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Helm))
+                AddConsoleButton(1, -1, sender => Console = new ConsoleHelm(), Locale.Get("console_helm"));
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Weapons))
+                AddConsoleButton(2, -1, sender => Console = new ConsoleWeapons(), Locale.Get("console_wep"));
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Engineering))
                 AddConsoleButton(3, -1, null, Locale.Get("console_eng"));
-                if (Console == null) Console = new ConsoleHelm();
-            }
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster)) {
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster))
                 AddConsoleButton(4, -1, null, Locale.Get("console_quar"));
-                if (Console == null) Console = new ConsoleHelm();
-            }
-            if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence)) {
+            if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence))
                 AddConsoleButton(5, -1, null, Locale.Get("console_intel"));
-                if (Console == null) Console = new ConsoleHelm();
-            }
-            Debug.Assert(Console != null, "no Console after FormGame init");
-            AddConsoleButton(6, -1, BtnLRS_OnClick, Locale.Get("console_lrs")); // debug LRS
+
+            Debug.Assert(consoleButtons.Count > 1, "no Console after FormGame init");
+            AddConsoleButton(6, -1, sender => Console = new ConsoleLrs(), Locale.Get("console_lrs")); // debug LRS
         }
 
         private void NetClient_Announcement(string text) {
@@ -82,33 +75,19 @@ namespace ShiftDrive {
             cbtn.SetTooltip(tooltip);
             cbtn.OnClick += onClick;
             consoleButtons.Add(cbtn);
+            // open the first ship console in the list (settings is at index 0)
+            if (consoleButtons.Count == 2)
+                onClick(cbtn);
         }
 
-        private void BtnSettings_OnClick(Control sender) {
-            Console = new ConsoleSettings();
-        }
-
-        private void BtnHelm_OnClick(Control sender) {
-            Console = new ConsoleHelm();
-        }
-
-        private void BtnWeap_OnClick(Control sender) {
-            Console = new ConsoleWeapons();
-        }
-
-        private void BtnLRS_OnClick(Control sender) {
-            Console = new ConsoleLrs();
-        }
-
-        public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             lock (NetClient.worldLock) {
                 PlayerShip player = NetClient.World.GetPlayerShip();
 
                 Console.Draw(spriteBatch);
-
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-                spriteBatch.Draw(Assets.GetTexture("ui/consolepanel"), new Rectangle(0, -496 + consoleButtons.Count * 40, 64, 512), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+                
+                spriteBatch.Draw(Assets.GetTexture("ui/consolepanel"), new Rectangle(0, -496 + consoleButtons.Count * 40, 64, 512), null, Color.White,
+                    0f, Vector2.Zero, SpriteEffects.None, 0f);
                 spriteBatch.Draw(Assets.GetTexture("ui/announcepanel"), new Rectangle(SDGame.Inst.GameWidth - 450, -20, 512, 64), Color.White);
                 spriteBatch.DrawString(Assets.fontDefault, announceText, new Vector2(SDGame.Inst.GameWidth - 430, 12), Color.White);
 
@@ -137,34 +116,30 @@ namespace ShiftDrive {
                     player.shieldActive ? Color.LightSkyBlue : Color.Gray);
                 // outline
                 spriteBatch.Draw(Assets.GetTexture("ui/hullbar"), new Rectangle(hullbarx, 0, 512, 64), new Rectangle(0, 0, 512, 64), outlineColor);
-
-                //spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 472, 34), Color.Black);
-                //spriteBatch.DrawString(Assets.fontDefault, (int)(hullFraction * 100f) + "%", new Vector2(hullbarx + 470, 32), outlineColor);
-
-                foreach (Button b in consoleButtons)
-                    b.Draw(spriteBatch);
-
+                
                 // black overlay when fading out
                 if (gameOverFade > 0f)
-                    spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.Black * gameOverFade);
-
-                spriteBatch.End();
+                    spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight),
+                        Color.Black * gameOverFade);
             }
         }
 
-        public void Update(GameTime gameTime) {
+        protected override void OnUpdate(GameTime gameTime) {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             lock (NetClient.worldLock) {
                 // show and animate negative changes to hull integrity.
                 PlayerShip player = NetClient.World.GetPlayerShip();
-                if (player.hull > hullDecline) { // no animation for upped hull
+                if (player.hull > hullDecline) {
+                    // no animation for upped hull
                     hullDecline = player.hull;
                     hullPrevious = player.hull;
                 }
                 if (hullDeclineWait > 0f)
                     hullDeclineWait -= dt;
-                if (hullDecline > player.hull) { // there is still a decline bar to show
-                    if (hullPrevious > player.hull) { // if we just took damage, wait before declining
+                if (hullDecline > player.hull) {
+                    // there is still a decline bar to show
+                    if (hullPrevious > player.hull) {
+                        // if we just took damage, wait before declining
                         hullDeclineWait = 0.75f;
                         hullPrevious = player.hull;
                     }
@@ -181,13 +156,10 @@ namespace ShiftDrive {
                 if (player.destroyed) {
                     gameOverTime -= dt;
                     if (gameOverTime <= 2f) gameOverFade += dt / 2f;
-                    if (gameOverTime <= 0f) SDGame.Inst.ActiveForm = new FormGameOver();
-
-                } else { // only process input when we're still alive
-                    // update the console buttons
-                    foreach (Button b in consoleButtons)
-                        b.Update(gameTime);
-                    // and update the console itself
+                    if (gameOverTime <= 0f) SDGame.Inst.SetUIRoot(new FormGameOver());
+                } else {
+                    // only process input when we're still alive
+                    // update the console itself
                     Console.Update(gameTime);
                 }
             }

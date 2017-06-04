@@ -87,7 +87,7 @@ namespace ShiftDrive {
         private static void Client_OnDisconnected() {
             // show a 'connection lost' message if the disconnect was unexpected
             if (!expectShutdown)
-                SDGame.Inst.ActiveForm = new FormMessage(Locale.Get("err_connlost"));
+                SDGame.Inst.SetUIRoot(new FormMessage(Locale.Get("err_connlost")));
             SDGame.Logger.Log("Disconnected from server.");
         }
 
@@ -134,7 +134,7 @@ namespace ShiftDrive {
                             break;
 
                         case PacketID.EnterGame:
-                            SDGame.Inst.ActiveForm = new FormGame();
+                            SDGame.Inst.SetUIRoot(new FormGame());
                             break;
 
                         case PacketID.Announcement:
@@ -179,7 +179,7 @@ namespace ShiftDrive {
                 } catch (Exception ex) {
                     Disconnect();
                     SDGame.Logger.LogError("Client error in OnDataReceived: " + ex);
-                    SDGame.Inst.ActiveForm = new FormMessage(Locale.Get("err_comm") + Environment.NewLine + ex.ToString());
+                    SDGame.Inst.SetUIRoot(new FormMessage(Locale.Get("err_comm") + Environment.NewLine + ex.ToString()));
                 }
             }
         }

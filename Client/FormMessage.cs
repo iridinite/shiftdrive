@@ -9,46 +9,32 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Implements an <seealso cref="IForm"/> showing an informative message and an option to return to the <seealso cref="FormMainMenu"/>.
+    /// Implements a form showing an informative message and an option to return to the <seealso cref="FormMainMenu"/>.
     /// </summary>
-    internal class FormMessage : IForm {
+    internal class FormMessage : Control {
 
-        private readonly TextButton btnCancel;
         private readonly string message;
         private readonly Vector2 messageSize;
 
         public FormMessage(string message) {
+            Children.Add(new Skybox());
+
             // store the message
             this.message = Utils.WrapText(Assets.fontDefault, message, SDGame.Inst.GameWidth - 200);
             this.messageSize = Assets.fontDefault.MeasureString(this.message);
             // create UI controls
-            btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Locale.Get("returntomenu"));
-            btnCancel.OnClick += btnCancel_Click;
+            var btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Locale.Get("returntomenu"));
+            btnCancel.OnClick += sender => ((Button)sender).Close();
+            btnCancel.OnClosed += sender => SDGame.Inst.SetUIRoot(new FormMainMenu());
+            Children.Add(btnCancel);
         }
 
-        public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            Skybox.Draw();
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            
-            spriteBatch.DrawString(Assets.fontDefault, message, new Vector2((int)(SDGame.Inst.GameWidth / 2f - messageSize.X / 2f), SDGame.Inst.GameHeight / 2f - messageSize.Y / 2f), Color.White);
-            btnCancel.Draw(spriteBatch);
-
-            spriteBatch.End();
-        }
-
-        public void Update(GameTime gameTime) {
-            Skybox.Update(gameTime);
-
-            btnCancel.Update(gameTime);
-
-            if (btnCancel.IsClosed) {
-                SDGame.Inst.ActiveForm = new FormMainMenu();
-            }
-        }
-
-        private void btnCancel_Click(Control sender) {
-            btnCancel.Close();
+        protected override void OnDraw(SpriteBatch spriteBatch) {
+            spriteBatch.DrawString(Assets.fontDefault, message,
+                new Vector2(
+                    (int)(SDGame.Inst.GameWidth / 2f - messageSize.X / 2f),
+                    SDGame.Inst.GameHeight / 2f - messageSize.Y / 2f),
+                Color.White);
         }
 
     }

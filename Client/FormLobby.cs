@@ -9,33 +9,43 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ShiftDrive {
 
     /// <summary>
-    /// Implements an <seealso cref="IForm"/> showing a game lobby with role selection.
+    /// Implements a form showing a game lobby with role selection.
     /// </summary>
-    internal class FormLobby : IForm {
+    internal class FormLobby : Control {
 
         private readonly TextButton btnHelm, btnWeap, btnEngi, btnQuar, btnIntel, btnReady, btnDisconnect;
         private int leaveAction;
         private bool isReady;
 
         public FormLobby() {
+            Children.Add(new Skybox());
+
             int cx = SDGame.Inst.GameWidth / 2;
             int cy = SDGame.Inst.GameHeight / 2;
             btnHelm = new TextButton(1, cx - 80, cy - 150, 200, 40, Locale.Get("console_helm"));
             btnHelm.OnClick += BtnHelm_OnClick;
+            Children.Add(btnHelm);
             btnWeap = new TextButton(2, cx - 80, cy - 100, 200, 40, Locale.Get("console_wep"));
             btnWeap.OnClick += BtnWeap_OnClick;
+            Children.Add(btnWeap);
             btnEngi = new TextButton(3, cx - 80, cy - 50, 200, 40, Locale.Get("console_eng"));
             btnEngi.OnClick += BtnEngi_OnClick;
+            Children.Add(btnEngi);
             btnQuar = new TextButton(4, cx - 80, cy, 200, 40, Locale.Get("console_quar"));
             btnQuar.OnClick += BtnQuar_OnClick;
+            Children.Add(btnQuar);
             btnIntel = new TextButton(5, cx - 80, cy + 50, 200, 40, Locale.Get("console_intel"));
             btnIntel.OnClick += BtnIntel_OnClick;
+            Children.Add(btnIntel);
 
             btnDisconnect = new TextButton(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Locale.Get("disconnect"));
             btnDisconnect.CancelSound = true;
             btnDisconnect.OnClick += BtnDisconnect_OnClick;
+            Children.Add(btnDisconnect);
             btnReady = new TextButton(6, SDGame.Inst.GameWidth - 220, SDGame.Inst.GameHeight - 60, 200, 40, Locale.Get("ready"));
             btnReady.OnClick += BtnReady_OnClick;
+            btnReady.OnClosed += BtnReady_OnClosed;
+            Children.Add(btnReady);
 
             isReady = false;
 
@@ -43,52 +53,16 @@ namespace ShiftDrive {
             ParticleManager.Clear();
         }
 
-        public void Draw(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            Skybox.Draw();
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             spriteBatch.DrawString(Assets.fontDefault, "Connected.", new Vector2(50, 50), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, "Players: " + NetClient.PlayerCount, new Vector2(50, 150), Color.White);
             spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(SDGame.Inst.GameWidth - 270, SDGame.Inst.GameHeight - 60, 40, 40), isReady ? Color.Green : Color.Red);
-
-            btnHelm.Draw(spriteBatch);
-            btnWeap.Draw(spriteBatch);
-            btnEngi.Draw(spriteBatch);
-            btnQuar.Draw(spriteBatch);
-            btnIntel.Draw(spriteBatch);
 
             for (int i = 0; i < 5; i++) {
                 PlayerRole thisrole = (PlayerRole)(1 << i);
                 if (NetClient.TakenRoles.HasFlag(thisrole))
                     spriteBatch.DrawString(Assets.fontDefault, Locale.Get("role_taken"), new Vector2(SDGame.Inst.GameWidth / 2 + 130, SDGame.Inst.GameHeight / 2 - 138 + (i * 50)), Color.White);
                 spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 - 150 + (i * 50), 40, 40), NetClient.MyRoles.HasFlag(thisrole) ? Color.Green : Color.Red);
-            }
-
-            btnDisconnect.Draw(spriteBatch);
-            btnReady.Draw(spriteBatch);
-            spriteBatch.End();
-        }
-
-        public void Update(GameTime gameTime) {
-            Skybox.Update(gameTime);
-
-            btnHelm.Update(gameTime);
-            btnWeap.Update(gameTime);
-            btnEngi.Update(gameTime);
-            btnQuar.Update(gameTime);
-            btnIntel.Update(gameTime);
-            btnDisconnect.Update(gameTime);
-            btnReady.Update(gameTime);
-
-            if (btnReady.IsClosed) {
-                switch (leaveAction) {
-                    case 0:
-                        SDGame.Inst.ActiveForm = new FormMainMenu();
-                        break;
-                    case 1:
-                        SDGame.Inst.ActiveForm = new FormGame();
-                        break;
-                }
             }
         }
 
@@ -115,6 +89,17 @@ namespace ShiftDrive {
             using (Packet p = new Packet(PacketID.Ready)) {
                 p.Write(isReady);
                 NetClient.Send(p);
+            }
+        }
+
+        private void BtnReady_OnClosed(Control sender) {
+            switch (leaveAction) {
+                case 0:
+                    SDGame.Inst.SetUIRoot(new FormMainMenu());
+                    break;
+                case 1:
+                    SDGame.Inst.SetUIRoot(new FormGame());
+                    break;
             }
         }
 

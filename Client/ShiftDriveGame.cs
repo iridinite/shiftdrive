@@ -13,12 +13,14 @@ namespace ShiftDrive {
     /// <summary>
     /// The core application for the game client.
     /// </summary>
-    public class SDGame : Game {
+    internal sealed class SDGame : Game {
+
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         internal static SDGame Inst { get; private set; }
-        internal static Logger Logger { get { return Inst.loggerInst; } }
+        internal static Logger Logger => Inst.loggerInst;
+
         private readonly Logger loggerInst;
         private readonly DeveloperConsole console;
 
@@ -32,7 +34,7 @@ namespace ShiftDrive {
         /// <summary>
         /// The currently active form object.
         /// </summary>
-        internal IForm ActiveForm { get; set; }
+        private Control UIRoot { get; set; }
 
         /// <summary>
         /// The projection matrix used for 3D rendering.
@@ -43,6 +45,7 @@ namespace ShiftDrive {
         /// Width of the game client viewport, in pixels.
         /// </summary>
         public int GameWidth { get; private set; }
+
         /// <summary>
         /// Height of the game client viewport, in pixels.
         /// </summary>
@@ -58,8 +61,7 @@ namespace ShiftDrive {
             Window.AllowUserResizing = false;
             IsMouseVisible = true;
 
-            graphics = new GraphicsDeviceManager(this)
-            {
+            graphics = new GraphicsDeviceManager(this) {
                 GraphicsProfile = GraphicsProfile.HiDef,
                 PreferredBackBufferWidth = Config.ResolutionW,
                 PreferredBackBufferHeight = Config.ResolutionH,
@@ -87,10 +89,6 @@ namespace ShiftDrive {
 
             // load game assets
             Assets.LoadContent(GraphicsDevice, Content);
-        }
-
-        protected override void UnloadContent() {
-            base.UnloadContent();
         }
 
         protected override void Update(GameTime gameTime) {
@@ -123,10 +121,10 @@ namespace ShiftDrive {
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60.0f), GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
 
             // open a default form if none is active
-            if (ActiveForm == null)
-                ActiveForm = new FormMainMenu();
+            if (UIRoot == null)
+                UIRoot = new FormMainMenu();
             // update the active form
-            ActiveForm.Update(gameTime);
+            UIRoot.Update(gameTime);
             console.Update(deltaTime);
 
 #if DEBUG
@@ -139,10 +137,14 @@ namespace ShiftDrive {
         }
 
         protected override void Draw(GameTime gameTime) {
-            // clear canvas
-            GraphicsDevice.Clear(Color.Black);
+            // some controls may want to draw to rendertargets
+            UIRoot?.Render(GraphicsDevice, spriteBatch);
             // active form should draw its contents
-            ActiveForm?.Draw(GraphicsDevice, spriteBatch);
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            UIRoot?.Draw(spriteBatch);
+            spriteBatch.End();
 
             // draw always-on-top UI elements
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -179,6 +181,14 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Sets the game's currently active root UI object to the specified object.
+        /// </summary>
+        public void SetUIRoot(Control val) {
+            UIRoot?.Destroy();
+            UIRoot = val;
+        }
+
+        /// <summary>
         /// A public accessor for the delta time value.
         /// </summary>
         public float GetDeltaTime() {
@@ -193,4 +203,5 @@ namespace ShiftDrive {
         }
 
     }
+
 }

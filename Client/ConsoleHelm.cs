@@ -28,7 +28,7 @@ namespace ShiftDrive {
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
+        protected override void OnDraw(SpriteBatch spriteBatch) {
             DrawLocalArea(spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
@@ -58,8 +58,8 @@ namespace ShiftDrive {
             spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
+        protected override void OnUpdate(GameTime gameTime) {
+            base.OnUpdate(gameTime);
 
             // rotate ship towards clicks inside the maneuver ring
             if (Input.GetMouseLeftDown() && Input.GetMouseInArea(100, 100, SDGame.Inst.GameWidth - 100, SDGame.Inst.GameHeight - 100)) {
