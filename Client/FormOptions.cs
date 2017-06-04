@@ -3,9 +3,6 @@
 ** (C) Mika Molenkamp, 2016-2017.
 */
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
 namespace ShiftDrive {
 
     /// <summary>
