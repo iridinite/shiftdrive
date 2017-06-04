@@ -67,7 +67,7 @@ namespace ShiftDrive {
         public static void LoadContent(GraphicsDevice graphicsDevice, ContentManager content) {
             // load font textures
             fontDefault = content.Load<SpriteFont>("Fonts/Default");
-            fontDefault.LineSpacing = 20;
+            fontDefault.LineSpacing += 5;
             fontBold = content.Load<SpriteFont>("Fonts/Bold");
             fontTooltip = content.Load<SpriteFont>("Fonts/Tooltip");
             fontQuote = content.Load<SpriteFont>("Fonts/Quote");
