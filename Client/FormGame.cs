@@ -71,11 +71,10 @@ namespace ShiftDrive {
                     gameOverTime -= dt;
                     if (gameOverTime <= 2f) gameOverFade += dt / 2f;
                     if (gameOverTime <= 0f) SDGame.Inst.SetUIRoot(new FormGameOver());
-                } else {
-                    // only process input when we're still alive
-                    // update the console itself
-                    Console.Update(gameTime);
                 }
+
+                // update the console itself
+                Console.Update(gameTime);
             }
         }
     }

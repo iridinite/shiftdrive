@@ -36,6 +36,14 @@ namespace ShiftDrive {
 
         protected override void OnUpdate(GameTime gameTime) {
             base.OnUpdate(gameTime);
+            // animate the clicky glow pulse
+            if (glowVisible) {
+                glowSize += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (glowSize >= 1f) glowVisible = false;
+            }
+
+            // ignore input from dead players
+            if (NetClient.World.GetPlayerShip().destroyed) return;
 
             // rotate ship towards clicks inside the maneuver ring
             if (Input.GetMouseLeftDown() && Input.GetMouseInArea(100, 100, SDGame.Inst.GameWidth - 100, SDGame.Inst.GameHeight - 100)) {
@@ -50,13 +58,6 @@ namespace ShiftDrive {
                 glowPos = Input.MousePosition;
                 glowSize = 0f;
                 glowVisible = true;
-            }
-
-
-            // animate the clicky glow pulse
-            if (glowVisible) {
-                glowSize += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (glowSize >= 1f) glowVisible = false;
             }
         }
 

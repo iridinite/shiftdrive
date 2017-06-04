@@ -39,6 +39,9 @@ namespace ShiftDrive {
         }
 
         protected override void OnUpdate(GameTime gameTime) {
+            // ignore input from dead players
+            if (NetClient.World.GetPlayerShip().destroyed) return;
+
             // throttle input
             float oldThrottle = targetThrottle;
             if (Input.GetKey(Keys.W)) {
