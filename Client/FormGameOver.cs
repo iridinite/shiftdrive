@@ -58,8 +58,6 @@ namespace ShiftDrive {
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
             // draw each line from the selected quote
             int xoffset = SDGame.Inst.GameWidth / 2;
             int yoffset = SDGame.Inst.GameHeight / 2 - 60 - (int)(40f * fadeCoeff);
@@ -77,8 +75,6 @@ namespace ShiftDrive {
             spriteBatch.DrawString(Assets.fontBold, quoteAuthor,
                 new Vector2(xoffset - (int)(Assets.fontBold.MeasureString(quoteAuthor).X / 2f), yoffset + 30),
                 Color.DarkGray * fadeCoeff);
-
-            spriteBatch.End();
         }
 
         protected override void OnUpdate(GameTime gameTime) {
