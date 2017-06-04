@@ -3,9 +3,6 @@
 ** (C) Mika Molenkamp, 2016-2017.
 */
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
 namespace ShiftDrive {
 
     /// <summary>
@@ -18,6 +15,7 @@ namespace ShiftDrive {
 
         public FormMainMenu() {
             Children.Add(new Skybox());
+            Children.Add(new PanelGameTitle(0f));
 
             // create UI controls
             btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 100, 260, 40, Locale.Get("menu_connect"));
@@ -34,14 +32,6 @@ namespace ShiftDrive {
             btnQuit.OnClick += btnClose_Click;
             btnQuit.OnClosed += btnClose_Closed;
             Children.Add(btnQuit);
-        }
-
-        protected override void OnDraw(SpriteBatch spriteBatch) {
-            Utils.DrawTitle(spriteBatch);
-        }
-
-        protected override void OnUpdate(GameTime gameTime) {
-            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, 0f);
         }
 
         private void CloseButtons() {

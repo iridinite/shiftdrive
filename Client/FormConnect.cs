@@ -34,6 +34,7 @@ namespace ShiftDrive {
 
         public FormConnect() {
             Children.Add(new Skybox());
+            Children.Add(new PanelGameTitle(-100f));
 
             int centerY = SDGame.Inst.GameHeight / 2;
             state = FormState.Default;
@@ -60,8 +61,6 @@ namespace ShiftDrive {
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            Utils.DrawTitle(spriteBatch);
-
             switch (state) {
                 case FormState.Default:
                     spriteBatch.DrawString(Assets.fontBold, Locale.Get("menu_connect"), new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontBold.MeasureString(Locale.Get("menu_connect")).X / 2), SDGame.Inst.GameHeight / 2f - 100), Color.White);
@@ -79,10 +78,6 @@ namespace ShiftDrive {
                     spriteBatch.DrawString(Assets.fontDefault, connectErrorMsg, new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(connectErrorMsg).X / 2), SDGame.Inst.GameHeight / 2f), Color.White);
                     break;
             }
-        }
-
-        protected override void OnUpdate(GameTime gameTime) {
-            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, -100f);
         }
 
         private void btnConnect_Click(Control sender) {

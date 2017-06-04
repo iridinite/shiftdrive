@@ -19,8 +19,6 @@ namespace ShiftDrive {
     /// </summary>
     internal static class Utils {
 
-        private static float logoY = 100f;
-
         internal static Random RNG { get; private set; }
 
         static Utils() {
@@ -124,34 +122,13 @@ namespace ShiftDrive {
         }
 
         /// <summary>
-        /// Draws the game title at the specified height, along with version info in the corner.
-        /// </summary>
-        public static void DrawTitle(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Assets.GetTexture("ui/title"), new Vector2(SDGame.Inst.GameWidth / 2 - 128, SDGame.Inst.GameHeight / 4f + logoY), Color.White);
-
-            string versionstr = GetVersionString() +
-                                " / Protocol " + NetShared.ProtocolVersion;
-            spriteBatch.DrawString(Assets.fontDefault, Locale.Get("credit"), new Vector2(16, SDGame.Inst.GameHeight - 28), Color.Gray);
-            spriteBatch.DrawString(Assets.fontDefault, versionstr, new Vector2(SDGame.Inst.GameWidth - Assets.fontDefault.MeasureString(versionstr).X - 16, SDGame.Inst.GameHeight - 28), Color.Gray);
-        }
-
-        /// <summary>
-        /// Updates the position of the game title, making a smooth animation.
-        /// </summary>
-        /// <param name="deltaTime">The delta-time to interpolate with.</param>
-        /// <param name="target">The target height in pixels.</param>
-        public static void UpdateTitle(float deltaTime, float target) {
-            logoY += (target - logoY) * 4f * deltaTime;
-        }
-
-        /// <summary>
         /// Returns a string identifying the game version.
         /// </summary>
         public static string GetVersionString() {
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             return $"v{v.Major}.{v.Minor}.{v.Revision}";
         }
-        
+
         /// <summary>
         /// Returns the cross product of two 2D vectors, treating them as 3D vectors where the Z axis is zero for both vectors.
         /// </summary>

@@ -55,6 +55,7 @@
     <Compile Include="PanelAnnounce.cs" />
     <Compile Include="PanelConsoleSwitcher.cs" />
     <Compile Include="PanelFuelGauge.cs" />
+    <Compile Include="PanelGameTitle.cs" />
     <Compile Include="PanelHullBar.cs" />
     <Compile Include="PanelThrottleBar.cs" />
     <Compile Include="PanelWorldView.cs" />

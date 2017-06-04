@@ -18,6 +18,7 @@ namespace ShiftDrive {
 
         public FormConfirmExit() {
             Children.Add(new Skybox());
+            Children.Add(new PanelGameTitle(0f));
 
             // create UI controls
             btnQuit = new TextButton(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Locale.Get("confirmexit_yes"));
@@ -31,15 +32,9 @@ namespace ShiftDrive {
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            Utils.DrawTitle(spriteBatch);
-
             spriteBatch.DrawString(Assets.fontDefault, Locale.Get("confirmexit"),
                 new Vector2((int)(SDGame.Inst.GameWidth / 2f - Assets.fontDefault.MeasureString(Locale.Get("confirmexit")).X / 2f),
                     SDGame.Inst.GameHeight / 2f), Color.White);
-        }
-
-        protected override void OnUpdate(GameTime gameTime) {
-            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, 0f);
         }
 
         private void btnConnect_Click(Control sender) {

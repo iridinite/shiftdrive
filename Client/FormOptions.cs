@@ -17,6 +17,7 @@ namespace ShiftDrive {
 
         public FormOptions() {
             Children.Add(new Skybox());
+            Children.Add(new PanelGameTitle(-100f));
 
             // create UI controls
             btn1 = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 - 100, 250, 40, Locale.Get("option_1"));
@@ -36,14 +37,6 @@ namespace ShiftDrive {
             btnCancel.OnClick += btnCancel_Click;
             btnCancel.OnClosed += sender => SDGame.Inst.SetUIRoot(new FormMainMenu());
             Children.Add(btnCancel);
-        }
-
-        protected override void OnDraw(SpriteBatch spriteBatch) {
-            Utils.DrawTitle(spriteBatch);
-        }
-
-        protected override void OnUpdate(GameTime gameTime) {
-            Utils.UpdateTitle((float)gameTime.ElapsedGameTime.TotalSeconds, -100f);
         }
 
         private void btnCancel_Click(Control sender) {
