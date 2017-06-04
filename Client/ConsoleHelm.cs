@@ -22,16 +22,18 @@ namespace ShiftDrive {
         private float glowSize;
 
         public ConsoleHelm() {
+            Children.Add(new PanelWorldView());
+            Children.Add(new PanelHullBar());
+            Children.Add(new PanelAnnounce());
+            Children.Add(new PanelFuelGauge());
+            glowVisible = false;
+
             lock (NetClient.worldLock) {
-                glowVisible = false;
-                targetThrottle = Player.throttle;
+                targetThrottle = NetClient.World.GetPlayerShip().throttle;
             }
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            DrawLocalArea(spriteBatch);
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             int baseBarHeight = (SDGame.Inst.GameHeight - 100) / 2 - 100;
 
             // Throttle bar
@@ -48,14 +50,9 @@ namespace ShiftDrive {
             spriteBatch.DrawString(Assets.fontDefault, Locale.Get("throttle"), new Vector2(32, throttleBarY - 25), Color.White);
             spriteBatch.DrawString(Assets.fontDefault, (int)(targetThrottle * 100f) + "%", new Vector2(128, throttleBarY + throttleFillY - 10), Color.White);
 
-            // fuel bar
-            DrawFuelGauge(spriteBatch);
-
             // pulse where user clicked
             if (glowVisible)
                 spriteBatch.Draw(Assets.GetTexture("ui/glow1"), glowPos, null, Color.White * Math.Max(0f, 1f - glowSize), 0f, new Vector2(16, 16), glowSize * 4f, SpriteEffects.None, 0f);
-
-            spriteBatch.End();
         }
 
         protected override void OnUpdate(GameTime gameTime) {

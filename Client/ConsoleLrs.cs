@@ -26,20 +26,20 @@ namespace ShiftDrive {
             }
 
             // draw info underneath mouse cursor
+            Vector2 playerPosition = NetClient.World.GetPlayerShip().position;
             int mouseMapX = (int)((Input.MouseX - gridPos.X) / gridSize * NetServer.MAPSIZE);
             int mouseMapY = (int)((Input.MouseY - gridPos.Y) / gridSize * NetServer.MAPSIZE);
             spriteBatch.DrawString(Assets.fontDefault, "POS " + mouseMapX + ", " + mouseMapY, new Vector2(Input.MouseX, Input.MouseY + 25), Color.LightYellow);
             spriteBatch.DrawString(Assets.fontDefault, "DIR " +
-                (int)Utils.CalculateBearing(new Vector2(Player.position.X, Player.position.Y),
-                new Vector2(mouseMapX, mouseMapY)),
+                (int)Utils.CalculateBearing(new Vector2(playerPosition.X, playerPosition.Y),
+                    new Vector2(mouseMapX, mouseMapY)),
                 new Vector2(Input.MouseX, Input.MouseY + 50),
                 Color.LightYellow);
 
             spriteBatch.End();
         }
 
-        protected override void OnUpdate(GameTime gameTime) {
-        }
+        protected override void OnUpdate(GameTime gameTime) {}
 
     }
 

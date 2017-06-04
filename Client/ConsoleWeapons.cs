@@ -12,29 +12,31 @@ namespace ShiftDrive {
     /// Implements a <seealso cref="Console"/> for the weapon officer's station.
     /// </summary>
     internal sealed class ConsoleWeapons : Console {
-        private readonly Button btnShields;
+
+        private PanelWorldView worldView;
 
         public ConsoleWeapons() {
-            btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
+            worldView = new PanelWorldView();
+            Children.Add(worldView);
+            Children.Add(new PanelFuelGauge());
+
+            var btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
             btnShields.OnClick += btnShields_Click;
             Children.Add(btnShields);
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            DrawLocalArea(spriteBatch);
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-            DrawFuelGauge(spriteBatch);
+            var player = NetClient.World.GetPlayerShip();
 
             // draw a list of currently active weapons
-            int weaponBoxX = SDGame.Inst.GameWidth / 2 - Player.weaponsNum * 80;
-            for (int i = 0; i < Player.weaponsNum; i++) {
+            int weaponBoxX = SDGame.Inst.GameWidth / 2 - player.weaponsNum * 80;
+            for (int i = 0; i < player.weaponsNum; i++) {
                 // draw box background
                 int weaponCurrentX = weaponBoxX + i * 160;
                 spriteBatch.Draw(Assets.GetTexture("ui/weaponbg"), new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
 
                 // find the weapon in this index
-                Weapon wep = Player.weapons[i];
+                Weapon wep = player.weapons[i];
                 if (wep == null) {
                     spriteBatch.DrawString(Assets.fontDefault, Locale.Get("no_weapon"), new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.FromNonPremultiplied(48, 48, 48, 255));
                     continue;
@@ -60,23 +62,22 @@ namespace ShiftDrive {
                 spriteBatch.DrawString(Assets.fontTooltip, wep.Name, new Vector2(weaponCurrentX + 9, SDGame.Inst.GameHeight - 51), Color.Black);
                 spriteBatch.DrawString(Assets.fontTooltip, wep.Name, new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.White);
             }
-
-            spriteBatch.End();
         }
 
         protected override void OnUpdate(GameTime gameTime) {
             base.OnUpdate(gameTime);
 
             // add targets that the player clicks on
-            if (Input.GetMouseLeftDown()) {
-                foreach (TargetableObject tobj in targetables) {
-                    if (Vector2.Distance(Input.MousePosition, tobj.screenpos) > 32) continue;
+            if (!Input.GetMouseLeftDown()) return;
 
-                    using (Packet packet = new Packet(PacketID.WeapTarget)) {
-                        packet.Write(tobj.objid);
-                        packet.Write(!Player.targets.Contains(tobj.objid));
-                        NetClient.Send(packet);
-                    }
+            var player = NetClient.World.GetPlayerShip();
+            foreach (PanelWorldView.TargetableObject tobj in worldView.Targetables) {
+                if (Vector2.Distance(Input.MousePosition, tobj.screenpos) > 32) continue;
+
+                using (Packet packet = new Packet(PacketID.WeapTarget)) {
+                    packet.Write(tobj.objid);
+                    packet.Write(!player.targets.Contains(tobj.objid));
+                    NetClient.Send(packet);
                 }
             }
         }

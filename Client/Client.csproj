@@ -52,6 +52,10 @@
     <Compile Include="Locale.cs" />
     <Compile Include="Mine.cs" />
     <Compile Include="Packet.cs" />
+    <Compile Include="PanelAnnounce.cs" />
+    <Compile Include="PanelFuelGauge.cs" />
+    <Compile Include="PanelHullBar.cs" />
+    <Compile Include="PanelWorldView.cs" />
     <Compile Include="ParticleManager.cs" />
     <Compile Include="SoundCue.cs" />
     <Compile Include="SpaceStation.cs" />
