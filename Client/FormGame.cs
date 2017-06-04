@@ -68,15 +68,13 @@ namespace ShiftDrive {
         protected override void OnDraw(SpriteBatch spriteBatch) {
             lock (NetClient.worldLock) {
                 Console.Draw(spriteBatch);
-
-                //spriteBatch.Draw(Assets.GetTexture("ui/consolepanel"), new Rectangle(0, -496 + consoleButtons.Count * 40, 64, 512), null, Color.White,
-                //    0f, Vector2.Zero, SpriteEffects.None, 0f);
-
-                // black overlay when fading out
-                if (gameOverFade > 0f)
-                    spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight),
-                        Color.Black * gameOverFade);
             }
+
+            // black overlay when fading out
+            if (gameOverFade > 0f)
+                spriteBatch.Draw(Assets.GetTexture("ui/rect"),
+                    new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight),
+                    Color.Black * gameOverFade);
         }
 
         protected override void OnUpdate(GameTime gameTime) {
