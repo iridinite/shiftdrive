@@ -14,8 +14,6 @@ namespace ShiftDrive {
     internal sealed class ConsoleLrs : Console {
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
             int gridSize = MathHelper.Min(SDGame.Inst.GameWidth, SDGame.Inst.GameHeight) - 128;
             Vector2 gridPos = new Vector2(SDGame.Inst.GameWidth / 2 - gridSize / 2, SDGame.Inst.GameHeight / 2 - gridSize / 2);
 
@@ -35,8 +33,6 @@ namespace ShiftDrive {
                     new Vector2(mouseMapX, mouseMapY)),
                 new Vector2(Input.MouseX, Input.MouseY + 50),
                 Color.LightYellow);
-
-            spriteBatch.End();
         }
 
         protected override void OnUpdate(GameTime gameTime) {}
