@@ -6,7 +6,6 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace ShiftDrive {
 
@@ -35,7 +34,6 @@ namespace ShiftDrive {
         }
 
         protected override void OnUpdate(GameTime gameTime) {
-            base.OnUpdate(gameTime);
             // animate the clicky glow pulse
             if (glowVisible) {
                 glowSize += (float)gameTime.ElapsedGameTime.TotalSeconds;

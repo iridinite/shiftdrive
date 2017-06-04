@@ -67,7 +67,6 @@ namespace ShiftDrive {
         }
 
         protected override void OnUpdate(GameTime gameTime) {
-            base.OnUpdate(gameTime);
             // ignore input from dead players
             if (NetClient.World.GetPlayerShip().destroyed) return;
 
