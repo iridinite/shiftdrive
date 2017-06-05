@@ -53,28 +53,14 @@ namespace ShiftDrive {
                 }
                 // if already visible, no need to do anything else
                 visible = true;
-
             } else {
                 visible = false;
             }
         }
 
         public static void DrawQueued(SpriteBatch spriteBatch) {
-            Texture2D tex = Assets.GetTexture("ui/tooltip");
-
             foreach (Tooltip tt in renderQueue) {
-                spriteBatch.Draw(tex, new Rectangle(tt.posx, tt.posy, 16, 16), new Rectangle(0, 0, 16, 16), Color.White); // top left
-                spriteBatch.Draw(tex, new Rectangle(tt.posx + 16, tt.posy, tt.boxwidth - 32, 16), new Rectangle(16, 0, 16, 16), Color.White); // top middle
-                spriteBatch.Draw(tex, new Rectangle(tt.posx + tt.boxwidth - 16, tt.posy, 16, 16), new Rectangle(32, 0, 16, 16), Color.White); // top right
-
-                spriteBatch.Draw(tex, new Rectangle(tt.posx, tt.posy + 16, 16, tt.boxheight - 32), new Rectangle(0, 16, 16, 16), Color.White); // middle left
-                spriteBatch.Draw(tex, new Rectangle(tt.posx + 16, tt.posy + 16, tt.boxwidth - 32, tt.boxheight - 32), new Rectangle(16, 16, 16, 16), Color.White); // center
-                spriteBatch.Draw(tex, new Rectangle(tt.posx + tt.boxwidth - 16, tt.posy + 16, 16, tt.boxheight - 32), new Rectangle(32, 16, 16, 16), Color.White); // middle right
-
-                spriteBatch.Draw(tex, new Rectangle(tt.posx, tt.posy + tt.boxheight - 16, 16, 16), new Rectangle(0, 32, 16, 16), Color.White); // bottom left
-                spriteBatch.Draw(tex, new Rectangle(tt.posx + 16, tt.posy + tt.boxheight - 16, tt.boxwidth - 32, 16), new Rectangle(16, 32, 16, 16), Color.White); // bottom middle
-                spriteBatch.Draw(tex, new Rectangle(tt.posx + tt.boxwidth - 16, tt.posy + tt.boxheight - 16, 16, 16), new Rectangle(32, 32, 16, 16), Color.White); // bottom right
-
+                spriteBatch.DrawBorder(Assets.GetTexture("ui/tooltip"), new Rectangle(tt.posx, tt.posy, tt.boxwidth, tt.boxheight), 16);
                 spriteBatch.DrawString(Assets.fontTooltip, tt.text, new Vector2(tt.posx + 10, tt.posy + 10), Color.White);
             }
             renderQueue.Clear();

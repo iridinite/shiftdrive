@@ -62,6 +62,7 @@
     <Compile Include="ParticleManager.cs" />
     <Compile Include="SoundCue.cs" />
     <Compile Include="SpaceStation.cs" />
+    <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="SpriteQueue.cs" />
     <Compile Include="TextButton.cs" />
     <Compile Include="Config.cs" />

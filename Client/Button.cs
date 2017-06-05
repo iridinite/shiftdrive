@@ -51,20 +51,8 @@ namespace ShiftDrive {
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
             if (expand <= .1f) return;
-            Texture2D txButton = Assets.GetTexture("ui/button");
 
-            spriteBatch.Draw(txButton, new Rectangle(X, EffY, 8, 8), new Rectangle(state * 24, 0, 8, 8), Color.White); // top left
-            spriteBatch.Draw(txButton, new Rectangle(X + 8, EffY, Width - 16, 8), new Rectangle(state * 24 + 8, 0, 8, 8), Color.White); // top middle
-            spriteBatch.Draw(txButton, new Rectangle(X + Width - 8, EffY, 8, 8), new Rectangle(state * 24 + 16, 0, 8, 8), Color.White); // top right
-
-            spriteBatch.Draw(txButton, new Rectangle(X, EffY + 8, 8, EffHeight - 16), new Rectangle(state * 24, 8, 8, 8), Color.White); // middle left
-            spriteBatch.Draw(txButton, new Rectangle(X + 8, EffY + 8, Width - 16, EffHeight - 16), new Rectangle(state * 24 + 8, 8, 8, 8), Color.White); // center
-            spriteBatch.Draw(txButton, new Rectangle(X + Width - 8, EffY + 8, 8, EffHeight - 16), new Rectangle(state * 24 + 16, 8, 8, 8), Color.White); // middle right
-
-            spriteBatch.Draw(txButton, new Rectangle(X, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24, 16, 8, 8), Color.White); // bottom left
-            spriteBatch.Draw(txButton, new Rectangle(X + 8, EffY + EffHeight - 8, Width - 16, 8), new Rectangle(state * 24 + 8, 16, 8, 8), Color.White); // bottom middle
-            spriteBatch.Draw(txButton, new Rectangle(X + Width - 8, EffY + EffHeight - 8, 8, 8), new Rectangle(state * 24 + 16, 16, 8, 8), Color.White); // bottom right
-
+            spriteBatch.DrawBorder(Assets.GetTexture("ui/button"), new Rectangle(X, EffY, Width, EffHeight), 8, state);
             tooltip?.Draw();
         }
 
