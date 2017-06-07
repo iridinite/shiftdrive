@@ -24,15 +24,24 @@ namespace ShiftDrive {
         public readonly List<TargetableObject> Targetables = new List<TargetableObject>();
 
         private RenderTarget2D rtWorldView, rtWorldHud;
+        private readonly int viewportWidth, viewportHeight;
+        private readonly Vector2 viewportSize;
+
         private static float reticleSpin;
+
+        public PanelWorldView(int viewportWidth, int viewportHeight) {
+            this.viewportWidth = viewportWidth;
+            this.viewportHeight = viewportHeight;
+            viewportSize = new Vector2(viewportWidth, viewportHeight);
+        }
 
         protected override void OnRender(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
             // prepare the area HUD render target
             if (rtWorldView == null || rtWorldView.IsDisposed || rtWorldView.IsContentLost)
-                rtWorldView = new RenderTarget2D(graphicsDevice, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight, false, SurfaceFormat.Color,
+                rtWorldView = new RenderTarget2D(graphicsDevice, viewportWidth, viewportHeight, false, SurfaceFormat.Color,
                     DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             if (rtWorldHud == null || rtWorldHud.IsDisposed || rtWorldHud.IsContentLost)
-                rtWorldHud = new RenderTarget2D(graphicsDevice, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight, false, SurfaceFormat.Color,
+                rtWorldHud = new RenderTarget2D(graphicsDevice, viewportWidth, viewportHeight, false, SurfaceFormat.Color,
                     DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
 
             // start a sprite batch and keep it open so we can draw object name text
@@ -47,6 +56,7 @@ namespace ShiftDrive {
             const float viewradius = 256f;
             Vector2 min = new Vector2(player.position.X - viewradius, player.position.Y - viewradius);
             Vector2 max = new Vector2(player.position.X + viewradius, player.position.Y + viewradius);
+            SDGame.Inst.Print((viewportSize.X - (viewportSize.X - viewportSize.Y) / 2f).ToString());
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't draw objects with no sprite
@@ -56,7 +66,7 @@ namespace ShiftDrive {
                 if (Vector2.DistanceSquared(player.position, obj.position) > 350f * 350f)
                     continue;
                 // calculate screen coordinates for this object
-                Vector2 screenpos = Utils.CalculateScreenPos(min, max, obj.position);
+                Vector2 screenpos = Utils.CalculateScreenPos(min, max, viewportSize, obj.position);
 
                 // remember this object for targeting
                 if (obj.IsTargetable() && obj.id != player.id) {
@@ -98,7 +108,7 @@ namespace ShiftDrive {
             }
 
             // queue the particle sprites
-            ParticleManager.QueueDraw(min, max);
+            ParticleManager.QueueDraw(min, max, viewportSize);
 
             // we're done drawing text and health bars
             spriteBatch.End();
@@ -109,18 +119,18 @@ namespace ShiftDrive {
 
             // draw background
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-            spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight),
-                new Rectangle((int)player.position.X, (int)player.position.Y, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, viewportWidth, viewportHeight),
+                new Rectangle((int)player.position.X, (int)player.position.Y, viewportWidth, viewportHeight), Color.White);
             spriteBatch.End();
 
             // perform the queued object renders
-            SpriteQueue.RenderAlpha(spriteBatch);
-            SpriteQueue.RenderAdditive(spriteBatch);
+            SpriteQueue.RenderAlpha(spriteBatch, viewportSize);
+            SpriteQueue.RenderAdditive(spriteBatch, viewportSize);
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
             // draw the world view
-            spriteBatch.Draw(rtWorldView, new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
+            spriteBatch.Draw(rtWorldView, new Rectangle(0, 0, viewportWidth, viewportHeight), Color.White);
 
             // draw reticles around targeted objects
             var player = NetClient.World.GetPlayerShip();
@@ -134,8 +144,8 @@ namespace ShiftDrive {
             }
 
             // draw text HUD and a radar ring
-            spriteBatch.Draw(rtWorldHud, new Rectangle(0, 0, SDGame.Inst.GameWidth, SDGame.Inst.GameHeight), Color.White);
-            spriteBatch.Draw(Assets.GetTexture("ui/radar"), new Vector2(SDGame.Inst.GameWidth / 2f, SDGame.Inst.GameHeight / 2f), null, Color.White,
+            spriteBatch.Draw(rtWorldHud, new Rectangle(0, 0, viewportWidth, viewportHeight), Color.White);
+            spriteBatch.Draw(Assets.GetTexture("ui/radar"), new Vector2(viewportWidth / 2f, viewportHeight / 2f), null, Color.White,
                 0f, new Vector2(256, 256), 1f, SpriteEffects.None, 0f);
         }
 

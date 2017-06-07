@@ -16,7 +16,7 @@ namespace ShiftDrive {
         private readonly PanelWorldView worldView;
 
         public ConsoleWeapons() {
-            worldView = new PanelWorldView();
+            worldView = new PanelWorldView(SDGame.Inst.GameWidth, SDGame.Inst.GameHeight);
             Children.Add(worldView);
             Children.Add(new PanelHullBar());
             Children.Add(new PanelAnnounce());

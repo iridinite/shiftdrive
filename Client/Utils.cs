@@ -55,11 +55,12 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="min">The upper-left corner of the view area.</param>
         /// <param name="max">The bottom-right corner of the view area.</param>
+        /// <param name="viewport">The size of the viewport.</param>
         /// <param name="pos">The object's position in world coordinates.</param>
-        public static Vector2 CalculateScreenPos(Vector2 min, Vector2 max, Vector2 pos) {
+        public static Vector2 CalculateScreenPos(Vector2 min, Vector2 max, Vector2 viewport, Vector2 pos) {
             return new Vector2(
-                (pos.X - min.X) / (max.X - min.X) * SDGame.Inst.GameWidth,
-                (pos.Y - min.Y) / (max.Y - min.Y) * SDGame.Inst.GameWidth - (SDGame.Inst.GameWidth - SDGame.Inst.GameHeight) / 2f);
+                (pos.X - min.X) / (max.X - min.X) * viewport.X,
+                (pos.Y - min.Y) / (max.Y - min.Y) * viewport.X - (viewport.X - viewport.Y) / 2f);
         }
 
         /// <summary>
