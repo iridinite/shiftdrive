@@ -56,7 +56,6 @@ namespace ShiftDrive {
             const float viewradius = 256f;
             Vector2 min = new Vector2(player.position.X - viewradius, player.position.Y - viewradius);
             Vector2 max = new Vector2(player.position.X + viewradius, player.position.Y + viewradius);
-            SDGame.Inst.Print((viewportSize.X - (viewportSize.X - viewportSize.Y) / 2f).ToString());
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't draw objects with no sprite
