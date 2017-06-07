@@ -39,10 +39,10 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="min">The upper-left corner of the world view area.</param>
         /// <param name="max">The bottom-right corner of the world view area.</param>
-        public static void QueueDraw(Vector2 min, Vector2 max) {
+        public static void QueueDraw(Vector2 min, Vector2 max, Vector2 viewport) {
             lock (particleLock) {
                 foreach (Particle p in particles) {
-                    Vector2 screenpos = Utils.CalculateScreenPos(min, max, p.position);
+                    Vector2 screenpos = Utils.CalculateScreenPos(min, max, viewport, p.position);
                     SpriteQueue.QueueSprite(
                         p.sprite,
                         screenpos,
