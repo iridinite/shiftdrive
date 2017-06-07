@@ -47,6 +47,7 @@
     <Compile Include="CollisionGrid.cs" />
     <Compile Include="CollisionLayer.cs" />
     <Compile Include="CommMessage.cs" />
+    <Compile Include="ConsoleIntel.cs" />
     <Compile Include="ConsoleSettings.cs" />
     <Compile Include="FormGameOver.cs" />
     <Compile Include="ImageButton.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Mine.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="PanelAnnounce.cs" />
+    <Compile Include="PanelCommsWaterfall.cs" />
     <Compile Include="PanelConsoleSwitcher.cs" />
     <Compile Include="PanelFuelGauge.cs" />
     <Compile Include="PanelGameTitle.cs" />

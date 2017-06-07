@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -16,12 +17,14 @@ namespace ShiftDrive {
 
         public static GameState World { get; private set; }
         public static bool IsConnecting { get; private set; }
-        public static bool Connected { get { return socket != null && socket.Connected; } }
+        public static bool Connected => socket != null && socket.Connected;
 
         public static bool SimRunning { get; private set; }
         public static int PlayerCount { get; private set; }
         public static PlayerRole TakenRoles { get; private set; }
         public static PlayerRole MyRoles { get; private set; }
+
+        public static List<CommMessage> Inbox { get; private set; }
 
         private static Action<bool, string> connectCallback;
         private static bool expectShutdown;
@@ -29,6 +32,7 @@ namespace ShiftDrive {
         internal static readonly object worldLock = new object();
 
         public static event Action<string> Announcement;
+        public static event Action<CommMessage> CommsReceived;
 
         public static void Disconnect() {
             expectShutdown = true;
@@ -46,6 +50,7 @@ namespace ShiftDrive {
             World.IsServer = false;
 
             // reset client state
+            Inbox = new List<CommMessage>();
             connectCallback = _callback;
             expectShutdown = false;
             IsConnecting = true;

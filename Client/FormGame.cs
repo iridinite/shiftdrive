@@ -38,7 +38,7 @@ namespace ShiftDrive {
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Quartermaster))
                 switcher.AddConsoleButton(4, null, Locale.Get("console_quar"));
             if (NetClient.TakenRoles.HasFlag(PlayerRole.Intelligence))
-                switcher.AddConsoleButton(5, null, Locale.Get("console_intel"));
+                switcher.AddConsoleButton(5, sender => Console = new ConsoleIntel(), Locale.Get("console_intel"));
 
             switcher.AddConsoleButton(6, sender => Console = new ConsoleLrs(), Locale.Get("console_lrs")); // debug LRS
             Children.Add(switcher);
