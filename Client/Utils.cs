@@ -160,6 +160,18 @@ namespace ShiftDrive {
             sb.AppendLine("Debug info panel - press F3 to close");
             sb.AppendLine();
 
+            var metrics = SDGame.Inst.GraphicsDevice.Metrics;
+            sb.AppendLine("-- GRAPHICS --");
+            sb.AppendLine($"Primitives: {metrics.PrimitiveCount}");
+            sb.AppendLine($"Sprites: {metrics.SpriteCount}");
+            sb.AppendLine($"Draw Calls: {metrics.DrawCount}");
+            sb.AppendLine($"Clear: {metrics.ClearCount}");
+            sb.AppendLine($"PSH Swaps: {metrics.PixelShaderCount}");
+            sb.AppendLine($"VSH Swaps: {metrics.VertexShaderCount}");
+            sb.AppendLine($"Texture Swaps: {metrics.TextureCount}");
+            sb.AppendLine($"Target Swaps: {metrics.TargetCount}");
+            sb.AppendLine();
+
             sb.AppendLine("-- SERVER --");
             if (NetServer.IsListening()) {
                 sb.AppendLine($"Connections: {NetServer.GetPlayerCount()}");
