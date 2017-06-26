@@ -35,10 +35,8 @@ namespace ShiftDrive {
         EngiSetPower,
         EngiDamageReport,
 
-        QuarOrder,
-
         IntelScan,
-        IntelInText,
+        IntelGetText,
         IntelSend,
         IntelShopInfo,
         IntelShopBuy
