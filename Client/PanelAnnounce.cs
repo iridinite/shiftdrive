@@ -19,10 +19,12 @@ namespace ShiftDrive {
 
         public PanelAnnounce() {
             // subscribe to networking events
-            NetClient.Announcement += text => {
-                announceHoldTime = 10f;
-                announceText = text;
-            };
+            NetClient.Announcement += NetClient_Announcement;
+        }
+
+        private void NetClient_Announcement(string text) {
+            announceHoldTime = 10f;
+            announceText = text;
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
@@ -36,6 +38,10 @@ namespace ShiftDrive {
             announceHoldTime -= dt;
             if (announceHoldTime < 0f)
                 announceText = "";
+        }
+
+        protected override void OnDestroy() {
+            NetClient.Announcement -= NetClient_Announcement;
         }
 
     }
