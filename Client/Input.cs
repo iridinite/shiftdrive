@@ -20,6 +20,7 @@ namespace ShiftDrive {
         public static int MouseX => mouseCurr.X;
         public static int MouseY => mouseCurr.Y;
         public static Vector2 MousePosition => new Vector2(mouseCurr.X, mouseCurr.Y);
+        public static int MouseScroll => mouseCurr.ScrollWheelValue - mousePrev.ScrollWheelValue;
 
         public static void Update() {
             mousePrev = mouseCurr;
