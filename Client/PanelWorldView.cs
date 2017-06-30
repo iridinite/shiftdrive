@@ -54,56 +54,56 @@ namespace ShiftDrive {
             var player = NetClient.World.GetPlayerShip();
 
             const float viewradius = 256f;
-            Vector2 min = new Vector2(player.position.X - viewradius, player.position.Y - viewradius);
-            Vector2 max = new Vector2(player.position.X + viewradius, player.position.Y + viewradius);
+            Vector2 min = new Vector2(player.Position.X - viewradius, player.Position.Y - viewradius);
+            Vector2 max = new Vector2(player.Position.X + viewradius, player.Position.Y + viewradius);
 
             foreach (GameObject obj in NetClient.World.Objects.Values) {
                 // don't draw objects with no sprite
-                if (obj.sprite == null)
+                if (obj.Sprite == null)
                     continue;
                 // don't bother drawing if outside window boundings
-                if (Vector2.DistanceSquared(player.position, obj.position) > 350f * 350f)
+                if (Vector2.DistanceSquared(player.Position, obj.Position) > 350f * 350f)
                     continue;
                 // calculate screen coordinates for this object
-                Vector2 screenpos = Utils.CalculateScreenPos(min, max, viewportSize, obj.position);
+                Vector2 screenpos = Utils.CalculateScreenPos(min, max, viewportSize, obj.Position);
 
                 // remember this object for targeting
-                if (obj.IsTargetable() && obj.id != player.id) {
+                if (obj.IsTargetable() && obj.ID != player.ID) {
                     TargetableObject tobj = new TargetableObject {
-                        objid = obj.id,
+                        objid = obj.ID,
                         screenpos = screenpos,
                         //leadingpos = Utils.CalculateScreenPos(min, max, Player.weapons[0].GetFiringSolution(Player, obj))
                     };
                     Targetables.Add(tobj);
                 }
 
-                if (obj.type == ObjectType.PlayerShip) {
+                if (obj.Type == ObjectType.PlayerShip) {
                     // if player ship is destroyed, don't draw it
                     // (special case for player because we don't want to actually delete the object)
                     // also to support multiplayer in the future, don't assume this PlayerShip is the local player
                     PlayerShip otherPlayer = obj as PlayerShip;
                     Debug.Assert(otherPlayer != null);
-                    if (otherPlayer.destroyed) continue;
-                } else if (obj.type == ObjectType.AIShip) {
+                    if (otherPlayer.Destroyed) continue;
+                } else if (obj.Type == ObjectType.AIShip) {
                     // draw ship name above it
                     Ship shipobj = obj as Ship;
                     Debug.Assert(shipobj != null);
-                    int hullBarWidth = (int)(shipobj.hull / shipobj.hullMax * 72f);
-                    Vector2 textpos = new Vector2(screenpos.X, screenpos.Y - 55) - Assets.fontDefault.MeasureString(shipobj.nameshort) / 2f;
+                    int hullBarWidth = (int)(shipobj.Hull / shipobj.HullMax * 72f);
+                    Vector2 textpos = new Vector2(screenpos.X, screenpos.Y - 55) - Assets.fontDefault.MeasureString(shipobj.NameShort) / 2f;
                     // text outline
-                    spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(-1, -1), Color.Black);
-                    spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(1, -1), Color.Black);
-                    spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(-1, 1), Color.Black);
-                    spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos + new Vector2(1, 1), Color.Black);
+                    spriteBatch.DrawString(Assets.fontDefault, shipobj.NameShort, textpos + new Vector2(-1, -1), Color.Black);
+                    spriteBatch.DrawString(Assets.fontDefault, shipobj.NameShort, textpos + new Vector2(1, -1), Color.Black);
+                    spriteBatch.DrawString(Assets.fontDefault, shipobj.NameShort, textpos + new Vector2(-1, 1), Color.Black);
+                    spriteBatch.DrawString(Assets.fontDefault, shipobj.NameShort, textpos + new Vector2(1, 1), Color.Black);
                     // colored text
-                    spriteBatch.DrawString(Assets.fontDefault, shipobj.nameshort, textpos, shipobj.GetFactionColor(player));
+                    spriteBatch.DrawString(Assets.fontDefault, shipobj.NameShort, textpos, shipobj.GetFactionColor(player));
                     spriteBatch.Draw(Assets.GetTexture("ui/rect"),
                         new Rectangle((int)screenpos.X - hullBarWidth / 2, (int)screenpos.Y - 45, hullBarWidth, 8),
                         shipobj.GetFactionColor(player));
                 }
 
                 // draw the object
-                SpriteQueue.QueueSprite(obj.sprite, screenpos, MathHelper.ToRadians(obj.facing), obj.zorder);
+                SpriteQueue.QueueSprite(obj.Sprite, screenpos, MathHelper.ToRadians(obj.Facing), obj.ZOrder);
             }
 
             // queue the particle sprites
@@ -119,7 +119,7 @@ namespace ShiftDrive {
             // draw background
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
             spriteBatch.Draw(Assets.GetTexture("back/nebula1"), new Rectangle(0, 0, viewportWidth, viewportHeight),
-                new Rectangle((int)player.position.X, (int)player.position.Y, viewportWidth, viewportHeight), Color.White);
+                new Rectangle((int)player.Position.X, (int)player.Position.Y, viewportWidth, viewportHeight), Color.White);
             spriteBatch.End();
 
             // perform the queued object renders
@@ -134,7 +134,7 @@ namespace ShiftDrive {
             // draw reticles around targeted objects
             var player = NetClient.World.GetPlayerShip();
             foreach (TargetableObject tobj in Targetables) {
-                if (!player.targets.Contains(tobj.objid)) continue;
+                if (!player.Targets.Contains(tobj.objid)) continue;
 
                 spriteBatch.Draw(Assets.GetTexture("ui/reticle"), tobj.screenpos, null, Color.White, reticleSpin, new Vector2(32, 32), 1f,
                     SpriteEffects.None, 0f);

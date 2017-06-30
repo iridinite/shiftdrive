@@ -31,14 +31,14 @@ namespace ShiftDrive {
             var player = NetClient.World.GetPlayerShip();
 
             // draw a list of currently active weapons
-            int weaponBoxX = SDGame.Inst.GameWidth / 2 - player.weaponsNum * 80;
-            for (int i = 0; i < player.weaponsNum; i++) {
+            int weaponBoxX = SDGame.Inst.GameWidth / 2 - player.WeaponsCount * 80;
+            for (int i = 0; i < player.WeaponsCount; i++) {
                 // draw box background
                 int weaponCurrentX = weaponBoxX + i * 160;
                 spriteBatch.Draw(Assets.GetTexture("ui/weaponbg"), new Rectangle(weaponCurrentX, SDGame.Inst.GameHeight - 60, 150, 60), Color.DimGray);
 
                 // find the weapon in this index
-                Weapon wep = player.weapons[i];
+                Weapon wep = player.Weapons[i];
                 if (wep == null) {
                     spriteBatch.DrawString(Assets.fontDefault, Locale.Get("no_weapon"), new Vector2(weaponCurrentX + 8, SDGame.Inst.GameHeight - 52), Color.FromNonPremultiplied(48, 48, 48, 255));
                     continue;
@@ -68,7 +68,7 @@ namespace ShiftDrive {
 
         protected override void OnUpdate(GameTime gameTime) {
             // ignore input from dead players
-            if (NetClient.World.GetPlayerShip().destroyed) return;
+            if (NetClient.World.GetPlayerShip().Destroyed) return;
 
             // add targets that the player clicks on
             if (!Input.GetMouseLeftDown()) return;
@@ -79,7 +79,7 @@ namespace ShiftDrive {
 
                 using (Packet packet = new Packet(PacketID.WeapTarget)) {
                     packet.Write(tobj.objid);
-                    packet.Write(!player.targets.Contains(tobj.objid));
+                    packet.Write(!player.Targets.Contains(tobj.objid));
                     NetClient.Send(packet);
                 }
             }

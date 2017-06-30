@@ -32,8 +32,8 @@ namespace ShiftDrive {
             // iterate through all objects to find the local player, and cache it
             if (cachedPlayerShipId != 0) return Objects[cachedPlayerShipId] as PlayerShip;
             foreach (var pair in Objects)
-                if (pair.Value.type == ObjectType.PlayerShip) {
-                    cachedPlayerShipId = pair.Value.id;
+                if (pair.Value.Type == ObjectType.PlayerShip) {
+                    cachedPlayerShipId = pair.Value.ID;
                     return pair.Value as PlayerShip;
                 }
             return null;
@@ -43,8 +43,8 @@ namespace ShiftDrive {
         /// Inserts an object into this GameState.
         /// </summary>
         public void AddObject(GameObject obj) {
-            Objects.Add(obj.id, obj);
-            if (obj.bounding > 0f) grid.Insert(obj);
+            Objects.Add(obj.ID, obj);
+            if (obj.Bounding > 0f) grid.Insert(obj);
         }
 
         /// <summary>
@@ -77,13 +77,13 @@ namespace ShiftDrive {
                     obj.changed = ObjectProperty.All;
 
                 if (obj.IsDestroyScheduled()) {
-                    outstream.Write(pair.Value.id);
+                    outstream.Write(pair.Value.ID);
                     outstream.Write(true);
 
                 } else if (obj.changed > ObjectProperty.None) {
-                    outstream.Write(pair.Value.id);
+                    outstream.Write(pair.Value.ID);
                     outstream.Write(false);
-                    outstream.Write((byte)pair.Value.type);
+                    outstream.Write((byte)pair.Value.Type);
                     outstream.Write((uint)pair.Value.changed);
                     pair.Value.Serialize(outstream);
                     pair.Value.changed = ObjectProperty.None;
@@ -125,7 +125,7 @@ namespace ShiftDrive {
                             throw new Exception(Locale.Get("err_unknownobject") + " (" + objtype + ")");
                     }
                     obj.Deserialize(instream, recvChanged);
-                    obj.id = objid;
+                    obj.ID = objid;
                     AddObject(obj);
                 } else {
                     // update this object with info from the stream

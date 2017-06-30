@@ -24,17 +24,17 @@ namespace ShiftDrive {
             brain.Add(AITask.TravelDestination);
             brain.Add(AITask.TravelRandomize);
             brain.Add(AITask.AvoidBlackHole);
-            type = ObjectType.AIShip;
+            Type = ObjectType.AIShip;
         }
 
         public override void Update(float deltaTime) {
             base.Update(deltaTime);
 
             // AI always uses shields, no fuel so no need to bother with switching
-            shieldActive = true;
+            ShieldActive = true;
 
             // perform AI only on server
-            if (!world.IsServer) return;
+            if (!World.IsServer) return;
 
             // walk through the AI tasks
             foreach (AITask task in brain) {
@@ -44,8 +44,8 @@ namespace ShiftDrive {
                         travelAlignTime -= deltaTime;
                         if (travelAlignTime > 0f) continue;
                         travelAlignTime = 6f;
-                        this.steering = Utils.CalculateBearing(position, travelDest);
-                        this.throttle = MathHelper.Max(1f, MathHelper.Clamp(Vector2.Distance(position, travelDest), 0f, 1f));
+                        this.steering = Utils.CalculateBearing(Position, travelDest);
+                        this.throttle = MathHelper.Max(1f, MathHelper.Clamp(Vector2.Distance(Position, travelDest), 0f, 1f));
                         this.changed |= ObjectProperty.Throttle | ObjectProperty.Steering;
                         break;
 
@@ -59,12 +59,12 @@ namespace ShiftDrive {
 
                     case AITask.AvoidBlackHole:
                         // detect nearby black holes and steer away from them
-                        foreach (GameObject obj in world.Objects.Values) {
-                            if (obj.type != ObjectType.BlackHole) continue;
-                            if (!(Vector2.DistanceSquared(obj.position, this.position) <= 40000)) continue; // 200 units
+                        foreach (GameObject obj in World.Objects.Values) {
+                            if (obj.Type != ObjectType.BlackHole) continue;
+                            if (!(Vector2.DistanceSquared(obj.Position, this.Position) <= 40000)) continue; // 200 units
                             // calculate 'away' vector to steer away from the black hole
-                            Vector2 safedir = this.position - obj.position;
-                            this.steering = Utils.CalculateBearing(position, position + safedir);
+                            Vector2 safedir = this.Position - obj.Position;
+                            this.steering = Utils.CalculateBearing(Position, Position + safedir);
                             this.changed |= ObjectProperty.Steering;
                         }
                         break;

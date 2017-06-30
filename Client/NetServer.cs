@@ -129,7 +129,7 @@ namespace ShiftDrive {
                     // iterate over all objects (QueryGrid is too unreliable)
                     GameObject gobj = world.Objects[key];
                     // object within range?
-                    float dist = Vector2.DistanceSquared(gobj.position, expl.position);
+                    float dist = Vector2.DistanceSquared(gobj.Position, expl.position);
                     if (dist > expl.range * expl.life)
                         continue;
                     // deal damage based on distance and time
@@ -415,7 +415,7 @@ namespace ShiftDrive {
 
                         case PacketID.WeapShields:
                             // Weapons toggles shield status
-                            pship.shieldActive = !world.GetPlayerShip().shieldActive;
+                            pship.ShieldActive = !world.GetPlayerShip().ShieldActive;
                             pship.changed |= ObjectProperty.Health;
                             break;
 
@@ -424,9 +424,9 @@ namespace ShiftDrive {
                             uint targetid = recv.ReadUInt32();
                             bool targeting = recv.ReadBoolean();
                             if (targeting)
-                                pship.targets.Add(targetid);
+                                pship.Targets.Add(targetid);
                             else
-                                pship.targets.Remove(targetid);
+                                pship.Targets.Remove(targetid);
                             pship.changed |= ObjectProperty.Targets;
                             break;
 

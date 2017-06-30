@@ -10,29 +10,29 @@ namespace ShiftDrive {
     internal sealed class Mine : GameObject {
 
         public Mine(GameState world) : base(world) {
-            type = ObjectType.Mine;
-            facing = Utils.RandomFloat(0f, 360f);
-            spritename = "map/mine";
-            bounding = 4f;
-            zorder = 72;
-            layer = CollisionLayer.Default;
-            layermask = CollisionLayer.All;
+            Type = ObjectType.Mine;
+            Facing = Utils.RandomFloat(0f, 360f);
+            SpriteName = "map/mine";
+            Bounding = 4f;
+            ZOrder = 72;
+            Layer = CollisionLayer.Default;
+            LayerMask = CollisionLayer.All;
         }
         
         public override void Update(float deltaTime) {
             base.Update(deltaTime);
 
             // must run this on server, and can't explode twice
-            if (!world.IsServer || IsDestroyScheduled()) return;
+            if (!World.IsServer || IsDestroyScheduled()) return;
 
             // find nearby objects
-            var nearbyObjects = world.QueryGrid(this);
+            var nearbyObjects = World.QueryGrid(this);
             foreach (GameObject gobj in nearbyObjects) {
                 // don't trigger because of other nearby mines
-                if (gobj.type == ObjectType.Mine) continue;
+                if (gobj.Type == ObjectType.Mine) continue;
                 
                 // too close? blow up!
-                float dist = Vector2.DistanceSquared(gobj.position, this.position);
+                float dist = Vector2.DistanceSquared(gobj.Position, this.Position);
                 if (dist >= 75f * 75f) continue;
                 this.Destroy();
             }
@@ -47,9 +47,9 @@ namespace ShiftDrive {
             if (IsDestroyScheduled()) return;
             base.Destroy();
 
-            if (!world.IsServer) return;
+            if (!World.IsServer) return;
             Assets.GetSound("ExplosionMedium").Play();
-            NetServer.DoDamagingExplosion(this.position, 90f, 150f);
+            NetServer.DoDamagingExplosion(this.Position, 90f, 150f);
         }
 
     }

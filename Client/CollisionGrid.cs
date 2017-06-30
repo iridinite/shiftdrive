@@ -80,15 +80,15 @@ namespace ShiftDrive {
                 for (int y = 0; y < SUBDIVISIONS; y++)
                     // find objects with matching IDs in each cell
                     for (int i = grid[x, y].Count - 1; i >= 0; i--)
-                        if (grid[x, y][i].id == obj.id) grid[x, y].RemoveAt(i);
+                        if (grid[x, y][i].ID == obj.ID) grid[x, y].RemoveAt(i);
         }
 
         /// <summary>
         /// Calculate the cell coordinates for a <see cref="GameObject"/>.
         /// </summary>
         public void GetCell(GameObject obj, out int x, out int y) {
-            x = MathHelper.Clamp((int)(obj.position.X / NetServer.MAPSIZE * SUBDIVISIONS), 0, SUBDIVISIONS - 1);
-            y = MathHelper.Clamp((int)(obj.position.Y / NetServer.MAPSIZE * SUBDIVISIONS), 0, SUBDIVISIONS - 1);
+            x = MathHelper.Clamp((int)(obj.Position.X / NetServer.MAPSIZE * SUBDIVISIONS), 0, SUBDIVISIONS - 1);
+            y = MathHelper.Clamp((int)(obj.Position.Y / NetServer.MAPSIZE * SUBDIVISIONS), 0, SUBDIVISIONS - 1);
         }
 
         /// <summary>

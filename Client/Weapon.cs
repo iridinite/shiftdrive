@@ -94,7 +94,7 @@ namespace ShiftDrive {
                 }
                 ReloadProgress = 0f;
                 AmmoLeft = AmmoPerClip;
-                if (owner.type == ObjectType.PlayerShip && // AI ships have unlimited clips
+                if (owner.Type == ObjectType.PlayerShip && // AI ships have unlimited clips
                     Ammo != AmmoType.Dummy) // dummy ammo has no clips
                     AmmoClipsLeft--;
             }
@@ -113,9 +113,9 @@ namespace ShiftDrive {
             Charge = 0f;
 
             // draw a beam for beam weapons
-            bool serverside = owner.world.IsServer;
+            bool serverside = owner.World.IsServer;
             if (!serverside && ProjType == WeaponType.Beam)
-                ParticleManager.CreateBeam(owner.position + mount.Position, target.position, ProjSprite, "map/beam-impact");
+                ParticleManager.CreateBeam(owner.Position + mount.Position, target.Position, ProjSprite, "map/beam-impact");
 
             // remove ammo for this shot
             if (Ammo != AmmoType.None)
@@ -127,7 +127,7 @@ namespace ShiftDrive {
             if (!serverside) return;
 
             // firing sound effect
-            Assets.GetSound(FireSound).Play3D(owner.world.GetPlayerShip().position, owner.position);
+            Assets.GetSound(FireSound).Play3D(owner.World.GetPlayerShip().Position, owner.Position);
 
             switch (ProjType) {
                 case WeaponType.Projectile:
@@ -135,8 +135,8 @@ namespace ShiftDrive {
                     Vector2 fireAt = GetFiringSolution(owner, target);
                     float randombearing = (float)Utils.RNG.NextDouble() * ProjSpread * 2 - ProjSpread;
                     NetServer.world.AddObject(new Projectile(NetServer.world, ProjSprite, Ammo,
-                        owner.position + mount.Position,
-                        Utils.Repeat(Utils.CalculateBearing(owner.position, fireAt) + randombearing, 0f, 360f),
+                        owner.Position + mount.Position,
+                        Utils.Repeat(Utils.CalculateBearing(owner.Position, fireAt) + randombearing, 0f, 360f),
                         ProjSpeed, Damage,
                         owner.faction));
                     break;
@@ -148,7 +148,7 @@ namespace ShiftDrive {
             }
 
             // consume fuel for weapon fire
-            if (owner.type == ObjectType.PlayerShip) {
+            if (owner.Type == ObjectType.PlayerShip) {
                 PlayerShip plr = owner as PlayerShip;
                 Debug.Assert(plr != null);
                 plr.ConsumeFuel(PowerDraw);
@@ -161,11 +161,11 @@ namespace ShiftDrive {
         /// <param name="self">The object where the projectiles originate from.</param>
         /// <param name="target">The object that should be hit.</param>
         public Vector2 GetFiringSolution(GameObject self, GameObject target) {
-            Vector2 velocity = target.movement;
-            Vector2 delta = target.position - self.position;
+            Vector2 velocity = target.Movement;
+            Vector2 delta = target.Position - self.Position;
 
             float a = velocity.LengthSquared() - ProjSpeed * ProjSpeed;
-            if (a >= 0) return target.position;
+            if (a >= 0) return target.Position;
 
             float b = 2 * Vector2.Dot(delta, velocity);
             float c = delta.LengthSquared();
@@ -175,7 +175,7 @@ namespace ShiftDrive {
             float dt2 = (-b - rt) / (2 * a);
             float dt = dt1 < 0 ? dt2 : dt1;
 
-            return target.position + velocity * dt;
+            return target.Position + velocity * dt;
         }
 
         public static Weapon FromLua(IntPtr L, int tableidx) {

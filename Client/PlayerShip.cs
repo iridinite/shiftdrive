@@ -14,45 +14,57 @@ namespace ShiftDrive {
     /// </summary>
     internal sealed class PlayerShip : Ship {
 
-        public byte player;
+        /// <summary>
+        /// Network ID for this group of players. Unused, until multi-ships happen.
+        /// </summary>
+        public byte PlayerID { get; private set; }
 
-        // Fuel reserves.
-        // Integer part is fuel cell count, decimal part is reservoir.
-        public float fuel;
+        /// <summary>
+        /// Fuel reserves.
+        /// Integer part is fuel cell count, decimal part is reservoir.
+        /// </summary>
+        public float Fuel { get; private set; }
 
-        // indicates that the ship has been destroyed (not scheduled for deletion)
-        public bool destroyed;
+        /// <summary>
+        /// Indicates whether the ship has been disabled / hidden.
+        /// This is easier than outright deleting the object because it avoids having to
+        /// implement null checks everywhere.
+        /// </summary>
+        public bool Destroyed { get; private set; }
 
-        public List<uint> targets;
+        /// <summary>
+        /// The list of objects targeted by the Weapons officer.
+        /// </summary>
+        public List<uint> Targets { get; }
 
         private int hullWarningShown;
 
         public PlayerShip(GameState world) : base(world) {
-            type = ObjectType.PlayerShip;
-            targets = new List<uint>();
-            destroyed = false;
+            Type = ObjectType.PlayerShip;
+            Targets = new List<uint>();
+            Destroyed = false;
         }
 
         public override void Update(float deltaTime) {
             // force stand-still if destroyed
-            if (destroyed) return;
+            if (Destroyed) return;
 
             // base update: throttle, steering, weapons
             base.Update(deltaTime);
 
             // remove targets that are no longer in view
-            for (int i = targets.Count - 1; i >= 0; i--) {
-                uint targetid = targets[i];
+            for (int i = Targets.Count - 1; i >= 0; i--) {
+                uint targetid = Targets[i];
                 // object no longer exists?
-                if (!world.Objects.ContainsKey(targetid)) {
-                    targets.RemoveAt(i);
+                if (!World.Objects.ContainsKey(targetid)) {
+                    Targets.RemoveAt(i);
                     continue;
                 }
 
-                GameObject obj = world.Objects[targetid];
+                GameObject obj = World.Objects[targetid];
                 // object about to be deleted, or too far away?
-                if (obj.IsDestroyScheduled() || Vector2.Distance(obj.position, this.position) > 300f)
-                    targets.RemoveAt(i);
+                if (obj.IsDestroyScheduled() || Vector2.Distance(obj.Position, this.Position) > 300f)
+                    Targets.RemoveAt(i);
             }
 
             // ship operation and throttle eats up energy
@@ -60,9 +72,9 @@ namespace ShiftDrive {
             ConsumeFuel(throttle * deltaTime * 0.0083333f);
 
             // ship state announcements
-            if (world.IsServer) {
+            if (World.IsServer) {
                 // hull integrity warnings
-                float hullFraction = hull / hullMax;
+                float hullFraction = Hull / HullMax;
                 if (hullFraction <= 0.25f && hullWarningShown < 3) {
                     NetServer.PublishAnnouncement(AnnouncementId.Hull25);
                     hullWarningShown = 3;
@@ -78,15 +90,15 @@ namespace ShiftDrive {
                 }
 
                 // fuel reserves warnings
-                if (fuel < 1f)
+                if (Fuel < 1f)
                     NetServer.PublishAnnouncement(AnnouncementId.FuelCritical);
-                else if (fuel < 3f)
+                else if (Fuel < 3f)
                     NetServer.PublishAnnouncement(AnnouncementId.FuelLow);
 
                 // shield strength warnings
-                if (shieldActive && shield <= 0f)
+                if (ShieldActive && Shield <= 0f)
                     NetServer.PublishAnnouncement(AnnouncementId.ShieldDown);
-                else if (shieldActive && shield / shieldMax <= 0.25f)
+                else if (ShieldActive && Shield / ShieldMax <= 0.25f)
                     NetServer.PublishAnnouncement(AnnouncementId.ShieldLow);
             }
         }
@@ -96,26 +108,26 @@ namespace ShiftDrive {
             // that would cause null ref exceptions on the clients.
 
             // run only once
-            if (destroyed || !world.IsServer) return;
-            destroyed = true;
+            if (Destroyed || !World.IsServer) return;
+            Destroyed = true;
             // deplete hull bar, in case it wasn't empty yet
-            hull = 0f;
-            shield = 0f;
+            Hull = 0f;
+            Shield = 0f;
             // stop moving
             throttle = 0f;
             // disable all collision and physics (black holes, in particular)
-            bounding = 0f;
-            layer = CollisionLayer.None;
-            layermask = CollisionLayer.None;
+            Bounding = 0f;
+            Layer = CollisionLayer.None;
+            LayerMask = CollisionLayer.None;
             // all the stuff changed
             changed |= ObjectProperty.Health | ObjectProperty.Layer | ObjectProperty.Throttle | ObjectProperty.Bounding;
             // fancy display
-            Assets.GetSound("ExplosionMedium").Play3D(world.GetPlayerShip().position, position);
-            NetServer.PublishParticleEffect(ParticleEffect.Explosion, position);
+            Assets.GetSound("ExplosionMedium").Play3D(World.GetPlayerShip().Position, Position);
+            NetServer.PublishParticleEffect(ParticleEffect.Explosion, Position);
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
-            if (destroyed) return;
+            if (Destroyed) return;
             base.OnCollision(other, normal, penetration);
         }
 
@@ -123,16 +135,16 @@ namespace ShiftDrive {
             GameObject bestTarget = null;
             float closest = float.MaxValue;
 
-            foreach (uint targetid in targets) {
-                if (!world.Objects.ContainsKey(targetid)) continue;
-                GameObject target = world.Objects[targetid];
+            foreach (uint targetid in Targets) {
+                if (!World.Objects.ContainsKey(targetid)) continue;
+                GameObject target = World.Objects[targetid];
 
                 // make sure we can actually shoot this thing
-                if (!GetCanTarget(target, weapon.Range, mount.Bearing + this.facing, mount.Arc))
+                if (!GetCanTarget(target, weapon.Range, mount.Bearing + this.Facing, mount.Arc))
                     continue;
 
                 // keep closest object
-                float dist = Vector2.DistanceSquared(target.position, this.position);
+                float dist = Vector2.DistanceSquared(target.Position, this.Position);
                 if (dist > closest) continue;
 
                 closest = dist;
@@ -146,16 +158,16 @@ namespace ShiftDrive {
             base.Serialize(outstream);
 
             if (changed.HasFlag(ObjectProperty.Targets)) {
-                outstream.Write((byte)targets.Count);
-                foreach (var target in targets)
+                outstream.Write((byte)Targets.Count);
+                foreach (var target in Targets)
                     outstream.Write(target);
             }
 
             if (changed.HasFlag(ObjectProperty.PlayerData))
-                outstream.Write(player);
+                outstream.Write(PlayerID);
 
-            outstream.Write(destroyed);
-            outstream.Write(fuel);
+            outstream.Write(Destroyed);
+            outstream.Write(Fuel);
         }
 
         public override void Deserialize(Packet instream, ObjectProperty recvChanged) {
@@ -163,20 +175,20 @@ namespace ShiftDrive {
 
             if (recvChanged.HasFlag(ObjectProperty.Targets)) {
                 int targetCount = instream.ReadByte();
-                targets.Clear();
+                Targets.Clear();
                 for (int i = 0; i < targetCount; i++)
-                    targets.Add(instream.ReadUInt32());
+                    Targets.Add(instream.ReadUInt32());
             }
 
             if (recvChanged.HasFlag(ObjectProperty.PlayerData))
-                player = instream.ReadByte();
-            
-            destroyed = instream.ReadBoolean();
-            fuel = instream.ReadSingle();
+                PlayerID = instream.ReadByte();
+
+            Destroyed = instream.ReadBoolean();
+            Fuel = instream.ReadSingle();
         }
 
         public void ConsumeFuel(float amount) {
-            fuel -= amount;
+            Fuel -= amount;
         }
 
         protected override int LuaGet(IntPtr L) {
@@ -184,7 +196,7 @@ namespace ShiftDrive {
             string key = LuaAPI.lua_tostring(L, 2);
             switch (key) {
                 case "fuel":
-                    LuaAPI.lua_pushnumber(L, fuel);
+                    LuaAPI.lua_pushnumber(L, Fuel);
                     break;
                 default:
                     return base.LuaGet(L);
@@ -197,7 +209,7 @@ namespace ShiftDrive {
             string key = LuaAPI.lua_tostring(L, 2);
             switch (key) {
                 case "fuel":
-                    fuel = (float)LuaAPI.luaL_checknumber(L, 3);
+                    Fuel = (float)LuaAPI.luaL_checknumber(L, 3);
                     break;
                 default:
                     return base.LuaSet(L);

@@ -378,7 +378,7 @@ namespace ShiftDrive {
                 NamelessObjectParams nparam = GetNamelessParams(2);
                 for (int i = 0; i < nparam.count; i++) {
                     Asteroid rock = new Asteroid(NetServer.world);
-                    rock.position = nparam.startpoint + (nparam.increment * i) + // base movement along the start-end line, plus random range
+                    rock.Position = nparam.startpoint + (nparam.increment * i) + // base movement along the start-end line, plus random range
                                     new Vector2(Utils.RandomFloat(nparam.range, -nparam.range), Utils.RandomFloat(nparam.range, -nparam.range));
                     NetServer.world.AddObject(rock);
                 }
@@ -389,7 +389,7 @@ namespace ShiftDrive {
                 NamelessObjectParams nparam = GetNamelessParams(2);
                 for (int i = 0; i < nparam.count; i++) {
                     Mine mine = new Mine(NetServer.world);
-                    mine.position = nparam.startpoint + (nparam.increment * i) + // base movement along the start-end line, plus random range
+                    mine.Position = nparam.startpoint + (nparam.increment * i) + // base movement along the start-end line, plus random range
                                     new Vector2(Utils.RandomFloat(nparam.range, -nparam.range), Utils.RandomFloat(nparam.range, -nparam.range));
                     NetServer.world.AddObject(mine);
                 }
@@ -414,7 +414,7 @@ namespace ShiftDrive {
             foreach (var pair in NetServer.world.Objects) {
                 // check if this object is a matching named object
                 NamedObject nobj = pair.Value as NamedObject;
-                if (nobj == null || !nobj.nameshort.Equals(name)) continue;
+                if (nobj == null || !nobj.NameShort.Equals(name)) continue;
 
                 nobj.PushToLua(L);
                 return 1;
@@ -427,7 +427,7 @@ namespace ShiftDrive {
         private int clua_getObjectById(IntPtr L) {
             uint id = (uint)luaL_checknumber(L, 1);
             foreach (var pair in NetServer.world.Objects) {
-                if (pair.Value.id != id) continue;
+                if (pair.Value.ID != id) continue;
                 pair.Value.PushToLua(L);
                 return 1;
             }

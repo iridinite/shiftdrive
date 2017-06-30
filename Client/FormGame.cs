@@ -67,7 +67,7 @@ namespace ShiftDrive {
             lock (NetClient.worldLock) {
                 // switch to game-over screen upon ship destruction
                 var player = NetClient.World.GetPlayerShip();
-                if (player.destroyed) {
+                if (player.Destroyed) {
                     gameOverTime -= dt;
                     if (gameOverTime <= 2f) gameOverFade += dt / 2f;
                     if (gameOverTime <= 0f) SDGame.Inst.SetUIRoot(new FormGameOver());

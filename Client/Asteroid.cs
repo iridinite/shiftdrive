@@ -16,20 +16,20 @@ namespace ShiftDrive {
         private float angularVelocity;
 
         public Asteroid(GameState world) : base(world) {
-            type = ObjectType.Asteroid;
-            facing = Utils.RandomFloat(0f, 360f);
-            spritename = "map/asteroid";
-            bounding = 8f;
-            damping = 0.85f;
-            zorder = 96;
-            layer = CollisionLayer.Asteroid;
-            layermask = CollisionLayer.Asteroid | CollisionLayer.Ship;
+            Type = ObjectType.Asteroid;
+            Facing = Utils.RandomFloat(0f, 360f);
+            SpriteName = "map/asteroid";
+            Bounding = 8f;
+            Damping = 0.85f;
+            ZOrder = 96;
+            Layer = CollisionLayer.Asteroid;
+            LayerMask = CollisionLayer.Asteroid | CollisionLayer.Ship;
         }
 
         public override void Update(float deltaTime) {
             base.Update(deltaTime);
 
-            facing += angularVelocity * deltaTime;
+            Facing += angularVelocity * deltaTime;
             angularVelocity *= (float)Math.Pow(0.8f, deltaTime);
         }
 
@@ -39,9 +39,9 @@ namespace ShiftDrive {
 
             // asteroids shouldn't move so much if ships bump into them, because
             // they should look heavy and sluggish
-            this.velocity += normal * penetration;
+            this.Velocity += normal * penetration;
             if (!other.IsShip())
-                this.position += normal * penetration;
+                this.Position += normal * penetration;
             this.changed |= ObjectProperty.Position | ObjectProperty.Velocity | ObjectProperty.AngularVelocity;
         }
 

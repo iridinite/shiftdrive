@@ -17,62 +17,62 @@ namespace ShiftDrive {
 
         private const int WEAPON_ARRAY_SIZE = 8;
 
-        public float hull;
-        public float hullMax;
-        public float shield;
-        public float shieldMax;
-        public bool shieldActive;
+        public float Hull { get; protected set; }
+        public float HullMax { get; private set; }
+        public float Shield { get; protected set; }
+        public float ShieldMax { get; private set; }
+        public bool ShieldActive { get; set; }
 
-        public float topSpeed;
-        public float turnRate;
+        public float TopSpeed { get; private set; }
+        public float TurnRate { get; private set; }
 
-        public byte weaponsNum;
-        public WeaponMount[] mounts;
-        public Weapon[] weapons;
-        public List<Vector2> flares;
+        public byte WeaponsCount { get; private set; }
+        public WeaponMount[] Mounts { get; }
+        public Weapon[] Weapons { get; }
 
-        public float throttle;
-        public float steering;
+        public float throttle { get; set; }
+        public float steering { get; set; }
 
-        public byte faction;
+        public byte faction { get; private set; }
 
         private float flaretime;
         private float shieldRegenPause;
+        private readonly List<Vector2> flareSpawners;
 
         protected Ship(GameState world) : base(world) {
-            hull = 100f;
-            hullMax = 100f;
-            shield = 100f;
-            shieldMax = 100f;
-            shieldActive = false;
-            damping = 0.75f;
-            weaponsNum = 0;
-            mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
-            weapons = new Weapon[WEAPON_ARRAY_SIZE];
-            flares = new List<Vector2>();
+            Hull = 100f;
+            HullMax = 100f;
+            Shield = 100f;
+            ShieldMax = 100f;
+            ShieldActive = false;
+            Damping = 0.75f;
+            WeaponsCount = 0;
+            Mounts = new WeaponMount[WEAPON_ARRAY_SIZE];
+            Weapons = new Weapon[WEAPON_ARRAY_SIZE];
+            flareSpawners = new List<Vector2>();
             flaretime = 0f;
             shieldRegenPause = 0f;
-            zorder = 128;
-            layer = CollisionLayer.Ship;
-            layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
+            ZOrder = 128;
+            Layer = CollisionLayer.Ship;
+            LayerMask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Default;
         }
 
         public override void Update(float deltaTime) {
             base.Update(deltaTime);
-            velocity = Vector2.Zero;
+            Velocity = Vector2.Zero;
 
             // apply throttle velocity based on the ship's facing
             Vector2 movementByEngine = new Vector2(
-                (float)Math.Cos(MathHelper.ToRadians(facing - 90f)),
-                (float)Math.Sin(MathHelper.ToRadians(facing - 90f)))
-                * throttle * topSpeed;
-            movement += movementByEngine;
-            position += movementByEngine * deltaTime;
-            position.X = MathHelper.Clamp(position.X, 0f, 1000f);
-            position.Y = MathHelper.Clamp(position.Y, 0f, 1000f);
+                (float)Math.Cos(MathHelper.ToRadians(Facing - 90f)),
+                (float)Math.Sin(MathHelper.ToRadians(Facing - 90f)))
+                * throttle * TopSpeed;
+            Movement += movementByEngine;
+            Position += movementByEngine * deltaTime;
+            //position.X = MathHelper.Clamp(position.X, 0f, 1000f);
+            //position.Y = MathHelper.Clamp(position.Y, 0f, 1000f);
             // apply maneuver: find whether turning left or right is fastest
-            float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - facing) + 180, 0f, 360f) - 180f, -1f, 1f);
-            facing = Utils.Repeat(facing + deltaFacing * turnRate * deltaTime, 0f, 360f);
+            float deltaFacing = MathHelper.Clamp(Utils.Repeat((steering - Facing) + 180, 0f, 360f) - 180f, -1f, 1f);
+            Facing = Utils.Repeat(Facing + deltaFacing * TurnRate * deltaTime, 0f, 360f);
 
             // retransmit modified properties
             if (throttle > 0f)
@@ -81,41 +81,41 @@ namespace ShiftDrive {
                 changed |= ObjectProperty.Facing;
 
             // shield regeneration
-            if (shield < shieldMax) {
+            if (Shield < ShieldMax) {
                 if (shieldRegenPause > 0f)
                     shieldRegenPause -= deltaTime;
                 else {
-                    shield = Math.Min(shield + deltaTime / 2f, shieldMax);
+                    Shield = Math.Min(Shield + deltaTime / 2f, ShieldMax);
                     changed |= ObjectProperty.Health;
                 }
             }
 
             // update weapon charge / ammo states
-            for (int i = 0; i < weaponsNum; i++) {
-                Weapon wep = weapons[i];
+            for (int i = 0; i < WeaponsCount; i++) {
+                Weapon wep = Weapons[i];
                 if (wep == null) continue;
 
                 // sanity check, active weapons must have a mount
-                Debug.Assert(mounts[i] != null);
+                Debug.Assert(Mounts[i] != null);
                 // charge and fire the weapon
-                wep.Update(deltaTime, this, mounts[i]);
+                wep.Update(deltaTime, this, Mounts[i]);
             }
 
             // update mount point position
-            for (int i = 0; i < weaponsNum; i++) {
-                if (mounts[i] == null) continue;
-                mounts[i].Position = Utils.CalculateRotatedOffset(mounts[i].Offset, facing);
+            for (int i = 0; i < WeaponsCount; i++) {
+                if (Mounts[i] == null) continue;
+                Mounts[i].Position = Utils.CalculateRotatedOffset(Mounts[i].Offset, Facing);
             }
             
             // engine flares
-            if (!(throttle > 0f) || world.IsServer) return;
+            if (!(throttle > 0f) || World.IsServer) return;
             if (flaretime > 0f) { // space out evenly
                 flaretime -= deltaTime;
                 return;
             }
             flaretime = 0.01f;
             // create particles for engine exhaust
-            foreach (Vector2 flarepos in flares) {
+            foreach (Vector2 flarepos in flareSpawners) {
                 Particle flare = new Particle();
                 flare.lifemax = 3f;
                 flare.sprite = Assets.GetSprite("map/engineflare").Clone();
@@ -123,9 +123,9 @@ namespace ShiftDrive {
                 flare.scaleend = 0.9f;
                 flare.colorstart = Color.White * (throttle * 0.6f + 0.15f);
                 flare.colorend = Color.Transparent;
-                flare.facing = facing;
+                flare.facing = Facing;
                 flare.zorder = 160;
-                flare.position = position + Utils.CalculateRotatedOffset(flarepos, facing);
+                flare.position = Position + Utils.CalculateRotatedOffset(flarepos, Facing);
                 ParticleManager.Register(flare);
             }
         }
@@ -138,24 +138,24 @@ namespace ShiftDrive {
             shieldRegenPause = 10f;
 
             // apply damage to shields first, if possible
-            if (shieldActive && shield > 0f) {
-                if (world.IsServer && sound)
-                    Assets.GetSound("DamageShield").Play3D(world.GetPlayerShip().position, position);
-                shield = MathHelper.Clamp(shield - damage, 0f, shieldMax);
+            if (ShieldActive && Shield > 0f) {
+                if (World.IsServer && sound)
+                    Assets.GetSound("DamageShield").Play3D(World.GetPlayerShip().Position, Position);
+                Shield = MathHelper.Clamp(Shield - damage, 0f, ShieldMax);
                 return;
             }
             // otherwise, apply damage to hull
-            if (world.IsServer && sound)
-                Assets.GetSound("DamageHull").Play3D(world.GetPlayerShip().position, position);
-            hull = MathHelper.Clamp(hull - damage, 0f, hullMax);
+            if (World.IsServer && sound)
+                Assets.GetSound("DamageHull").Play3D(World.GetPlayerShip().Position, Position);
+            Hull = MathHelper.Clamp(Hull - damage, 0f, HullMax);
             // zero hull = ship destruction
-            if (hull <= 0f && world.IsServer) Destroy();
+            if (Hull <= 0f && World.IsServer) Destroy();
         }
 
         public override void Destroy() {
             if (!IsDestroyScheduled()) {
-                Assets.GetSound("ExplosionMedium").Play3D(world.GetPlayerShip().position, position);
-                NetServer.PublishParticleEffect(ParticleEffect.Explosion, position);
+                Assets.GetSound("ExplosionMedium").Play3D(World.GetPlayerShip().Position, Position);
+                NetServer.PublishParticleEffect(ParticleEffect.Explosion, Position);
             }
             base.Destroy();
         }
@@ -182,13 +182,13 @@ namespace ShiftDrive {
             float closest = float.MaxValue;
 
             // find closest object. station has 360 weapon so don't care about weapon arcs
-            foreach (GameObject gobj in world.Objects.Values) {
+            foreach (GameObject gobj in World.Objects.Values) {
                 // make sure we can actually shoot this thing
-                if (!GetCanTarget(gobj, weapon.Range, mount.Bearing + this.facing, mount.Arc))
+                if (!GetCanTarget(gobj, weapon.Range, mount.Bearing + this.Facing, mount.Arc))
                     continue;
 
                 // keep closest object
-                float dist = Vector2.DistanceSquared(gobj.position, this.position);
+                float dist = Vector2.DistanceSquared(gobj.Position, this.Position);
                 if (dist > closest) continue;
 
                 closest = dist;
@@ -212,11 +212,11 @@ namespace ShiftDrive {
             }
 
             // cannot exceed weapon range
-            if (Vector2.DistanceSquared(target.position, this.position) > range * range)
+            if (Vector2.DistanceSquared(target.Position, this.Position) > range * range)
                 return false;
 
             // cannot fall outside weapon arc
-            float targetAngle = Utils.CalculateBearing(this.position, target.position);
+            float targetAngle = Utils.CalculateBearing(this.Position, target.Position);
             float arcfrom = Utils.Repeat(bearing - arc, 0f, 360f);
             float arcto = Utils.Repeat(bearing + arc, 0f, 360f);
 
@@ -231,12 +231,12 @@ namespace ShiftDrive {
             base.OnCollision(other, normal, penetration);
 
             // find the highest velocity involved in the collision
-            float highestVelocity = throttle * topSpeed * Math.Abs(penetration);
+            float highestVelocity = throttle * TopSpeed * Math.Abs(penetration);
             // if colliding with another ship, factor in that ship's speed
             Ship otherShip = other as Ship;
             if (otherShip != null)
                 highestVelocity = Math.Max(highestVelocity,
-                    otherShip.throttle * otherShip.topSpeed * Math.Abs(penetration));
+                    otherShip.throttle * otherShip.TopSpeed * Math.Abs(penetration));
 
             // cap damage and apply
             float damage = Math.Min(highestVelocity * SDGame.Inst.GetDeltaTime() * 2, 0.25f);
@@ -244,9 +244,9 @@ namespace ShiftDrive {
 
             // TODO: collision sounds
 
-            if (other.type == ObjectType.Asteroid) {
+            if (other.Type == ObjectType.Asteroid) {
                 // reduce pushback
-                velocity *= 0.5f;
+                Velocity *= 0.5f;
             }
         }
 
@@ -255,14 +255,14 @@ namespace ShiftDrive {
 
             // hull and shield status
             if (changed.HasFlag(ObjectProperty.Health)) {
-                outstream.Write(hull);
-                outstream.Write(shield);
-                outstream.Write(shieldActive);
+                outstream.Write(Hull);
+                outstream.Write(Shield);
+                outstream.Write(ShieldActive);
             }
 
             if (changed.HasFlag(ObjectProperty.HealthMax)) {
-                outstream.Write(hullMax);
-                outstream.Write(shieldMax);
+                outstream.Write(HullMax);
+                outstream.Write(ShieldMax);
             }
 
             // movement
@@ -271,28 +271,28 @@ namespace ShiftDrive {
             if (changed.HasFlag(ObjectProperty.Steering))
                 outstream.Write(steering);
             if (changed.HasFlag(ObjectProperty.MoveStats)) {
-                outstream.Write(topSpeed);
-                outstream.Write(turnRate);
+                outstream.Write(TopSpeed);
+                outstream.Write(TurnRate);
             }
 
             // mounts and weapons data
             if (changed.HasFlag(ObjectProperty.Mounts)) {
-                outstream.Write(weaponsNum);
-                for (int i = 0; i < weaponsNum; i++)
-                    mounts[i].Serialize(outstream);
+                outstream.Write(WeaponsCount);
+                for (int i = 0; i < WeaponsCount; i++)
+                    Mounts[i].Serialize(outstream);
             }
             if (changed.HasFlag(ObjectProperty.Weapons)) {
-                outstream.Write(weaponsNum);
-                for (int i = 0; i < weaponsNum; i++)
-                    weapons[i].Serialize(outstream);
+                outstream.Write(WeaponsCount);
+                for (int i = 0; i < WeaponsCount; i++)
+                    Weapons[i].Serialize(outstream);
             }
 
             // engine flare positions
             if (changed.HasFlag(ObjectProperty.Flares)) {
-                outstream.Write((byte)flares.Count);
-                for (int i = 0; i < flares.Count; i++) {
-                    outstream.Write(flares[i].X);
-                    outstream.Write(flares[i].Y);
+                outstream.Write((byte)flareSpawners.Count);
+                for (int i = 0; i < flareSpawners.Count; i++) {
+                    outstream.Write(flareSpawners[i].X);
+                    outstream.Write(flareSpawners[i].Y);
                 }
             }
 
@@ -305,14 +305,14 @@ namespace ShiftDrive {
             base.Deserialize(instream, recvChanged);
 
             if (recvChanged.HasFlag(ObjectProperty.Health)) {
-                hull = instream.ReadSingle();
-                shield = instream.ReadSingle();
-                shieldActive = instream.ReadBoolean();
+                Hull = instream.ReadSingle();
+                Shield = instream.ReadSingle();
+                ShieldActive = instream.ReadBoolean();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.HealthMax)) {
-                hullMax = instream.ReadSingle();
-                shieldMax = instream.ReadSingle();
+                HullMax = instream.ReadSingle();
+                ShieldMax = instream.ReadSingle();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Throttle))
@@ -321,35 +321,35 @@ namespace ShiftDrive {
                 steering = instream.ReadSingle();
 
             if (recvChanged.HasFlag(ObjectProperty.MoveStats)) {
-                topSpeed = instream.ReadSingle();
-                turnRate = instream.ReadSingle();
+                TopSpeed = instream.ReadSingle();
+                TurnRate = instream.ReadSingle();
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Mounts)) {
                 byte mountsNum = instream.ReadByte();
                 for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                     if (i >= mountsNum)
-                        mounts[i] = null;
+                        Mounts[i] = null;
                     else
-                        mounts[i] = WeaponMount.FromStream(instream);
+                        Mounts[i] = WeaponMount.FromStream(instream);
                 }
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Weapons)) {
-                weaponsNum = instream.ReadByte();
+                WeaponsCount = instream.ReadByte();
                 for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
-                    if (i >= weaponsNum)
-                        weapons[i] = null;
+                    if (i >= WeaponsCount)
+                        Weapons[i] = null;
                     else
-                        weapons[i] = Weapon.FromStream(instream);
+                        Weapons[i] = Weapon.FromStream(instream);
                 }
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Flares)) {
                 int flaresCount = instream.ReadByte();
-                flares.Clear();
+                flareSpawners.Clear();
                 for (int i = 0; i < flaresCount; i++)
-                    flares.Add(new Vector2(instream.ReadSingle(), instream.ReadSingle()));
+                    flareSpawners.Add(new Vector2(instream.ReadSingle(), instream.ReadSingle()));
             }
 
             if (recvChanged.HasFlag(ObjectProperty.Faction))
@@ -361,22 +361,22 @@ namespace ShiftDrive {
             string key = LuaAPI.lua_tostring(L, 2);
             switch (key) {
                 case "hull":
-                    LuaAPI.lua_pushnumber(L, hull);
+                    LuaAPI.lua_pushnumber(L, Hull);
                     break;
                 case "hullmax":
-                    LuaAPI.lua_pushnumber(L, hullMax);
+                    LuaAPI.lua_pushnumber(L, HullMax);
                     break;
                 case "shield":
-                    LuaAPI.lua_pushnumber(L, shield);
+                    LuaAPI.lua_pushnumber(L, Shield);
                     break;
                 case "shieldmax":
-                    LuaAPI.lua_pushnumber(L, shieldMax);
+                    LuaAPI.lua_pushnumber(L, ShieldMax);
                     break;
                 case "topspeed":
-                    LuaAPI.lua_pushnumber(L, topSpeed);
+                    LuaAPI.lua_pushnumber(L, TopSpeed);
                     break;
                 case "turnrate":
-                    LuaAPI.lua_pushnumber(L, turnRate);
+                    LuaAPI.lua_pushnumber(L, TurnRate);
                     break;
                 case "faction":
                     LuaAPI.lua_pushnumber(L, faction);
@@ -392,29 +392,29 @@ namespace ShiftDrive {
             string key = LuaAPI.lua_tostring(L, 2);
             switch (key) {
                 case "hull":
-                    hull = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, hullMax);
+                    Hull = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, HullMax);
                     changed |= ObjectProperty.Health;
                     break;
                 case "hullmax":
-                    hullMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
-                    hull = MathHelper.Clamp(hull, 0f, hullMax);
+                    HullMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
+                    Hull = MathHelper.Clamp(Hull, 0f, HullMax);
                     changed |= ObjectProperty.HealthMax;
                     break;
                 case "shield":
-                    shield = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, shieldMax);
+                    Shield = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, ShieldMax);
                     changed |= ObjectProperty.Health;
                     break;
                 case "shieldmax":
-                    shieldMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
-                    shield = MathHelper.Clamp(shield, 0f, shieldMax);
+                    ShieldMax = MathHelper.Clamp((float)LuaAPI.luaL_checknumber(L, 3), 0f, 9999f);
+                    Shield = MathHelper.Clamp(Shield, 0f, ShieldMax);
                     changed |= ObjectProperty.HealthMax;
                     break;
                 case "topspeed":
-                    topSpeed = (float)LuaAPI.luaL_checknumber(L, 3);
+                    TopSpeed = (float)LuaAPI.luaL_checknumber(L, 3);
                     changed |= ObjectProperty.MoveStats;
                     break;
                 case "turnrate":
-                    turnRate = (float)LuaAPI.luaL_checknumber(L, 3);
+                    TurnRate = (float)LuaAPI.luaL_checknumber(L, 3);
                     changed |= ObjectProperty.MoveStats;
                     break;
                 case "faction":
@@ -431,7 +431,7 @@ namespace ShiftDrive {
                             LuaAPI.lua_pushstring(L, "expected tables in flares list");
                             LuaAPI.lua_error(L);
                         }
-                        flares.Add(LuaAPI.lua_tovec2(L, 4));
+                        flareSpawners.Add(LuaAPI.lua_tovec2(L, 4));
                         LuaAPI.lua_pop(L, 1);
                     }
                     break;
@@ -440,10 +440,10 @@ namespace ShiftDrive {
                     for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                         LuaAPI.lua_rawgeti(L, 3, i + 1);
                         if (LuaAPI.lua_type(L, 4) == LuaType.Nil) {
-                            mounts[i] = null;
+                            Mounts[i] = null;
                         } else {
-                            mounts[i] = WeaponMount.FromLua(L, 4);
-                            weaponsNum++;
+                            Mounts[i] = WeaponMount.FromLua(L, 4);
+                            WeaponsCount++;
                         }
                         LuaAPI.lua_pop(L, 1);
                     }
@@ -454,9 +454,9 @@ namespace ShiftDrive {
                     for (int i = 0; i < WEAPON_ARRAY_SIZE; i++) {
                         LuaAPI.lua_rawgeti(L, 3, i + 1);
                         if (LuaAPI.lua_type(L, 4) == LuaType.Nil)
-                            weapons[i] = null;
+                            Weapons[i] = null;
                         else
-                            weapons[i] = Weapon.FromLua(L, 4);
+                            Weapons[i] = Weapon.FromLua(L, 4);
                         LuaAPI.lua_pop(L, 1);
                     }
                     changed |= ObjectProperty.Weapons;

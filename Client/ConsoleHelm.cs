@@ -41,7 +41,7 @@ namespace ShiftDrive {
             }
 
             // ignore input from dead players
-            if (NetClient.World.GetPlayerShip().destroyed) return;
+            if (NetClient.World.GetPlayerShip().Destroyed) return;
 
             // rotate ship towards clicks inside the maneuver ring
             if (Input.GetMouseLeftDown() && Input.GetMouseInArea(100, 100, SDGame.Inst.GameWidth - 100, SDGame.Inst.GameHeight - 100)) {

@@ -21,20 +21,20 @@ namespace ShiftDrive {
         private bool damageApplied;
 
         public Projectile(GameState world) : base(world) {
-            type = ObjectType.Projectile;
-            bounding = 1f;
+            Type = ObjectType.Projectile;
+            Bounding = 1f;
             damageApplied = false;
-            zorder = 32;
-            layer = CollisionLayer.Projectile;
-            layermask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Station;
+            ZOrder = 32;
+            Layer = CollisionLayer.Projectile;
+            LayerMask = CollisionLayer.Ship | CollisionLayer.Asteroid | CollisionLayer.Station;
         }
 
         public Projectile(GameState world, string spritename, AmmoType ammotype, Vector2 position, float facing, float speed,
             float damage, byte faction) : this(world) {
-            this.spritename = spritename;
-            this.position = position;
-            this.facing = facing;
-            this.velocity = speed * new Vector2(
+            this.SpriteName = spritename;
+            this.Position = position;
+            this.Facing = facing;
+            this.Velocity = speed * new Vector2(
                 (float)Math.Cos(MathHelper.ToRadians(facing - 90f)),
                 (float)Math.Sin(MathHelper.ToRadians(facing - 90f)));
             this.faction = faction;
@@ -50,7 +50,7 @@ namespace ShiftDrive {
             lifetime += deltaTime;
 
             // get rid of projectiles that have traveled very far already
-            if (world.IsServer && lifetime >= 10f) Destroy();
+            if (World.IsServer && lifetime >= 10f) Destroy();
         }
 
         protected override void OnCollision(GameObject other, Vector2 normal, float penetration) {
@@ -62,10 +62,10 @@ namespace ShiftDrive {
                 if (othership?.faction == this.faction) return;
             }
             // TODO: make this dependant on ammo type
-            if (!world.IsServer)
-                ParticleManager.CreateBulletImpact(position, facing);
+            if (!World.IsServer)
+                ParticleManager.CreateBulletImpact(Position, Facing);
             // hide my sprite
-            sprite = null;
+            Sprite = null;
             // apply damage to whatever we hit
             damageApplied = true;
             other.TakeDamage(damage, true);

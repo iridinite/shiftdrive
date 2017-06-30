@@ -17,7 +17,7 @@ namespace ShiftDrive {
         protected override void OnDraw(SpriteBatch spriteBatch) {
             // the fuel value's decimal part is the reservoir contents
             var player = NetClient.World.GetPlayerShip();
-            var reservoir = player.fuel - (float)Math.Floor(player.fuel);
+            var reservoir = player.Fuel - (float)Math.Floor(player.Fuel);
 
             // fuel cell count icon + text
             spriteBatch.Draw(Assets.GetTexture("ui/itemicons"),
@@ -25,7 +25,7 @@ namespace ShiftDrive {
                 new Rectangle(32, 0, 32, 32),
                 Color.White);
             spriteBatch.DrawString(Assets.fontDefault,
-                ((int)Math.Floor(player.fuel)).ToString(),
+                ((int)Math.Floor(player.Fuel)).ToString(),
                 new Vector2(SDGame.Inst.GameWidth - 55, 84),
                 Color.White);
 
