@@ -279,6 +279,23 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Sends a <seealso cref="CommMessage"/> to the Intel officer.
+        /// </summary>
+        public static void PublishComms(CommMessage msg) {
+            using (Packet packet = new Packet(PacketID.IntelGetText)) {
+                packet.Write(msg.Sender);
+                packet.Write(msg.Body);
+
+                var packetBytes = packet.ToArray();
+                foreach (var clientID in players
+                    .Where(pair => pair.Value.roles.HasFlag(PlayerRole.Intelligence))
+                    .Select(pair => pair.Key)) {
+                    socket.Send(clientID, packetBytes);
+                }
+            }
+        }
+
+        /// <summary>
         /// Simulates an explosion by damaging nearby objects and publishing a particle effect.
         /// </summary>
         /// <param name="position">The world position of the explosion.</param>

@@ -179,6 +179,10 @@ namespace ShiftDrive {
 
                         case PacketID.IntelGetText:
                             CommMessage msg = new CommMessage(recv.ReadString(), recv.ReadString());
+                            lock (Inbox) {
+                                // insert the message at the front
+                                Inbox.Insert(0, msg);
+                            }
                             CommsReceived?.Invoke(msg);
                             break;
 

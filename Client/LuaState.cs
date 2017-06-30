@@ -67,10 +67,13 @@ namespace ShiftDrive {
             RegisterFunction("rshift", clua_rshift);
 
             RegisterFunction("Event", clua_event);
+            RegisterFunction("GetDeltaTime", clua_getDeltaTime);
             RegisterFunction("Create", clua_create);
             RegisterFunction("GetObjectByName", clua_getObjectByName);
             RegisterFunction("GetObjectById", clua_getObjectById);
             RegisterFunction("GetPlayerShip", clua_getPlayer);
+
+            RegisterFunction("SendComms", clua_sendComms);
 
             if (lua_gettop(L) != 0) {
                 lua_pushstring(L, "unbalanced stack after Lua state initialization");
@@ -314,6 +317,11 @@ namespace ShiftDrive {
             return 1;
         }
 
+        private int clua_getDeltaTime(IntPtr L) {
+            lua_pushnumber(L, SDGame.Inst.GetDeltaTime());
+            return 1;
+        }
+
         private int clua_event(IntPtr L) {
             // expect two function arguments
             luaL_checktype(L, 1, LuaType.Function);
@@ -435,6 +443,13 @@ namespace ShiftDrive {
             else
                 plr.PushToLua(L);
             return 1;
+        }
+
+        private int clua_sendComms(IntPtr L) {
+            string sender = luaL_checkstring(L, 1);
+            string body = luaL_checkstring(L, 2);
+            NetServer.PublishComms(new CommMessage(sender, body));
+            return 0;
         }
 
     }
