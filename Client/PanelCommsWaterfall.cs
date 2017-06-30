@@ -18,6 +18,16 @@ namespace ShiftDrive {
         public PanelCommsWaterfall(int width) {
             Width = width;
             Height = SDGame.Inst.GameHeight - 80;
+            NetClient.CommsReceived += NetClient_CommsReceived;
+        }
+
+        private void NetClient_CommsReceived(CommMessage msg) {
+            // calculate the height of the message, then shift down the current position so that
+            // it looks like the new message slides in from the top
+            var text = Utils.WrapText(Assets.fontDefault, msg.Body, Width - 20);
+            var textsize = Assets.fontDefault.MeasureString(text);
+            var heightInc = (int)textsize.Y + 30;
+            scrollAnimatedPos -= heightInc;
         }
 
         protected override void OnRender(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {

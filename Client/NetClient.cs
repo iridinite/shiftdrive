@@ -177,6 +177,11 @@ namespace ShiftDrive {
                             }
                             break;
 
+                        case PacketID.IntelGetText:
+                            CommMessage msg = new CommMessage(recv.ReadString(), recv.ReadString());
+                            CommsReceived?.Invoke(msg);
+                            break;
+
                         default:
                             SDGame.Logger.LogError("Client got unknown packet " + recv.GetID());
                             throw new InvalidDataException(Locale.Get("err_unknownpacket") + " (" + recv.GetID() + ")");
