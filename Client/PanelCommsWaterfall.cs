@@ -3,6 +3,7 @@
 ** (C) Mika Molenkamp, 2016-2017.
 */
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,6 +12,8 @@ namespace ShiftDrive {
     internal sealed class PanelCommsWaterfall : Control {
 
         private RenderTarget2D rtWaterfall;
+        private float scrollTargetPos;          // target y position
+        private float scrollAnimatedPos;        // currently visible y position
 
         public PanelCommsWaterfall(int width) {
             Width = width;
@@ -29,7 +32,7 @@ namespace ShiftDrive {
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-                int y = 0;
+                int y = (int)scrollAnimatedPos;
                 foreach (CommMessage msg in NetClient.Inbox) {
                     var text = Utils.WrapText(Assets.fontDefault, msg.Body, Width - 20);
                     var textsize = Assets.fontDefault.MeasureString(text);
@@ -47,11 +50,31 @@ namespace ShiftDrive {
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Assets.GetTexture("ui/rect"), new Rectangle(SDGame.Inst.GameWidth - Width - 20, 0, Width + 20, SDGame.Inst.GameHeight), Color.CornflowerBlue);
+            var bgRect = new Rectangle(SDGame.Inst.GameWidth - Width - 20, 0, Width + 20, SDGame.Inst.GameHeight);
+            spriteBatch.Draw(Assets.GetTexture("ui/darkbg"), bgRect, bgRect, Color.White);
+
             spriteBatch.Draw(rtWaterfall, new Vector2(SDGame.Inst.GameWidth - Width - 10, 70), Color.White);
         }
 
+        protected override void OnUpdate(GameTime gameTime) {
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (Math.Abs(scrollTargetPos - scrollAnimatedPos) <= 0.5f)
+                // if difference is subpixel, just snap to the target position
+                scrollAnimatedPos = scrollTargetPos;
+            else
+                // animate the scrolling
+                scrollAnimatedPos += (scrollTargetPos - scrollAnimatedPos) * 16.0f * deltaTime;
 
+            // apply scrolling input
+            if (!Input.GetMouseInArea(new Rectangle(SDGame.Inst.GameWidth - Width - 20, 0, Width + 20, SDGame.Inst.GameHeight))) return;
+            scrollTargetPos += Input.MouseScroll * 0.4f;
+            scrollTargetPos = MathHelper.Min(scrollTargetPos, 0.0f);
+        }
+
+        protected override void OnDestroy() {
+            // properly disconnect the event
+            NetClient.CommsReceived -= NetClient_CommsReceived;
+        }
 
     }
 
