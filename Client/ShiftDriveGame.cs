@@ -147,7 +147,7 @@ namespace ShiftDrive {
                 // active form should draw its contents
                 GraphicsDevice.SetRenderTarget(null);
                 GraphicsDevice.Clear(Color.Black);
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
                 UIRoot?.Draw(spriteBatch);
                 spriteBatch.End();
             }
