@@ -38,7 +38,7 @@ namespace ShiftDrive {
         }
 
         internal static GameState world { get; private set; }
-        internal static bool Active { get { return socket != null && socket.Listening; } }
+        internal static bool Active => socket != null && socket.Listening;
 
         public const float MAPSIZE = 1000f;
 
@@ -170,10 +170,6 @@ namespace ShiftDrive {
             lua.Dispose();
             lua = null;
             socket.Stop();
-        }
-
-        public static bool IsListening() {
-            return socket != null && socket.Listening;
         }
 
         public static int GetPlayerCount() {

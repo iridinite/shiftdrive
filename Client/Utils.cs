@@ -173,7 +173,7 @@ namespace ShiftDrive {
             sb.AppendLine();
 
             sb.AppendLine("-- SERVER --");
-            if (NetServer.IsListening()) {
+            if (NetServer.Active) {
                 sb.AppendLine($"Connections: {NetServer.GetPlayerCount()}");
                 sb.AppendLine($"GameObjects: {NetServer.world.Objects.Count}");
                 sb.AppendLine($"Next ID: {GameObject.GetNextId()}");
