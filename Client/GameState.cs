@@ -120,8 +120,6 @@ namespace ShiftDrive {
                     Objects[objid].Deserialize(instream, recvChanged);
                 }
             }
-
-            RebuildBVHTree();
         }
 
         /// <summary>
