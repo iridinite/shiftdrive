@@ -104,6 +104,14 @@ namespace ShiftDrive {
             }
         }
 
+        public override void TakeDamage(float damage, bool sound = false) {
+            // if this is the local player, apply shaking to the hull bar
+            if (ID == NetClient.World.GetPlayerShip().ID)
+                PanelHullBar.SetShake(1.0f);
+            // go ahead and apply damage
+            base.TakeDamage(damage, sound);
+        }
+
         public override void Destroy() {
             // override because we do not want player ships to be scheduled for deletion,
             // that would cause null ref exceptions on the clients.

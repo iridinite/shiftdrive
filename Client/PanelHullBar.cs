@@ -3,6 +3,7 @@
 ** (C) Mika Molenkamp, 2016-2017.
 */
 
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,11 +19,23 @@ namespace ShiftDrive {
         private float hullDeclineWait = 0f;
         private float hullDecline = 0f;
 
+        private static float shakeTime;
+        private static float shakeTimeMax;
+
+        public PanelHullBar() {
+            // reset the shake if we're making a new hull bar. this is to avoid having the bar
+            // suddenly shake when switching consoles, after damage was taken a long time ago
+            shakeTime = 0f;
+        }
+
         protected override void OnDraw(SpriteBatch spriteBatch) {
             var player = NetClient.World.GetPlayerShip();
 
             // hull integrity bar
-            const int hullbarx = 64;
+            int hullbarx = 64;
+            if (shakeTime > 0f)
+                // apply a random offset to the hullbar when taking damage
+                hullbarx += (int)(Utils.RandomFloat(-1.0f, 7.0f) * (shakeTime / shakeTimeMax));
             float hullFraction = player.Hull / player.HullMax;
             float shieldFraction = player.Shield / player.ShieldMax;
             Color outlineColor = hullFraction <= 0.35f && hullFlicker >= 0.5f ? Color.Red : Color.White;
@@ -89,6 +102,14 @@ namespace ShiftDrive {
 
             hullFlicker += dt;
             if (hullFlicker >= 1f) hullFlicker = 0f;
+
+            if (shakeTime > 0f) shakeTime -= dt;
+        }
+
+        public static void SetShake(float time) {
+            Debug.Assert(time > 0f);
+            shakeTime = time;
+            shakeTimeMax = time;
         }
 
     }
