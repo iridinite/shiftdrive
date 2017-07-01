@@ -232,7 +232,8 @@ namespace ShiftDrive {
         /// Draws the tree to the screen.
         /// </summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 viewMin, Vector2 viewMax, Vector2 viewport, int level = -1) {
-            foreach (BVHNode node in nodes) {
+            for (var i = 0; i < freeNode; i++) {
+                BVHNode node = nodes[i];
                 bool leaf = node.IsLeaf;
                 bool h = node.height == level ||
                     (node.next < nodes.Count && node.next != NULL_NODE && nodes[node.next].height - 1 == level);
