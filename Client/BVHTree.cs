@@ -241,7 +241,7 @@ namespace ShiftDrive {
 
                 Vector2 smin = Utils.CalculateScreenPos(viewMin, viewMax, viewport, node.shape.min);
                 Vector2 smax = Utils.CalculateScreenPos(viewMin, viewMax, viewport, node.shape.max);
-                spriteBatch.DrawBorder(Assets.GetTexture("ui/roundrect"), new Rectangle((int)smin.X, (int)smin.Y, (int)(smax.X - smin.X), (int)(smax.Y - smin.Y)),
+                spriteBatch.DrawBorder(Assets.GetTexture("ui/outlinerect"), new Rectangle((int)smin.X, (int)smin.Y, (int)(smax.X - smin.X), (int)(smax.Y - smin.Y)),
                     Color.FromNonPremultiplied(h ? 255 : 0, leaf ? 255 : 0, 255, 255), 16);
             }
         }
