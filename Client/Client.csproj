@@ -44,7 +44,6 @@
     <Compile Include="Assets.cs" />
     <Compile Include="Asteroid.cs" />
     <Compile Include="Button.cs" />
-    <Compile Include="CollisionGrid.cs" />
     <Compile Include="BVHTree.cs" />
     <Compile Include="CollisionLayer.cs" />
     <Compile Include="CommMessage.cs" />
