@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
 
+    /// <summary>
+    /// Represents a 2D bounding box.
+    /// </summary>
     internal struct BVHBox {
         public Vector2 min;
         public Vector2 max;
@@ -43,6 +46,9 @@ namespace ShiftDrive {
         }
     }
 
+    /// <summary>
+    /// Represents a single node or leaf in a BVH tree.
+    /// </summary>
     internal class BVHNode {
         public int height;
         public int next;
@@ -55,7 +61,11 @@ namespace ShiftDrive {
         public bool IsLeaf => child1 == BVHTree.NULL_NODE;
     }
 
+    /// <summary>
+    /// Represents a bounding volume hierarchy.
+    /// </summary>
     internal class BVHTree {
+
         public const int NULL_NODE = -1;
 
         private readonly List<BVHNode> nodes;
@@ -63,12 +73,18 @@ namespace ShiftDrive {
         private int root;
         private int freeNode;
 
+        /// <summary>
+        /// Constructs a new empty tree.
+        /// </summary>
         public BVHTree() {
             nodes = new List<BVHNode>();
             ResizeBuffer(16);
             Clear();
         }
 
+        /// <summary>
+        /// Clears the hierarchy, removing all objects and nodes.
+        /// </summary>
         public void Clear() {
             root = NULL_NODE;
             nodeCount = 0;
@@ -81,6 +97,10 @@ namespace ShiftDrive {
             freeNode = 0;
         }
 
+        /// <summary>
+        /// Inserts a <seealso cref="GameObject"/> into the hierarchy.
+        /// </summary>
+        /// <param name="gobj">The object to insert.</param>
         public void Insert(GameObject gobj) {
             int node = AllocateNode();
             nodes[node].shape = new BVHBox(gobj);
@@ -181,6 +201,10 @@ namespace ShiftDrive {
             }
         }
 
+        /// <summary>
+        /// Returns a list of <seealso cref="GameObject"/>s that are potentially colliding with the given bounding box.
+        /// </summary>
+        /// <param name="shape">A bounding box to query against the hierarchy.</param>
         public List<GameObject> Query(BVHBox shape) {
             List<GameObject> result = new List<GameObject>();
             Stack<int> stack = new Stack<int>();
@@ -204,6 +228,10 @@ namespace ShiftDrive {
             return result;
         }
 
+        /// <summary>
+        /// Resizes the internal node array.
+        /// </summary>
+        /// <param name="newCapacity">The array's new capacity.</param>
         private void ResizeBuffer(int newCapacity) {
             nodes.Capacity = newCapacity;
             for (int i = nodes.Count; i < newCapacity; i++) {
@@ -215,6 +243,9 @@ namespace ShiftDrive {
             nodes[nodes.Count - 1].next = NULL_NODE;
         }
 
+        /// <summary>
+        /// Reserves a node in the array and returns its index.
+        /// </summary>
         private int AllocateNode() {
             // resize the buffer
             if (freeNode == NULL_NODE) {
@@ -233,6 +264,11 @@ namespace ShiftDrive {
             return node;
         }
 
+        /// <summary>
+        /// Balances the sizes of bounding boxes on each node's two branches.
+        /// </summary>
+        /// <param name="iA">A node index to keep track of.</param>
+        /// <returns>The new index of iA, if it has moved, or the same index.</returns>
         private int Balance(int iA) {
             Debug.Assert(iA != NULL_NODE);
 
@@ -353,6 +389,7 @@ namespace ShiftDrive {
 
             return iA;
         }
+
     }
 
 }

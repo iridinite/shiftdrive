@@ -49,8 +49,10 @@ namespace ShiftDrive {
         }
 
         /// <summary>
-        /// Removes the specified GameObject from the grid if present, and inserts it.
+        /// Serializes the world to a byte stream.
         /// </summary>
+        /// <param name="outstream">The byte stream to write to.</param>
+        /// <param name="forceAll">If true, all objects with all attributes will be serialized. If false, only changed attributes are written.</param>
         public void Serialize(Packet outstream, bool forceAll) {
             // write serialized objects that have changed
             foreach (var pair in Objects) {
@@ -76,6 +78,10 @@ namespace ShiftDrive {
             outstream.Write((uint)0);
         }
 
+        /// <summary>
+        /// Reads object updates from a byte stream and updates this game state.
+        /// </summary>
+        /// <param name="instream">The byte stream to read from.</param>
         public void Deserialize(Packet instream) {
             while (true) {
                 // read next object ID. zero means end of message
