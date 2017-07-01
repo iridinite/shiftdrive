@@ -69,7 +69,6 @@ namespace ShiftDrive {
         public const int NULL_NODE = -1;
 
         private readonly List<BVHNode> nodes;
-        private int nodeCount;
         private int root;
         private int freeNode;
 
@@ -87,7 +86,6 @@ namespace ShiftDrive {
         /// </summary>
         public void Clear() {
             root = NULL_NODE;
-            nodeCount = 0;
             for (int i = 0; i < nodes.Count - 1; i++) {
                 nodes[i].next = i + 1;
                 nodes[i].height = -1;
@@ -260,7 +258,6 @@ namespace ShiftDrive {
             nodes[node].child1 = NULL_NODE;
             nodes[node].child2 = NULL_NODE;
             nodes[node].height = 0;
-            nodeCount++;
             return node;
         }
 
