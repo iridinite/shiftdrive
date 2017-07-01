@@ -52,7 +52,7 @@ namespace ShiftDrive {
         protected override void OnDraw(SpriteBatch spriteBatch) {
             if (expand <= .1f) return;
 
-            spriteBatch.DrawBorder(Assets.GetTexture("ui/button"), new Rectangle(X, EffY, Width, EffHeight), 8, state);
+            spriteBatch.DrawBorder(Assets.GetTexture("ui/button"), new Rectangle(X, EffY, Width, EffHeight), Color.White, 8, state);
             tooltip?.Draw();
         }
 

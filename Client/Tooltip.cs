@@ -60,7 +60,7 @@ namespace ShiftDrive {
 
         public static void DrawQueued(SpriteBatch spriteBatch) {
             foreach (Tooltip tt in renderQueue) {
-                spriteBatch.DrawBorder(Assets.GetTexture("ui/tooltip"), new Rectangle(tt.posx, tt.posy, tt.boxwidth, tt.boxheight), 16);
+                spriteBatch.DrawBorder(Assets.GetTexture("ui/tooltip"), new Rectangle(tt.posx, tt.posy, tt.boxwidth, tt.boxheight), Color.White, 16);
                 spriteBatch.DrawString(Assets.fontTooltip, tt.text, new Vector2(tt.posx + 10, tt.posy + 10), Color.White);
             }
             renderQueue.Clear();

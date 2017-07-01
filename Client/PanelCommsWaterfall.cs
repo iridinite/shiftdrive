@@ -48,7 +48,8 @@ namespace ShiftDrive {
                     var textsize = Assets.fontDefault.MeasureString(text);
                     var timestamp = msg.GetFuzzyTimestamp();
                     var timestampsize = Assets.fontDefault.MeasureString(timestamp);
-                    spriteBatch.DrawBorder(Assets.GetTexture("ui/roundrect"), new Rectangle(0, y, Width, (int)textsize.Y + 24), 16);
+                    // TODO: skip off-screen boxes
+                    spriteBatch.DrawBorder(Assets.GetTexture("ui/roundrect"), new Rectangle(0, y, Width, (int)textsize.Y + 24), Color.White, 16);
                     spriteBatch.DrawString(Assets.fontBold, msg.Sender, new Vector2(10, y + 10), Color.Black);
                     spriteBatch.DrawString(Assets.fontDefault, timestamp, new Vector2(Width - 10 - (int)timestampsize.X, y + 10), Color.FromNonPremultiplied(96, 96, 96, 255));
                     spriteBatch.DrawString(Assets.fontDefault, text, new Vector2(10, y + 35), Color.FromNonPremultiplied(32, 32, 32, 255));
