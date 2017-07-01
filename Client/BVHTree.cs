@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ShiftDrive {
 
@@ -225,6 +226,25 @@ namespace ShiftDrive {
 
             return result;
         }
+
+#if DEBUG
+        /// <summary>
+        /// Draws the tree to the screen.
+        /// </summary>
+        public void Draw(SpriteBatch spriteBatch, Vector2 viewMin, Vector2 viewMax, Vector2 viewport, int level = -1) {
+            foreach (BVHNode node in nodes) {
+                bool leaf = node.IsLeaf;
+                bool h = node.height == level ||
+                    (node.next < nodes.Count && node.next != NULL_NODE && nodes[node.next].height - 1 == level);
+                if (!h && !leaf && level >= 0) continue;
+
+                Vector2 smin = Utils.CalculateScreenPos(viewMin, viewMax, viewport, node.shape.min);
+                Vector2 smax = Utils.CalculateScreenPos(viewMin, viewMax, viewport, node.shape.max);
+                spriteBatch.DrawBorder(Assets.GetTexture("ui/roundrect"), new Rectangle((int)smin.X, (int)smin.Y, (int)(smax.X - smin.X), (int)(smax.Y - smin.Y)),
+                    Color.FromNonPremultiplied(h ? 255 : 0, leaf ? 255 : 0, 255, 255), 16);
+            }
+        }
+#endif
 
         /// <summary>
         /// Resizes the internal node array.
