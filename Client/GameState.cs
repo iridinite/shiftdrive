@@ -16,12 +16,13 @@ namespace ShiftDrive {
         public readonly Dictionary<uint, GameObject> Objects;
         public bool IsServer;
 
-        private CollisionGrid grid;
+        public BVHTree BVH { get; }
+
         private uint cachedPlayerShipId;
 
         public GameState() {
             Objects = new Dictionary<uint, GameObject>();
-            grid = new CollisionGrid();
+            BVH = new BVHTree();
             cachedPlayerShipId = 0;
         }
 
@@ -44,31 +45,12 @@ namespace ShiftDrive {
         /// </summary>
         public void AddObject(GameObject obj) {
             Objects.Add(obj.ID, obj);
-            if (obj.Bounding > 0f) grid.Insert(obj);
-        }
-
-        /// <summary>
-        /// Queries this GameState's CollisionGrid.
-        /// </summary>
-        public List<GameObject> QueryGrid(GameObject obj) {
-            return grid.Query(obj);
+            if (obj.Bounding > 0f) BVH.Insert(obj);
         }
 
         /// <summary>
         /// Removes the specified GameObject from the grid if present, and inserts it.
         /// </summary>
-        public void ReinsertGrid(GameObject obj) {
-            grid.Remove(obj);
-            grid.Insert(obj);
-        }
-
-        /// <summary>
-        /// Updates the CollisionGrid.
-        /// </summary>
-        public void UpdateGrid() {
-            grid.Update();
-        }
-
         public void Serialize(Packet outstream, bool forceAll) {
             // write serialized objects that have changed
             foreach (var pair in Objects) {
@@ -102,7 +84,7 @@ namespace ShiftDrive {
 
                 // set flag means a deleted object
                 if (instream.ReadBoolean()) {
-                    if (Objects.ContainsKey(objid)) grid.Remove(Objects[objid]);
+                    //if (Objects.ContainsKey(objid)) grid.Remove(Objects[objid]);
                     Objects.Remove(objid);
                     continue;
                 }
@@ -131,6 +113,18 @@ namespace ShiftDrive {
                     // update this object with info from the stream
                     Objects[objid].Deserialize(instream, recvChanged);
                 }
+            }
+
+            RebuildBVHTree();
+        }
+
+        /// <summary>
+        /// Clears and rebuilds the BVH tree from scratch.
+        /// </summary>
+        public void RebuildBVHTree() {
+            BVH.Clear();
+            foreach (var gobj in Objects.Values) {
+                BVH.Insert(gobj);
             }
         }
 

@@ -103,20 +103,14 @@ namespace ShiftDrive {
         public float Damping { get; set; }
 
         [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Bounding)]
-        public float Bounding {
-            get { return bounding; }
-            set {
-                bounding = value;
-                World.ReinsertGrid(this);
-            }
-        }
+        public float Bounding { get; set; }
+
         public CollisionLayer Layer { get; set; }
         public CollisionLayer LayerMask { get; set; }
 
         public GameState World { get; }
         public ObjectProperty Changed { get; set; }
 
-        private float bounding;
         private bool destroyScheduled;
         private LuaState lua;
 
@@ -146,7 +140,7 @@ namespace ShiftDrive {
 
             // handle collision with objects
             if (Bounding > 0f) {
-                var possibleCollisions = World.QueryGrid(this);
+                var possibleCollisions = World.BVH.Query(new BVHBox(this));
                 foreach (GameObject obj in possibleCollisions) {
                     if (obj.ID == this.ID)
                         continue; // don't collide with self

@@ -109,7 +109,6 @@ namespace ShiftDrive {
             if (NetClient.Connected) {
                 // TODO && NetClient.SimRunning)
                 lock (NetClient.worldLock) {
-                    NetClient.World.UpdateGrid();
                     foreach (GameObject gobj in NetClient.World.Objects.Values) {
                         gobj.Update(deltaTime);
                     }

@@ -119,9 +119,7 @@ namespace ShiftDrive {
                 GameObject gobj = World.Objects[key];
                 gobj.Update(dt);
             }
-
-            // update collision grid
-            World.UpdateGrid();
+            World.RebuildBVHTree();
 
             // update explosion advances
             for (int i = explosions.Count - 1; i >= 0; i--) {

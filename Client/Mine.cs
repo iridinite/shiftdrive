@@ -26,7 +26,9 @@ namespace ShiftDrive {
             if (!World.IsServer || IsDestroyScheduled()) return;
 
             // find nearby objects
-            var nearbyObjects = World.QueryGrid(this);
+            var nearbyObjects = World.BVH.Query(new BVHBox(
+                Position - new Vector2(75.0f, 75.0f),
+                Position + new Vector2(75.0f, 75.0f)));
             foreach (GameObject gobj in nearbyObjects) {
                 // don't trigger because of other nearby mines
                 if (gobj.Type == ObjectType.Mine) continue;
