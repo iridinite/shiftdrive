@@ -33,7 +33,7 @@ namespace ShiftDrive {
 
             WeaponMount ret = new WeaponMount();
             LuaAPI.lua_getfield(L, tableidx, "position");
-            LuaAPI.lua_checkfieldtype(L, tableidx, "position", -1, LuaType.Table);
+            LuaAPI.luaH_checkfieldtype(L, tableidx, "position", -1, LuaType.Table);
             ret.Offset = LuaAPI.lua_tovec2(L, -1);
             LuaAPI.lua_pop(L, 1);
             ret.Bearing = LuaAPI.luaH_gettablefloat(L, tableidx, "bearing");

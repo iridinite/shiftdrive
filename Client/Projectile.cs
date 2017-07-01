@@ -59,7 +59,7 @@ namespace ShiftDrive {
             // ignore hits on friendly ships
             if (other.IsShip()) {
                 Ship othership = other as Ship;
-                if (othership?.faction == this.faction) return;
+                if (othership?.Faction == this.faction) return;
             }
             // TODO: make this dependant on ammo type
             if (!World.IsServer)
@@ -74,7 +74,7 @@ namespace ShiftDrive {
 
         public override void Serialize(Packet outstream) {
             base.Serialize(outstream);
-            if (!changed.HasFlag(ObjectProperty.ProjectileData))
+            if (!Changed.HasFlag(ObjectProperty.ProjectileData))
                 return;
             outstream.Write((byte)ammotype);
             outstream.Write(damage);

@@ -175,8 +175,8 @@ namespace ShiftDrive {
             sb.AppendLine("-- SERVER --");
             if (NetServer.Active) {
                 sb.AppendLine($"Connections: {NetServer.GetPlayerCount()}");
-                sb.AppendLine($"GameObjects: {NetServer.world.Objects.Count}");
-                sb.AppendLine($"Next ID: {GameObject.GetNextId()}");
+                sb.AppendLine($"GameObjects: {NetServer.World.Objects.Count}");
+                sb.AppendLine($"Next ID: {GameObject.NextID}");
                 sb.AppendLine($"Heartbeat: {NetServer.GetHeartbeatTime() * 1000f:F1} ms");
                 sb.AppendLine($"Lua: {NetServer.GetLuaTop()} stack / {NetServer.GetLuaMemory():F1} kB");
                 sb.AppendLine($"Events: {NetServer.GetEventCount()}");

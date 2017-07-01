@@ -85,6 +85,13 @@ namespace ShiftDrive {
             return ret;
         }
 
+        internal static int luaL_error(IntPtr L, string message) {
+            luaL_where(L, 1);
+            lua_pushstring(L, message);
+            lua_concat(L, 2);
+            return lua_error(L);
+        }
+
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
         internal static extern int luaopen_base(IntPtr L);
 
@@ -96,6 +103,9 @@ namespace ShiftDrive {
 
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
         internal static extern int luaopen_math(IntPtr L);
+
+        [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
+        internal static extern void lua_concat(IntPtr L, int n);
 
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
         internal static extern void lua_call(IntPtr L, int nargs, int nresults);
@@ -196,6 +206,9 @@ namespace ShiftDrive {
         internal static extern void lua_createtable(IntPtr L, int narr, int nrec);
 
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
+        public static extern IntPtr lua_newuserdata(IntPtr L, UIntPtr size);
+
+        [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
         internal static extern int luaL_ref(IntPtr L, int t);
 
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
@@ -212,6 +225,9 @@ namespace ShiftDrive {
 
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
         internal static extern int lua_toboolean(IntPtr L, int index);
+
+        [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
+        public static extern IntPtr lua_touserdata(IntPtr L, int index);
 
         [DllImport(LIBNAME, CallingConvention = LUA_CALLING_CONVENTION)]
         private static extern IntPtr lua_tolstring(IntPtr L, int index, ref UIntPtr len);
@@ -239,7 +255,7 @@ namespace ShiftDrive {
 
         internal static int luaH_gettableint(IntPtr L, int tableidx, string name) {
             lua_getfield(L, tableidx, name);
-            lua_checkfieldtype(L, tableidx, name, -1, LuaType.Number);
+            luaH_checkfieldtype(L, tableidx, name, -1, LuaType.Number);
             int ret = (int)lua_tonumber(L, -1);
             lua_pop(L, 1);
             return ret;
@@ -247,7 +263,7 @@ namespace ShiftDrive {
 
         internal static float luaH_gettablefloat(IntPtr L, int tableidx, string name) {
             lua_getfield(L, tableidx, name);
-            lua_checkfieldtype(L, tableidx, name, -1, LuaType.Number);
+            luaH_checkfieldtype(L, tableidx, name, -1, LuaType.Number);
             float ret = (float)lua_tonumber(L, -1);
             lua_pop(L, 1);
             return ret;
@@ -255,7 +271,7 @@ namespace ShiftDrive {
 
         internal static string luaH_gettablestring(IntPtr L, int tableidx, string name) {
             lua_getfield(L, tableidx, name);
-            lua_checkfieldtype(L, tableidx, name, -1, LuaType.String);
+            luaH_checkfieldtype(L, tableidx, name, -1, LuaType.String);
             string ret = lua_tostring(L, -1);
             lua_pop(L, 1);
             return ret;
@@ -278,7 +294,7 @@ namespace ShiftDrive {
             return Marshal.PtrToStringAnsi(luaL_checklstring(L, index, out size), (int)size);
         }
 
-        internal static void lua_checkfieldtype(IntPtr L, int tableidx, string fieldname, int fieldidx, LuaType reqtype) {
+        internal static void luaH_checkfieldtype(IntPtr L, int tableidx, string fieldname, int fieldidx, LuaType reqtype) {
             // checks the type of a field obtained from a table, throwing a descriptive error if mismatching
             if (lua_type(L, fieldidx) == reqtype) return;
             luaL_argerror(L, tableidx,

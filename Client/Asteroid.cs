@@ -42,12 +42,12 @@ namespace ShiftDrive {
             this.Velocity += normal * penetration;
             if (!other.IsShip())
                 this.Position += normal * penetration;
-            this.changed |= ObjectProperty.Position | ObjectProperty.Velocity | ObjectProperty.AngularVelocity;
+            this.Changed |= ObjectProperty.Position | ObjectProperty.Velocity | ObjectProperty.AngularVelocity;
         }
 
         public override void Serialize(Packet outstream) {
             base.Serialize(outstream);
-            if (changed.HasFlag(ObjectProperty.AngularVelocity))
+            if (Changed.HasFlag(ObjectProperty.AngularVelocity))
                 outstream.Write(angularVelocity);
         }
 

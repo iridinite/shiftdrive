@@ -16,7 +16,7 @@ namespace ShiftDrive {
 
         public PanelThrottleBar() {
             lock (NetClient.worldLock) {
-                targetThrottle = NetClient.World.GetPlayerShip().throttle;
+                targetThrottle = NetClient.World.GetPlayerShip().Throttle;
             }
         }
 

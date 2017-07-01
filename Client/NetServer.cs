@@ -37,7 +37,7 @@ namespace ShiftDrive {
             public float life;
         }
 
-        internal static GameState world { get; private set; }
+        internal static GameState World { get; private set; }
         internal static bool Active => socket != null && socket.Listening;
 
         public const float MAPSIZE = 1000f;
@@ -54,10 +54,11 @@ namespace ShiftDrive {
         private static bool simRunning;
 
         public static bool PrepareWorld() {
-            GameObject.ResetIds();
+            GameObject.NextID = 0U;
+
             simRunning = false;
-            world = new GameState();
-            world.IsServer = true;
+            World = new GameState();
+            World.IsServer = true;
 
             try {
                 SDGame.Logger.Log("Initializing Lua state...");
@@ -113,21 +114,21 @@ namespace ShiftDrive {
             // update all gameobjects. use a backwards loop because some
             // objects may be scheduled for deletion and thus change the list order
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            IEnumerable<uint> keys = world.Objects.Keys.OrderByDescending(k => k);
+            IEnumerable<uint> keys = World.Objects.Keys.OrderByDescending(k => k);
             foreach (uint key in keys) {
-                GameObject gobj = world.Objects[key];
+                GameObject gobj = World.Objects[key];
                 gobj.Update(dt);
             }
 
             // update collision grid
-            world.UpdateGrid();
+            World.UpdateGrid();
 
             // update explosion advances
             for (int i = explosions.Count - 1; i >= 0; i--) {
                 ExplosionData expl = explosions[i];
                 foreach (uint key in keys) {
                     // iterate over all objects (QueryGrid is too unreliable)
-                    GameObject gobj = world.Objects[key];
+                    GameObject gobj = World.Objects[key];
                     // object within range?
                     float dist = Vector2.DistanceSquared(gobj.Position, expl.position);
                     if (dist > expl.range * expl.life)
@@ -160,8 +161,8 @@ namespace ShiftDrive {
             // destroy objects that should be deleted, now that they have also been
             // broadcast to clients as being deleted
             foreach (uint key in keys) {
-                GameObject gobj = world.Objects[key];
-                if (gobj.IsDestroyScheduled()) world.Objects.Remove(key);
+                GameObject gobj = World.Objects[key];
+                if (gobj.IsDestroyScheduled()) World.Objects.Remove(key);
             }
         }
 
@@ -186,16 +187,16 @@ namespace ShiftDrive {
         }
 
         public static int GetLuaTop() {
-            return LuaAPI.lua_gettop(lua.L);
+            return LuaAPI.lua_gettop(lua.LState);
         }
 
         public static float GetLuaMemory() {
-            LuaAPI.lua_getglobal(lua.L, "collectgarbage");
-            LuaAPI.lua_pushstring(lua.L, "count");
-            LuaAPI.lua_call(lua.L, 1, 1);
+            LuaAPI.lua_getglobal(lua.LState, "collectgarbage");
+            LuaAPI.lua_pushstring(lua.LState, "count");
+            LuaAPI.lua_call(lua.LState, 1, 1);
 
-            float result = (float)LuaAPI.lua_tonumber(lua.L, -1);
-            LuaAPI.lua_pop(lua.L, 1);
+            float result = (float)LuaAPI.lua_tonumber(lua.LState, -1);
+            LuaAPI.lua_pop(lua.LState, 1);
             return result;
         }
 #endif
@@ -245,7 +246,7 @@ namespace ShiftDrive {
         private static void BroadcastGameState() {
             // send the compressed state out to all connected clients
             using (Packet packet = new Packet(PacketID.GameUpdate)) {
-                world.Serialize(packet, false);
+                World.Serialize(packet, false);
                 socket.Broadcast(packet.ToArray());
             }
         }
@@ -340,7 +341,7 @@ namespace ShiftDrive {
                     }
 
                     // shorthand reference for the player ship
-                    PlayerShip pship = world.GetPlayerShip();
+                    PlayerShip pship = World.GetPlayerShip();
 
                     // handle the packet
                     switch (recv.GetID()) {
@@ -361,7 +362,7 @@ namespace ShiftDrive {
                             BroadcastLobbyState();
                             // send this player a copy of the game world
                             using (Packet worldpacket = new Packet(PacketID.GameUpdate)) {
-                                world.Serialize(worldpacket, true); // client knows nothing about this map yet
+                                World.Serialize(worldpacket, true); // client knows nothing about this map yet
                                 socket.Send(clientID, worldpacket.ToArray());
                             }
                             break;
@@ -403,20 +404,20 @@ namespace ShiftDrive {
 
                         case PacketID.HelmSteering:
                             // Helm sets ship steering vector.
-                            pship.steering = MathHelper.Clamp(recv.ReadSingle(), 0f, 360f);
-                            pship.changed |= ObjectProperty.Steering;
+                            pship.Steering = MathHelper.Clamp(recv.ReadSingle(), 0f, 360f);
+                            pship.Changed |= ObjectProperty.Steering;
                             break;
 
                         case PacketID.HelmThrottle:
                             // Helm sets ship throttle. Clamp to ensure input sanity.
-                            pship.throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
-                            pship.changed |= ObjectProperty.Throttle;
+                            pship.Throttle = MathHelper.Clamp(recv.ReadSingle(), 0f, 1f);
+                            pship.Changed |= ObjectProperty.Throttle;
                             break;
 
                         case PacketID.WeapShields:
                             // Weapons toggles shield status
-                            pship.ShieldActive = !world.GetPlayerShip().ShieldActive;
-                            pship.changed |= ObjectProperty.Health;
+                            pship.ShieldActive = !World.GetPlayerShip().ShieldActive;
+                            pship.Changed |= ObjectProperty.Health;
                             break;
 
                         case PacketID.WeapTarget:
@@ -427,7 +428,7 @@ namespace ShiftDrive {
                                 pship.Targets.Add(targetid);
                             else
                                 pship.Targets.Remove(targetid);
-                            pship.changed |= ObjectProperty.Targets;
+                            pship.Changed |= ObjectProperty.Targets;
                             break;
 
                         default:

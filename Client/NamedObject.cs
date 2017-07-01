@@ -3,16 +3,20 @@
 ** (C) Mika Molenkamp, 2016-2017.
 */
 
-using System;
-
 namespace ShiftDrive {
 
     /// <summary>
     /// Represents a <see cref="GameObject"/> that has a name and can be examined by a player.
     /// </summary>
     internal abstract class NamedObject : GameObject {
+
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.NameShort)]
         public string NameShort { get; set; }
+
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.NameFull)]
         public string NameFull { get; set; }
+
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Description)]
         public string Description { get; set; }
 
         protected NamedObject(GameState world) : base(world) {
@@ -25,11 +29,11 @@ namespace ShiftDrive {
         public override void Serialize(Packet outstream) {
             base.Serialize(outstream);
 
-            if (changed.HasFlag(ObjectProperty.NameShort))
+            if (Changed.HasFlag(ObjectProperty.NameShort))
                 outstream.Write(NameShort);
-            if (changed.HasFlag(ObjectProperty.NameFull))
+            if (Changed.HasFlag(ObjectProperty.NameFull))
                 outstream.Write(NameFull);
-            if (changed.HasFlag(ObjectProperty.Description))
+            if (Changed.HasFlag(ObjectProperty.Description))
                 outstream.Write(Description);
         }
 
@@ -42,47 +46,6 @@ namespace ShiftDrive {
                 NameFull = instream.ReadString();
             if (recvChanged.HasFlag(ObjectProperty.Description))
                 Description = instream.ReadString();
-        }
-
-        protected override int LuaGet(IntPtr L) {
-            if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
-            string key = LuaAPI.lua_tostring(L, 2);
-            switch (key) {
-                case "nameshort":
-                    LuaAPI.lua_pushstring(L, NameShort);
-                    break;
-                case "namefull":
-                    LuaAPI.lua_pushstring(L, NameFull);
-                    break;
-                case "desc":
-                    LuaAPI.lua_pushstring(L, Description);
-                    break;
-                default:
-                    return base.LuaGet(L);
-            }
-            return 1;
-        }
-
-        protected override int LuaSet(IntPtr L) {
-            if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
-            string key = LuaAPI.lua_tostring(L, 2);
-            switch (key) {
-                case "nameshort":
-                    NameShort = LuaAPI.luaL_checkstring(L, 3);
-                    changed |= ObjectProperty.NameShort;
-                    break;
-                case "namefull":
-                    NameFull = LuaAPI.luaL_checkstring(L, 3);
-                    changed |= ObjectProperty.NameFull;
-                    break;
-                case "desc":
-                    Description = LuaAPI.luaL_checkstring(L, 3);
-                    changed |= ObjectProperty.Description;
-                    break;
-                default:
-                    return base.LuaSet(L);
-            }
-            return 0;
         }
 
     }

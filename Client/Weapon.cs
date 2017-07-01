@@ -134,11 +134,11 @@ namespace ShiftDrive {
                     // launch a projectile object
                     Vector2 fireAt = GetFiringSolution(owner, target);
                     float randombearing = (float)Utils.RNG.NextDouble() * ProjSpread * 2 - ProjSpread;
-                    NetServer.world.AddObject(new Projectile(NetServer.world, ProjSprite, Ammo,
+                    NetServer.World.AddObject(new Projectile(NetServer.World, ProjSprite, Ammo,
                         owner.Position + mount.Position,
                         Utils.Repeat(Utils.CalculateBearing(owner.Position, fireAt) + randombearing, 0f, 360f),
                         ProjSpeed, Damage,
-                        owner.faction));
+                        owner.Faction));
                     break;
                 case WeaponType.Beam:
                     // beam weapon - visual effect is done on client (see above)

@@ -48,7 +48,7 @@ namespace ShiftDrive {
                 // pull this object in closer
                 float pullpower = 1f - Vector2.Distance(gobj.Position, this.Position) / 140f;
                 gobj.Position += pulldir * pullpower * pullpower * deltaTime * 60f;
-                gobj.changed |= ObjectProperty.Position;
+                gobj.Changed |= ObjectProperty.Position;
 
                 // notify player ship
                 if (pullpower >= 0.1f && gobj.Type == ObjectType.PlayerShip && World.IsServer)

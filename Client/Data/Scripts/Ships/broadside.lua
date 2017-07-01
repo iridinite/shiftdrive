@@ -1,74 +1,73 @@
 return {
-  nameshort = GetRandomShipId(),
-  namefull = localize("ship_broadside"),
-  
-  topspeed = 20,
-  turnrate = 30,
-  hullmax = 100,
-  shieldmax = 80,
-  cargo = 4,
-  bounding = 30,
-  
-  sprite = "ship/broadside",
-  
-  mounts = {
-    {
-      position = {10, -8},
-      bearing = 90,
-      arc = 50,
-      size = Mount.SMALL
+    NameShort = GetRandomShipId(),
+    NameFull = localize("ship_broadside"),
+
+    TopSpeed = 20,
+    TurnRate = 30,
+    HullMax = 100,
+    ShieldMax = 80,
+    Bounding = 30,
+
+    Sprite = "ship/broadside",
+
+    Mounts = {
+        {
+            position = {10, -8},
+            bearing = 90,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {10, -3},
+            bearing = 90,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {10, 2},
+            bearing = 90,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {10, 7},
+            bearing = 90,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {-10, -8},
+            bearing = 270,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {-10, -3},
+            bearing = 270,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {-10, 2},
+            bearing = 270,
+            arc = 50,
+            size = Mount.SMALL
+        },
+        {
+            position = {-10, 7},
+            bearing = 270,
+            arc = 50,
+            size = Mount.SMALL
+        }
     },
-    {
-      position = {10, -3},
-      bearing = 90,
-      arc = 50,
-      size = Mount.SMALL
-    },
-    {
-      position = {10, 2},
-      bearing = 90,
-      arc = 50,
-      size = Mount.SMALL
-    },
-    {
-      position = {10, 7},
-      bearing = 90,
-      arc = 50,
-      size = Mount.SMALL
-    },
-    {
-      position = {-10, -8},
-      bearing = 270,
-      arc = 50,
-      size = Mount.SMALL
-    },
-    {
-      position = {-10, -3},
-      bearing = 270,
-      arc = 50,
-      size = Mount.SMALL
-    },
-    {
-      position = {-10, 2},
-      bearing = 270,
-      arc = 50,
-      size = Mount.SMALL
-    },
-    {
-      position = {-10, 7},
-      bearing = 270,
-      arc = 50,
-      size = Mount.SMALL
+    Weapons = {
+        require("weapons/autocannon"),
+        require("weapons/autocannon"),
+        require("weapons/autocannon"),
+        require("weapons/autocannon"),
+        require("weapons/autocannon"),
+        require("weapons/autocannon"),
+        require("weapons/autocannon"),
+        require("weapons/autocannon")
     }
-  },
-  weapons = {
-    require("weapons/autocannon"),
-    require("weapons/autocannon"),
-    require("weapons/autocannon"),
-    require("weapons/autocannon"),
-    require("weapons/autocannon"),
-    require("weapons/autocannon"),
-    require("weapons/autocannon"),
-    require("weapons/autocannon")
-  }
 }

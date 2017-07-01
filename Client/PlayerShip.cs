@@ -23,6 +23,7 @@ namespace ShiftDrive {
         /// Fuel reserves.
         /// Integer part is fuel cell count, decimal part is reservoir.
         /// </summary>
+        [ScriptableProperty(ScriptAccess.ReadWrite)]
         public float Fuel { get; private set; }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace ShiftDrive {
 
             // ship operation and throttle eats up energy
             ConsumeFuel(deltaTime * 0.004f);
-            ConsumeFuel(throttle * deltaTime * 0.0083333f);
+            ConsumeFuel(Throttle * deltaTime * 0.0083333f);
 
             // ship state announcements
             if (World.IsServer) {
@@ -114,13 +115,13 @@ namespace ShiftDrive {
             Hull = 0f;
             Shield = 0f;
             // stop moving
-            throttle = 0f;
+            Throttle = 0f;
             // disable all collision and physics (black holes, in particular)
             Bounding = 0f;
             Layer = CollisionLayer.None;
             LayerMask = CollisionLayer.None;
             // all the stuff changed
-            changed |= ObjectProperty.Health | ObjectProperty.Layer | ObjectProperty.Throttle | ObjectProperty.Bounding;
+            Changed |= ObjectProperty.Health | ObjectProperty.Layer | ObjectProperty.Throttle | ObjectProperty.Bounding;
             // fancy display
             Assets.GetSound("ExplosionMedium").Play3D(World.GetPlayerShip().Position, Position);
             NetServer.PublishParticleEffect(ParticleEffect.Explosion, Position);
@@ -157,13 +158,13 @@ namespace ShiftDrive {
         public override void Serialize(Packet outstream) {
             base.Serialize(outstream);
 
-            if (changed.HasFlag(ObjectProperty.Targets)) {
+            if (Changed.HasFlag(ObjectProperty.Targets)) {
                 outstream.Write((byte)Targets.Count);
                 foreach (var target in Targets)
                     outstream.Write(target);
             }
 
-            if (changed.HasFlag(ObjectProperty.PlayerData))
+            if (Changed.HasFlag(ObjectProperty.PlayerData))
                 outstream.Write(PlayerID);
 
             outstream.Write(Destroyed);
@@ -189,32 +190,6 @@ namespace ShiftDrive {
 
         public void ConsumeFuel(float amount) {
             Fuel -= amount;
-        }
-
-        protected override int LuaGet(IntPtr L) {
-            if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
-            string key = LuaAPI.lua_tostring(L, 2);
-            switch (key) {
-                case "fuel":
-                    LuaAPI.lua_pushnumber(L, Fuel);
-                    break;
-                default:
-                    return base.LuaGet(L);
-            }
-            return 1;
-        }
-
-        protected override int LuaSet(IntPtr L) {
-            if (LuaAPI.lua_isstring(L, 2) != 1) return 0;
-            string key = LuaAPI.lua_tostring(L, 2);
-            switch (key) {
-                case "fuel":
-                    Fuel = (float)LuaAPI.luaL_checknumber(L, 3);
-                    break;
-                default:
-                    return base.LuaSet(L);
-            }
-            return 0;
         }
 
     }

@@ -26,9 +26,9 @@ namespace ShiftDrive {
 
         public override void Update(float deltaTime) {
             // station never moves
-            throttle = 0f;
+            Throttle = 0f;
             Facing = 0f;
-            steering = 0f;
+            Steering = 0f;
             // base update
             base.Update(deltaTime);
         }

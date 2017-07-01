@@ -74,19 +74,19 @@ namespace ShiftDrive {
             foreach (var pair in Objects) {
                 GameObject obj = pair.Value;
                 if (forceAll) // serialize all objects entirely
-                    obj.changed = ObjectProperty.All;
+                    obj.Changed = ObjectProperty.All;
 
                 if (obj.IsDestroyScheduled()) {
                     outstream.Write(pair.Value.ID);
                     outstream.Write(true);
 
-                } else if (obj.changed > ObjectProperty.None) {
+                } else if (obj.Changed > ObjectProperty.None) {
                     outstream.Write(pair.Value.ID);
                     outstream.Write(false);
                     outstream.Write((byte)pair.Value.Type);
-                    outstream.Write((uint)pair.Value.changed);
+                    outstream.Write((uint)pair.Value.Changed);
                     pair.Value.Serialize(outstream);
-                    pair.Value.changed = ObjectProperty.None;
+                    pair.Value.Changed = ObjectProperty.None;
                 }
             }
             // 0x00000000 marks the end of the message
