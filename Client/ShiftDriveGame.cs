@@ -109,10 +109,12 @@ namespace ShiftDrive {
             if (NetClient.Connected) {
                 // TODO && NetClient.SimRunning)
                 lock (NetClient.worldLock) {
-                    NetClient.World.UpdateGrid();
+                    // run update logic on all objects
                     foreach (GameObject gobj in NetClient.World.Objects.Values) {
                         gobj.Update(deltaTime);
                     }
+                    // rebuild the spatial tree
+                    NetClient.World.RebuildBVHTree();
                 }
                 // update particles
                 ParticleManager.Update(deltaTime);

@@ -16,12 +16,13 @@ namespace ShiftDrive {
         public readonly Dictionary<uint, GameObject> Objects;
         public bool IsServer;
 
-        private CollisionGrid grid;
+        public BVHTree BVH { get; }
+
         private uint cachedPlayerShipId;
 
         public GameState() {
             Objects = new Dictionary<uint, GameObject>();
-            grid = new CollisionGrid();
+            BVH = new BVHTree();
             cachedPlayerShipId = 0;
         }
 
@@ -44,31 +45,14 @@ namespace ShiftDrive {
         /// </summary>
         public void AddObject(GameObject obj) {
             Objects.Add(obj.ID, obj);
-            if (obj.Bounding > 0f) grid.Insert(obj);
+            if (obj.Bounding > 0f) BVH.Insert(obj);
         }
 
         /// <summary>
-        /// Queries this GameState's CollisionGrid.
+        /// Serializes the world to a byte stream.
         /// </summary>
-        public List<GameObject> QueryGrid(GameObject obj) {
-            return grid.Query(obj);
-        }
-
-        /// <summary>
-        /// Removes the specified GameObject from the grid if present, and inserts it.
-        /// </summary>
-        public void ReinsertGrid(GameObject obj) {
-            grid.Remove(obj);
-            grid.Insert(obj);
-        }
-
-        /// <summary>
-        /// Updates the CollisionGrid.
-        /// </summary>
-        public void UpdateGrid() {
-            grid.Update();
-        }
-
+        /// <param name="outstream">The byte stream to write to.</param>
+        /// <param name="forceAll">If true, all objects with all attributes will be serialized. If false, only changed attributes are written.</param>
         public void Serialize(Packet outstream, bool forceAll) {
             // write serialized objects that have changed
             foreach (var pair in Objects) {
@@ -94,6 +78,10 @@ namespace ShiftDrive {
             outstream.Write((uint)0);
         }
 
+        /// <summary>
+        /// Reads object updates from a byte stream and updates this game state.
+        /// </summary>
+        /// <param name="instream">The byte stream to read from.</param>
         public void Deserialize(Packet instream) {
             while (true) {
                 // read next object ID. zero means end of message
@@ -102,7 +90,7 @@ namespace ShiftDrive {
 
                 // set flag means a deleted object
                 if (instream.ReadBoolean()) {
-                    if (Objects.ContainsKey(objid)) grid.Remove(Objects[objid]);
+                    //if (Objects.ContainsKey(objid)) grid.Remove(Objects[objid]);
                     Objects.Remove(objid);
                     continue;
                 }
@@ -131,6 +119,16 @@ namespace ShiftDrive {
                     // update this object with info from the stream
                     Objects[objid].Deserialize(instream, recvChanged);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clears and rebuilds the BVH tree from scratch.
+        /// </summary>
+        public void RebuildBVHTree() {
+            BVH.Clear();
+            foreach (var gobj in Objects.Values) {
+                BVH.Insert(gobj);
             }
         }
 
