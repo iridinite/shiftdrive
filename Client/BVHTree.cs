@@ -17,27 +17,46 @@ namespace ShiftDrive {
         public Vector2 min;
         public Vector2 max;
 
+        /// <summary>
+        /// Constructs a new bounding box with explicit coordinates.
+        /// </summary>
+        /// <param name="min">The minimum (top-left) point.</param>
+        /// <param name="max">The maximum (bottom-right) point.</param>
         public BVHBox(Vector2 min, Vector2 max) {
             this.min = min;
             this.max = max;
         }
 
+        /// <summary>
+        /// Constructs a new bounding box using an object's position and collision data.
+        /// </summary>
+        /// <param name="gobj">An object to base the box upon.</param>
         public BVHBox(GameObject gobj) {
             this.min = gobj.Position - new Vector2(gobj.Bounding, gobj.Bounding);
             this.max = gobj.Position + new Vector2(gobj.Bounding, gobj.Bounding);
         }
 
+        /// <summary>
+        /// Returns a new bounding box that contains both specified bounding boxes.
+        /// </summary>
         public static BVHBox Combine(BVHBox a, BVHBox b) {
             return new BVHBox(Vector2.Min(a.min, b.min), Vector2.Max(a.max, b.max));
         }
 
-        public float Perimeter {
+        /// <summary>
+        /// Returns the square area of this bounding box.
+        /// </summary>
+        public float Area {
             get {
                 Vector2 sides = max - min;
                 return sides.X * sides.Y;
             }
         }
 
+        /// <summary>
+        /// Returns true if this bounding box intersects with or contains the other bounding box.
+        /// </summary>
+        /// <param name="other">The other box to test against.</param>
         public bool Intersects(BVHBox other) {
             if (max.X < other.min.X || min.X > other.max.X)
                 return false;
@@ -59,6 +78,9 @@ namespace ShiftDrive {
         public BVHBox shape;
         public GameObject gobj;
 
+        /// <summary>
+        /// Returns true if this node does not have any children.
+        /// </summary>
         public bool IsLeaf => child1 == BVHTree.NULL_NODE;
     }
 
@@ -101,90 +123,69 @@ namespace ShiftDrive {
         /// </summary>
         /// <param name="gobj">The object to insert.</param>
         public void Insert(GameObject gobj) {
-            int node = AllocateNode();
-            nodes[node].shape = new BVHBox(gobj);
-            nodes[node].gobj = gobj;
-            nodes[node].height = 0;
+            int insert = AllocateNode();
+            nodes[insert].shape = new BVHBox(gobj);
+            nodes[insert].gobj = gobj;
+            nodes[insert].height = 0;
 
             if (root == NULL_NODE) {
-                root = node;
+                root = insert;
                 nodes[root].next = NULL_NODE;
                 return;
             }
 
-            BVHBox nodeShape = nodes[node].shape;
+            BVHBox insertShape = nodes[insert].shape;
             int index = root;
             while (!nodes[index].IsLeaf) {
                 int child1 = nodes[index].child1;
                 int child2 = nodes[index].child2;
-                float area = nodes[index].shape.Perimeter;
+                float area = nodes[index].shape.Area;
 
-                BVHBox combinedShape = BVHBox.Combine(nodes[index].shape, nodeShape);
-                float combinedArea = combinedShape.Perimeter;
+                BVHBox combinedShape = BVHBox.Combine(nodes[index].shape, insertShape);
+                float combinedArea = combinedShape.Area;
 
-                // Cost of creating a new parent for this node and the new leaf
+                // cost of creating a new parent for this node and the new leaf
                 float cost = 2.0f * combinedArea;
-                // Minimum cost of pushing the leaf further down the tree
+                // minimum cost of pushing the leaf further down the tree
                 float inheritanceCost = 2.0f * (combinedArea - area);
-
-                float cost1, cost2;
-                if (nodes[child1].IsLeaf) {
-                    BVHBox shape = BVHBox.Combine(nodeShape, nodes[child1].shape);
-                    cost1 = shape.Perimeter + inheritanceCost;
-                } else {
-                    BVHBox shape = BVHBox.Combine(nodeShape, nodes[child1].shape);
-                    float oldArea = nodes[child1].shape.Perimeter;
-                    float newArea = shape.Perimeter;
-                    cost1 = newArea - oldArea + inheritanceCost;
-                }
-
-                if (nodes[child2].IsLeaf) {
-                    BVHBox shape = BVHBox.Combine(nodeShape, nodes[child2].shape);
-                    cost2 = shape.Perimeter + inheritanceCost;
-                } else {
-                    BVHBox shape = BVHBox.Combine(nodeShape, nodes[child2].shape);
-                    float oldArea = nodes[child2].shape.Perimeter;
-                    float newArea = shape.Perimeter;
-                    cost2 = newArea - oldArea + inheritanceCost;
-                }
-
+                // cost of descending into each child node respectively
+                float cost1 = ComputeDescendCost(nodes[child1], insertShape, inheritanceCost);
+                float cost2 = ComputeDescendCost(nodes[child2], insertShape, inheritanceCost);
+                // pick the best option
                 if (cost < cost1 && cost < cost2) break;
-
                 index = cost1 < cost2 ? child1 : child2;
             }
 
-            int sibling = index;
-
             // create a new parent
-            int oldParent = nodes[sibling].next;
+            int oldParent = nodes[index].next;
             int newParent = AllocateNode();
             nodes[newParent].next = oldParent;
-            nodes[newParent].shape = BVHBox.Combine(nodeShape, nodes[sibling].shape);
-            nodes[newParent].height = nodes[sibling].height + 1;
+            nodes[newParent].shape = BVHBox.Combine(insertShape, nodes[index].shape);
+            nodes[newParent].height = nodes[index].height + 1;
 
             if (oldParent != NULL_NODE) {
-                // The sibling wasn't the root
-                if (nodes[oldParent].child1 == sibling) {
+                // index was not the root
+                if (nodes[oldParent].child1 == index) {
                     nodes[oldParent].child1 = newParent;
                 } else {
                     nodes[oldParent].child2 = newParent;
                 }
 
-                nodes[newParent].child1 = sibling;
-                nodes[newParent].child2 = node;
-                nodes[sibling].next = newParent;
-                nodes[node].next = newParent;
+                nodes[newParent].child1 = index;
+                nodes[newParent].child2 = insert;
+                nodes[index].next = newParent;
+                nodes[insert].next = newParent;
             } else {
-                // The sibling was the root
-                nodes[newParent].child1 = sibling;
-                nodes[newParent].child2 = node;
-                nodes[sibling].next = newParent;
-                nodes[node].next = newParent;
+                // index was the root
+                nodes[newParent].child1 = index;
+                nodes[newParent].child2 = insert;
+                nodes[index].next = newParent;
+                nodes[insert].next = newParent;
                 root = newParent;
             }
 
             // Walk back up the tree fixing the shapes and the heights
-            index = nodes[node].next;
+            index = nodes[insert].next;
             while (index != NULL_NODE) {
                 index = Balance(index);
 
@@ -246,6 +247,24 @@ namespace ShiftDrive {
             }
         }
 #endif
+
+        /// <summary>
+        /// Calculates the cost of descending the target shape into the specified node.
+        /// </summary>
+        /// <param name="node">The node to calculate cost for.</param>
+        /// <param name="targetShape">The shape attempting to descend into the node.</param>
+        /// <param name="inheritanceCost">Base cost of descending.</param>
+        private float ComputeDescendCost(BVHNode node, BVHBox targetShape, float inheritanceCost) {
+            if (node.IsLeaf) {
+                BVHBox shape = BVHBox.Combine(targetShape, node.shape);
+                return shape.Area + inheritanceCost;
+            } else {
+                BVHBox shape = BVHBox.Combine(targetShape, node.shape);
+                float oldArea = node.shape.Area;
+                float newArea = shape.Area;
+                return newArea - oldArea + inheritanceCost;
+            }
+        }
 
         /// <summary>
         /// Resizes the internal node array.
