@@ -14,34 +14,23 @@ namespace ShiftDrive {
     /// <summary>
     /// Provides an interface for writing to an output log file.
     /// </summary>
-    internal sealed class Logger : IDisposable {
+    internal static class Logger {
 
         internal static readonly DirectoryInfo BaseDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
-        private StreamWriter Writer;
+        private static StreamWriter Writer;
 
-        private bool disposedValue = false; // To detect redundant calls
-
-        public Logger() {
+        static Logger() {
             Debug.Assert(HasWritePermission());
             Writer = new StreamWriter(BaseDir.FullName + "output.log");
         }
 
-        ~Logger() {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing) {
-            if (disposedValue) return;
-            disposedValue = true;
-
+        /// <summary>
+        /// Closes the logger and writes the log file to disk.
+        /// </summary>
+        public static void Close() {
             Writer?.Close();
             Writer?.Dispose();
             Writer = null;
-        }
-
-        public void Dispose() {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -55,7 +44,7 @@ namespace ShiftDrive {
             return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
         }
 
-        private void LogHeader(string header) {
+        private static void LogHeader(string header) {
             Writer?.Write($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()} [{header}] ");
         }
 
@@ -63,7 +52,7 @@ namespace ShiftDrive {
         /// Writes an informative message to the output log.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void Log(string message) {
+        public static void Log(string message) {
             if (String.IsNullOrEmpty(message)) throw new ArgumentNullException(nameof(message));
 
             LogHeader("INFO");
@@ -74,26 +63,24 @@ namespace ShiftDrive {
         /// Writes a warning message to the output log.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void LogWarning(string message) {
+        public static void LogWarning(string message) {
             if (String.IsNullOrEmpty(message)) throw new ArgumentNullException(nameof(message));
 
             LogHeader("WARN");
             Writer?.WriteLine(message);
-#if DEBUG
-            SDGame.Inst.Print(message);
-#endif
+            SDGame.Inst.Print("WARN: " + message);
         }
 
         /// <summary>
         /// Writes an error report to the output log.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void LogError(string message) {
+        public static void LogError(string message) {
             if (String.IsNullOrEmpty(message)) throw new ArgumentNullException(nameof(message));
 
             LogHeader("ERROR");
             Writer?.WriteLine(message);
-            SDGame.Inst.Print(message, true);
+            SDGame.Inst.Print("ERROR: " + message, true);
         }
 
         /// <summary>
@@ -106,7 +93,6 @@ namespace ShiftDrive {
             try {
                 using (StreamWriter exWriter = new StreamWriter(
                     $"{BaseDir.FullName}crash{DateTime.Now.ToFileTime()}.log")) {
-
                     exWriter.WriteLine("===================================");
                     exWriter.WriteLine("EXCEPTION REPORT");
                     exWriter.WriteLine("===================================");
@@ -132,4 +118,5 @@ namespace ShiftDrive {
         }
 
     }
+
 }

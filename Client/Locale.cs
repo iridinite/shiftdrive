@@ -54,7 +54,7 @@ namespace ShiftDrive {
                     }
                 }
             } catch (IOException ex) {
-                SDGame.Logger.LogError($"Failed to read string table '{filePath}': {ex.Message}");
+                Logger.LogError($"Failed to read string table '{filePath}': {ex.Message}");
             }
         }
 

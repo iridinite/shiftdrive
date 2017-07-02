@@ -61,20 +61,20 @@ namespace ShiftDrive {
             World.IsServer = true;
 
             try {
-                SDGame.Logger.Log("Initializing Lua state...");
+                Logger.Log("Initializing Lua state...");
                 lua = new LuaState();
                 lua.Precompile();
-                SDGame.Logger.Log("Precompilation finished.");
+                Logger.Log("Precompilation finished.");
                 lua.LoadFile("main");
                 lua.Call(0, 0);
                 lua.LoadFile("scenarios/siege");
                 lua.Call(0, 0);
-                SDGame.Logger.Log("Scripts ran successfully.");
+                Logger.Log("Scripts ran successfully.");
                 return true;
 
             } catch (LuaException e) {
-                SDGame.Logger.LogError("Script execution failed.");
-                SDGame.Logger.LogError(e.ToString());
+                Logger.LogError("Script execution failed.");
+                Logger.LogError(e.ToString());
                 SDGame.Inst.SetUIRoot(new FormMessage(e.ToString()));
                 return false;
             }
@@ -90,7 +90,7 @@ namespace ShiftDrive {
             announceCooldown = new Dictionary<AnnouncementId, float>();
             explosions = new List<ExplosionData>();
 
-            SDGame.Logger.Log("Starting server...");
+            Logger.Log("Starting server...");
             socket = new Host();
             socket.OnClientConnect += Socket_OnClientConnect;
             socket.OnClientDisconnect += Socket_OnClientDisconnect;
@@ -165,7 +165,7 @@ namespace ShiftDrive {
         }
 
         public static void Stop() {
-            SDGame.Logger.Log("Stopping server and closing Lua state.");
+            Logger.Log("Stopping server and closing Lua state.");
             lua.Dispose();
             lua = null;
             socket.Stop();
@@ -200,11 +200,11 @@ namespace ShiftDrive {
 #endif
 
         private static void Socket_OnServerStart() {
-            SDGame.Logger.Log("Server socket started.");
+            Logger.Log("Server socket started.");
         }
 
         private static void Socket_OnServerStop() {
-            SDGame.Logger.Log("Server stopped.");
+            Logger.Log("Server stopped.");
             players.Clear();
         }
 
@@ -215,14 +215,14 @@ namespace ShiftDrive {
             newplr.ready = false;
             newplr.authorized = false;
             players.Add(clientID, newplr);
-            SDGame.Logger.Log($"Client connected (#{clientID} @ {socket.GetClientIP(clientID)}).");
+            Logger.Log($"Client connected (#{clientID} @ {socket.GetClientIP(clientID)}).");
         }
 
         private static void Socket_OnClientDisconnect(int clientID) {
             // remove this client from the player table
             players.Remove(clientID);
             BroadcastLobbyState();
-            SDGame.Logger.Log($"Client #{clientID} disconnected.");
+            Logger.Log($"Client #{clientID} disconnected.");
         }
 
         private static void BroadcastLobbyState() {
@@ -378,7 +378,7 @@ namespace ShiftDrive {
                             }
                             // update list of taken roles
                             BroadcastLobbyState();
-                            SDGame.Logger.Log($"Client #{clientID} has roles {player.roles}.");
+                            Logger.Log($"Client #{clientID} has roles {player.roles}.");
                             break;
 
                         case PacketID.Ready:
@@ -387,7 +387,7 @@ namespace ShiftDrive {
                                 return;
                             }
                             player.ready = recv.ReadBoolean();
-                            SDGame.Logger.Log($"Client #{clientID} ready: {player.ready}");
+                            Logger.Log($"Client #{clientID} ready: {player.ready}");
 
                             if (simRunning) {
                                 // if game already started, invite this player to the game
@@ -430,7 +430,7 @@ namespace ShiftDrive {
                             break;
 
                         default:
-                            SDGame.Logger.LogError($"Server got unknown packet ({recv.GetID()}), client #{clientID}");
+                            Logger.LogError($"Server got unknown packet ({recv.GetID()}), client #{clientID}");
                             socket.Kick(clientID);
                             break;
                     }
@@ -438,7 +438,7 @@ namespace ShiftDrive {
                 }
 
             } catch (Exception ex) {
-                SDGame.Logger.LogError($"Server exception: {ex}");
+                Logger.LogError($"Server exception: {ex}");
 #if DEBUG
                 System.Diagnostics.Debugger.Break();
 #endif
@@ -447,7 +447,7 @@ namespace ShiftDrive {
         }
 
         private static void Socket_OnError(Exception ex) {
-            SDGame.Logger.LogError(ex.ToString());
+            Logger.LogError(ex.ToString());
 #if DEBUG
             System.Diagnostics.Debugger.Break();
 #endif

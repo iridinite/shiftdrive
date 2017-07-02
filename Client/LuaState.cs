@@ -271,7 +271,7 @@ namespace ShiftDrive {
                 } catch (LuaException e) {
                     // remove the failing event from the list. make sure to break out
                     // because we're modifying the collection of events
-                    SDGame.Logger.LogError("Event Error: " + e.Message);
+                    Logger.LogError("Event Error: " + e.Message);
                     lua_settop(LState, 1);
                     luaL_unref(LState, -1, pair.Key);
                     luaL_unref(LState, -1, pair.Value);

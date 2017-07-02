@@ -38,7 +38,7 @@ namespace ShiftDrive {
         
         public static void Load() {
             if (!Logger.HasWritePermission())
-                SDGame.Logger.LogError("Warning: ShiftDrive does not have permission to save files to the app directory.\nAny settings you change will be lost.");
+                Logger.LogWarning("ShiftDrive does not have permission to save files to the app directory.\nAny settings you change will be lost.");
 
 #if DEBUG
             // if debugging, we probably always want windowed mode etc.
@@ -60,7 +60,7 @@ namespace ShiftDrive {
                 }
 
             } catch (Exception ex) {
-                SDGame.Logger.LogError("Failed to read config: " + ex);
+                Logger.LogError("Failed to read config: " + ex);
             }
 #endif
         }
@@ -81,7 +81,7 @@ namespace ShiftDrive {
                 }
 
             } catch (Exception ex) {
-                SDGame.Logger.LogError("Failed to write config: " + ex);
+                Logger.LogError("Failed to write config: " + ex);
             }
         }
         

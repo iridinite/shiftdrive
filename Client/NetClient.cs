@@ -64,7 +64,7 @@ namespace ShiftDrive {
             socket.OnError += Client_OnError;
             socket.OnDataReceived += Client_OnDataReceived;
             // connect to remote host
-            SDGame.Logger.Log("Connecting...");
+            Logger.Log("Connecting...");
             socket.RemoteIP = host;
             socket.RemotePort = Config.ServerPort;
             socket.Connect();
@@ -76,7 +76,7 @@ namespace ShiftDrive {
 
         private static void Client_OnConnected() {
             Debug.Assert(Connected);
-            SDGame.Logger.Log("Connected to server! Sending handshake.");
+            Logger.Log("Connected to server! Sending handshake.");
 
             // report back to the connect UI that we're connected
             connectCallback(true, null);
@@ -93,7 +93,7 @@ namespace ShiftDrive {
             // show a 'connection lost' message if the disconnect was unexpected
             if (!expectShutdown)
                 SDGame.Inst.SetUIRoot(new FormMessage(Locale.Get("err_connlost")));
-            SDGame.Logger.Log("Disconnected from server.");
+            Logger.Log("Disconnected from server.");
         }
 
         private static void Client_OnError(Exception ex) {
@@ -102,7 +102,7 @@ namespace ShiftDrive {
                 Debug.Assert(sockex != null);
                 connectCallback(false, $"({sockex.SocketErrorCode}){Environment.NewLine}{sockex.Message}");
             } else {
-                SDGame.Logger.LogError("Client error: " + ex);
+                Logger.LogError("Client error: " + ex);
 #if DEBUG
                 Debugger.Break();
 #endif
@@ -187,12 +187,12 @@ namespace ShiftDrive {
                             break;
 
                         default:
-                            SDGame.Logger.LogError("Client got unknown packet " + recv.GetID());
+                            Logger.LogError("Client got unknown packet " + recv.GetID());
                             throw new InvalidDataException(Locale.Get("err_unknownpacket") + " (" + recv.GetID() + ")");
                     }
                 } catch (Exception ex) {
                     Disconnect();
-                    SDGame.Logger.LogError("Client error in OnDataReceived: " + ex);
+                    Logger.LogError("Client error in OnDataReceived: " + ex);
                     SDGame.Inst.SetUIRoot(new FormMessage(Locale.Get("err_comm") + Environment.NewLine + ex.ToString()));
                 }
             }

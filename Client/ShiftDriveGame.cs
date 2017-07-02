@@ -19,10 +19,8 @@ namespace ShiftDrive {
         private SpriteBatch spriteBatch;
 
         internal static SDGame Inst { get; private set; }
-        internal static Logger Logger => Inst.loggerInst;
 
         private readonly object uiRootLock = new object();
-        private readonly Logger loggerInst;
         private readonly DeveloperConsole console;
 
         private GameTime time;
@@ -55,7 +53,6 @@ namespace ShiftDrive {
         public SDGame() {
             Inst = this;
 
-            loggerInst = new Logger();
             console = new DeveloperConsole();
             Config.Load();
 
@@ -75,10 +72,9 @@ namespace ShiftDrive {
         }
 
         protected override void Initialize() {
-            // initialize MonoGame core
+            Logger.Log("ShiftDrive Client " + Utils.GetVersionString());
+            // initialize MonoGame and load content
             base.Initialize();
-
-            loggerInst.Log("ShiftDrive Client " + Utils.GetVersionString());
         }
 
         protected override void LoadContent() {
@@ -176,7 +172,7 @@ namespace ShiftDrive {
 
         private void SDGame_Exiting(object sender, EventArgs e) {
             Config.Save();
-            loggerInst?.Dispose();
+            Logger.Close();
         }
 
         /// <summary>
