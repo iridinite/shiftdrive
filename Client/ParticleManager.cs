@@ -93,6 +93,22 @@ namespace ShiftDrive {
         }
 
         /// <summary>
+        /// Draws a shield bubble around the specified ship. The effect is returned so that
+        /// it may be stored and manipulated later (Ship can reset the lifetime).
+        /// </summary>
+        public static Particle CreateShieldBubble(Ship owner) {
+            Particle bubble = new Particle {
+                parent = owner,
+                sprite = Assets.GetSprite("map/shield-bubble").Clone(),
+                lifemax = 1.0f,
+                colorstart = Color.CornflowerBlue * 1.5f,
+                colorend = Color.CornflowerBlue * 0
+            };
+            Register(bubble);
+            return bubble;
+        }
+
+        /// <summary>
         /// Implementation for Explosion effect.
         /// </summary>
         public static void CreateExplosion(Vector2 position) {

@@ -69,6 +69,7 @@ namespace ShiftDrive {
         private WeaponMount[] mounts;
         private float flaretime;
         private float shieldRegenPause;
+        private Particle shieldBubble;
 
         protected Ship(GameState world) : base(world) {
             Hull = 100f;
@@ -169,8 +170,11 @@ namespace ShiftDrive {
 
             // apply damage to shields first, if possible
             if (ShieldActive && Shield > 0f) {
+                // sound effect on server
                 if (World.IsServer && sound)
                     Assets.GetSound("DamageShield").Play3D(World.GetPlayerShip().Position, Position);
+                // apply damage
+                ShowShieldBubble();
                 Shield = MathHelper.Clamp(Shield - damage, 0f, ShieldMax);
                 return;
             }
@@ -205,6 +209,17 @@ namespace ShiftDrive {
         public Color GetFactionColor(Ship observer) {
             if (IsNeutral()) return Color.CornflowerBlue;
             return IsAlly(observer) ? Color.LightGreen : Color.Red;
+        }
+
+        private void ShowShieldBubble() {
+            if (World.IsServer) return;
+
+            // create a bubble effect if none exists or the old one expired
+            if (shieldBubble == null || shieldBubble.life >= shieldBubble.lifemax)
+                shieldBubble = ParticleManager.CreateShieldBubble(this);
+
+            // reset the life of the bubble to make it appear at max brightness again
+            shieldBubble.life = 0.0f;
         }
 
         public virtual GameObject SelectTarget(WeaponMount mount, Weapon weapon) {
