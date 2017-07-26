@@ -30,6 +30,8 @@ namespace ShiftDrive {
         public Color colorstart;
         public Color colorend;
 
+        public GameObject parent;
+
         public Particle() {
             life = 0f;
             lifemax = 0f;
@@ -40,6 +42,7 @@ namespace ShiftDrive {
             colorstart = Color.White;
             colorend = Color.White;
             zorder = 16;
+            parent = null;
         }
         
     }

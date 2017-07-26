@@ -42,7 +42,8 @@ namespace ShiftDrive {
         public static void QueueDraw(Vector2 min, Vector2 max, Vector2 viewport) {
             lock (particleLock) {
                 foreach (Particle p in particles) {
-                    Vector2 screenpos = Utils.CalculateScreenPos(min, max, viewport, p.position);
+                    Vector2 offset = p.parent?.Position ?? Vector2.Zero;
+                    Vector2 screenpos = Utils.CalculateScreenPos(min, max, viewport, offset + p.position);
                     SpriteQueue.QueueSprite(
                         p.sprite,
                         screenpos,
