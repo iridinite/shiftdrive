@@ -263,8 +263,7 @@ namespace ShiftDrive {
             // find the highest velocity involved in the collision
             float highestVelocity = Throttle * TopSpeed * Math.Abs(penetration);
             // if colliding with another ship, factor in that ship's speed
-            Ship otherShip = other as Ship;
-            if (otherShip != null)
+            if (other is Ship otherShip)
                 highestVelocity = Math.Max(highestVelocity,
                     otherShip.Throttle * otherShip.TopSpeed * Math.Abs(penetration));
 
