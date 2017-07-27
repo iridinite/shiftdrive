@@ -19,7 +19,8 @@ namespace ShiftDrive {
         }
 
         private static void Program_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
-            if (e.ExceptionObject is Exception ex)
+            Exception ex = e.ExceptionObject as Exception;
+            if (ex != null)
                 Logger.WriteExceptionReport(ex);
         }
 
