@@ -6,6 +6,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.Xna.Framework;
 
 namespace ShiftDrive {
@@ -17,31 +18,31 @@ namespace ShiftDrive {
 
         public const int WEAPON_ARRAY_SIZE = 8;
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Health)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Health), UsedImplicitly]
         public float Hull { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.HealthMax)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.HealthMax), UsedImplicitly]
         public float HullMax { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Health)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Health), UsedImplicitly]
         public float Shield { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.HealthMax)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.HealthMax), UsedImplicitly]
         public float ShieldMax { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Health)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Health), UsedImplicitly]
         public bool ShieldActive { get; set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.MoveStats)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.MoveStats), UsedImplicitly]
         public float TopSpeed { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.MoveStats)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.MoveStats), UsedImplicitly]
         public float TurnRate { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.Read)]
+        [ScriptableProperty(ScriptAccess.Read), UsedImplicitly]
         public byte WeaponsCount { get; private set; }
 
-        [ScriptableProperty(ScriptAccess.Write, ObjectProperty.Mounts)]
+        [ScriptableProperty(ScriptAccess.Write, ObjectProperty.Mounts), UsedImplicitly]
         public WeaponMount[] Mounts {
             get { return mounts; }
             set {
@@ -51,19 +52,19 @@ namespace ShiftDrive {
             }
         }
 
-        [ScriptableProperty(ScriptAccess.Write, ObjectProperty.Weapons)]
+        [ScriptableProperty(ScriptAccess.Write, ObjectProperty.Weapons), UsedImplicitly]
         public Weapon[] Weapons { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.Write, ObjectProperty.Flares)]
+        [ScriptableProperty(ScriptAccess.Write, ObjectProperty.Flares), UsedImplicitly]
         public Vector2[] Trails { get; protected set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Throttle)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Throttle), UsedImplicitly]
         public float Throttle { get; set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Steering)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Steering), UsedImplicitly]
         public float Steering { get; set; }
 
-        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Faction)]
+        [ScriptableProperty(ScriptAccess.ReadWrite, ObjectProperty.Faction), UsedImplicitly]
         public byte Faction { get; protected set; }
 
         private WeaponMount[] mounts;
