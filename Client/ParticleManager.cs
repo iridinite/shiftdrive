@@ -102,7 +102,9 @@ namespace ShiftDrive {
                 sprite = Assets.GetSprite("map/shield-bubble").Clone(),
                 lifemax = 1.0f,
                 colorstart = Color.CornflowerBlue * 1.5f,
-                colorend = Color.CornflowerBlue * 0
+                colorend = Color.CornflowerBlue * 0,
+                scalestart = owner.Bounding / 24.0f,
+                scaleend = owner.Bounding / 28.0f
             };
             Register(bubble);
             return bubble;
