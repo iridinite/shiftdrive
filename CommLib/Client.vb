@@ -1,35 +1,50 @@
 ﻿Imports System.Net.Sockets
 
-''' <summary>Represents a client that can connect to a TCP/IP server.</summary>
-''' <remarks></remarks>
+''' <summary>
+''' Represents a client that can connect to a TCP/IP server.
+''' </summary>
 <CLSCompliant(True)>
 Public Class Client
 
     Private Client As TcpClient
     Private Kill As Boolean = False
 
-    ''' <summary>Gets a value indicating whether there is currently an active TCP connection.</summary>
-    ''' <returns>Boolean - True: Connected. False: No connection.</returns>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Returns a value indicating whether there is currently an active TCP connection.
+    ''' </summary>
     Public ReadOnly Property Connected As Boolean
         Get
             Return Client.Connected
         End Get
     End Property
 
-    ''' <summary>Gets or sets the IP address the client should connect to.</summary>
-    ''' <returns>String - IPv4 address</returns>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Gets or sets the remote host name the client should connect to.
+    ''' </summary>
     Public Property RemoteIP As String
 
-    ''' <summary>Gets or sets the TCP port the client should use while connecting.</summary>
-    ''' <returns>Integer - port</returns>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Gets or sets the TCP port the client should use while connecting.
+    ''' </summary>
     Public Property RemotePort As Integer
 
+    ''' <summary>
+    ''' Raised when a network operation, such as connecting, sending or receiving, fails.
+    ''' </summary>
+    ''' <param name="ex">The exception that was thrown.</param>
     Public Event OnError(ex As Exception)
+    ''' <summary>
+    ''' Raised when a connection to a host has been successfully established.
+    ''' </summary>
     Public Event OnConnected()
+    ''' <summary>
+    ''' Raised when a connection to a remote host has been closed.
+    ''' </summary>
     Public Event OnDisconnected()
+    ''' <summary>
+    ''' Raised when a packet has been received from the network.
+    ''' </summary>
+    ''' <param name="packet">A byte array containing the packet.</param>
     Public Event OnDataReceived(packet As Byte())
 
     Private ReadBuffer(4095) As Byte
@@ -42,8 +57,9 @@ Public Class Client
         'Client.NoDelay = True
     End Sub
 
-    ''' <summary>Initializes the TCP socket and connects to a network as specified by RemoteIP and RemotePort.</summary>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Initializes the TCP socket and connects to a network as specified by RemoteIP and RemotePort.
+    ''' </summary>
     Public Sub Connect()
         Kill = False
         Client = New TcpClient()
@@ -63,8 +79,9 @@ Public Class Client
         End Try
     End Sub
 
-    ''' <summary>Stops the reading thread and requests that the TCP connection be closed.</summary>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Closes the network connection and cleans up.
+    ''' </summary>
     Public Sub Disconnect()
         If Not Client.Connected Then Throw New InvalidOperationException("No open connection to close.")
 
@@ -125,7 +142,9 @@ Public Class Client
         End Try
     End Sub
 
-    ''' <summary>Asynchronously writes a byte array to the network stream.</summary>
+    ''' <summary>
+    ''' Asynchronously writes a byte array to the network stream.
+    ''' </summary>
     ''' <param name="Packet">Byte array to send to the server</param>
     ''' <exception cref="InvalidOperationException">The client is not connected.</exception>
     ''' <exception cref="ArgumentException">Packet is null or zero bytes.</exception>

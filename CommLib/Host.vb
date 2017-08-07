@@ -2,32 +2,62 @@
 Imports System.Net
 Imports System.Net.Sockets
 
-''' <summary>Represents a TCP/IP listen server.</summary>
-''' <remarks></remarks>
+''' <summary>
+''' Represents a TCP/IP listen server.
+''' </summary>
 <CLSCompliant(True)>
 Public Class Host
+
+    Private Const CLIENT_ARRAY_SIZE As Integer = 128
+    Private Const CLIENT_ARRAY_UPPERBOUND As Integer = CLIENT_ARRAY_SIZE - 1
+
+    ''' <summary>
+    ''' Holds information about a connected client.
+    ''' </summary>
+    Private Class ConnectedClient
+        Public Property Socket As TcpClient
+
+        Public Property ReadBuffer As Byte()
+        Public Property PacketBuffer As Byte()
+
+        Public Sub New()
+            Socket = Nothing
+            PacketBuffer = New Byte() {}
+            ReadBuffer = New Byte(4095) {}
+        End Sub
+    End Class
 
     Private Server As TcpListener
     Private ServerCore As Thread ', Listener As Thread
     Private Kill As Boolean = False, Started As Boolean = False
     Private ListenerStopped As Boolean = True
+    Private _MaxClients As Integer
 
-    Private Clients(0 To 4095) As CommClient
+    Private ReadOnly Clients(CLIENT_ARRAY_UPPERBOUND) As ConnectedClient
 
-    ''' <summary>Gets or sets the maximum number of client connections.</summary>
-    ''' <returns>Integer - max connections</returns>
-    ''' <remarks>If a user tries to connect while the connection list is maxed out,
-    ''' the incoming connection will be rejected.</remarks>
+    ''' <summary>
+    ''' Gets or sets the maximum number of client connections.
+    ''' </summary>
+    ''' <remarks>
+    ''' If a user tries to connect while the connection list is full, the incoming connection will be ignored.
+    ''' </remarks>
     Public Property MaxClients As Integer
+        Get
+            Return _MaxClients
+        End Get
+        Set
+            _MaxClients = Math.Min(Value, CLIENT_ARRAY_SIZE)
+        End Set
+    End Property
 
-    ''' <summary>Gets or sets the IP address the listener will bind to.</summary>
-    ''' <returns>IPAddress</returns>
-    ''' <remarks>Default is IPAddress.Loopback.</remarks>
+    ''' <summary>
+    ''' Gets or sets the IP address the listener will bind to.
+    ''' </summary>
     Public Property LocalIP As IPAddress
 
-    ''' <summary>Gets or sets the TCP port the listener will bind to.</summary>
-    ''' <returns>Integer - port</returns>
-    ''' <remarks>Default is 8080.</remarks>
+    ''' <summary>
+    ''' Gets or sets the TCP port the listener will bind to.
+    ''' </summary>
     Public Property LocalPort As Integer
 
     Public Event OnServerStart()
@@ -40,12 +70,12 @@ Public Class Host
     Public Sub New()
         LocalIP = IPAddress.Loopback
         LocalPort = 8080
-        MaxClients = 1000
+        MaxClients = CLIENT_ARRAY_SIZE
     End Sub
 
-    ''' <summary>Gets a value indicating whether the server is currently listening for clients.</summary>
-    ''' <returns>Boolean - True: Listen server running. False: Not listening.</returns>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Returns a value indicating whether the server is currently listening for clients.
+    ''' </summary>
     Public ReadOnly Property Listening As Boolean
         Get
             Return Server IsNot Nothing AndAlso Started
@@ -65,7 +95,7 @@ Public Class Host
                     End If
                 End While
                 ' accept tcp client (blocking call)
-                Dim Client As New CommClient
+                Dim Client As New ConnectedClient
                 Dim ClientSock As TcpClient = Server.AcceptTcpClient
                 Client.Socket = ClientSock
                 Clients(nextSlot) = Client
@@ -85,8 +115,8 @@ Public Class Host
     End Sub
 
     Private Sub ReadCallback(ir As IAsyncResult)
-        Dim clID As Integer = CInt(ir.AsyncState)
-        Dim cl As CommClient = Clients(clID)
+        Dim clID As Integer = ir.AsyncState
+        Dim cl As ConnectedClient = Clients(clID)
         Try
             Dim Read As Integer = cl.Socket.GetStream.EndRead(ir)
 
@@ -163,13 +193,14 @@ Public Class Host
                     ListenerStopped = Not ThreadPool.QueueUserWorkItem(AddressOf ListenThread)
                 End If
             End If
-            
+
             Thread.Sleep(1)
         End While
     End Sub
 
-    ''' <summary>Starts the listen server and fires all associated threads.</summary>
-    ''' <remarks></remarks>
+    ''' <summary>
+    ''' Starts the listen server.
+    ''' </summary>
     Public Sub Start()
         If Server IsNot Nothing Or Started Then Throw New InvalidOperationException("Socket is already open.")
 
@@ -190,9 +221,9 @@ Public Class Host
         RaiseEvent OnServerStart()
     End Sub
 
-    ''' <summary>Aborts the processing threads, closes the listen server and disconnects all clients.</summary>
-    ''' <remarks></remarks>
-    ''' <exception cref="InvalidOperationException">Server is not running.</exception>
+    ''' <summary>
+    ''' Closes the listen server and disconnects all clients.
+    ''' </summary>
     Public Sub [Stop]()
         If Not Started Then Throw New InvalidOperationException("Server is not running.")
 
@@ -200,7 +231,7 @@ Public Class Host
         Kill = True
         Started = False
         ' drop the clients
-        For I As Integer = 0 To 4095
+        For I As Integer = 0 To CLIENT_ARRAY_UPPERBOUND
             If Clients(I) IsNot Nothing Then
                 If Clients(I).Socket.Connected Then Clients(I).Socket.Close()
             End If
@@ -215,9 +246,10 @@ Public Class Host
         RaiseEvent OnServerStop()
     End Sub
 
-    ''' <summary>Returns the local end point of a client as a String representation of an IPv4 address.</summary>
+    ''' <summary>
+    ''' Returns the local end point of a client as a String representation of an IPv4 address.
+    ''' </summary>
     ''' <param name="clientID">Client index</param>
-    ''' <returns>String - IPv4 address</returns>
     ''' <exception cref="InvalidOperationException">Server is not running.</exception>
     Public Function GetClientIP(clientID As Integer) As String
         If Not Started Then Throw New InvalidOperationException("Server is not running.")
@@ -226,10 +258,10 @@ Public Class Host
         Return Clients(clientID).Socket.Client.RemoteEndPoint.ToString
     End Function
 
-    ''' <summary>Returns a value indicating whether the client socket is still in use.</summary>
+    ''' <summary>
+    ''' Returns a value indicating whether the client socket is still in use.
+    ''' </summary>
     ''' <param name="clientID">Client index</param>
-    ''' <returns>Boolean - True: client connected. False: no such client, or connection is closed.</returns>
-    ''' <remarks></remarks>
     ''' <exception cref="InvalidOperationException">Server is not running.</exception>
     Public Function GetClientAlive(clientID As Integer) As Boolean
         If Not Started Then Throw New InvalidOperationException("Server is not running.")
@@ -314,7 +346,6 @@ Public Class Host
     ''' Disconnects the specified client and disposes of the socket. If the client is already disconnected, no exception is thrown.
     ''' </summary>
     ''' <param name="clientID">Client index</param>
-    ''' <remarks></remarks>
     ''' <exception cref="ArgumentException">No client with specified ID is known.</exception>
     ''' <exception cref="InvalidOperationException">Server is not running.</exception>
     Public Overloads Sub Kick(clientID As Integer)
@@ -333,7 +364,6 @@ Public Class Host
     ''' </summary>
     ''' <param name="clientID">Client index to send the data to and disconnect.</param>
     ''' <param name="Packet">Byte array to send.</param>
-    ''' <remarks></remarks>
     ''' <exception cref="ArgumentException">Packet is null or zero bytes.</exception>
     ''' <exception cref="InvalidOperationException">Server is not running.</exception>
     Public Overloads Sub Kick(clientID As Integer, packet() As Byte)
@@ -351,29 +381,12 @@ Public Class Host
     Private Sub DelayKickCallback(ir As IAsyncResult)
         ' called from Kick(Integer, Byte()) - callback, kill the client now
         Try
-            Dim clientID As Integer = CInt(ir.AsyncState)
+            Dim clientID As Integer = ir.AsyncState
             Clients(clientID).Socket.GetStream.EndWrite(ir)
             Kick(clientID)
         Catch ex As Exception
             ' swallow exceptions, we shouldn't error out when kicking a bad client
         End Try
-    End Sub
-
-End Class
-
-''' <summary>
-''' Holds information about a connected client.
-''' </summary>
-Friend Class CommClient
-
-    Public Socket As TcpClient
-
-    Public ReadBuffer(0 To 4095) As Byte
-    Public PacketBuffer() As Byte
-
-    Public Sub New()
-        Socket = Nothing
-        PacketBuffer = New Byte() {}
     End Sub
 
 End Class
