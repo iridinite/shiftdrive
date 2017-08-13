@@ -21,6 +21,7 @@ namespace ShiftDrive {
     /// Represents an interactive UI component.
     /// </summary>
     internal abstract class Control {
+
         protected int X { get; set; }
         protected int Y { get; set; }
 
@@ -31,7 +32,7 @@ namespace ShiftDrive {
         public ControlDrawMode DrawMode { get; set; } = ControlDrawMode.ChildrenFirst;
 
         private readonly List<Control> Children = new List<Control>();
-        private Control Parent { get; set; }
+        public Control Parent { get; set; }
 
         private Control _root;
 
@@ -89,6 +90,13 @@ namespace ShiftDrive {
         protected void AddChild(Control child) {
             child.Parent = this;
             Children.Add(child);
+        }
+
+        /// <summary>
+        /// Removes a child from the control's collection. If the child is not found, no exception is thrown.
+        /// </summary>
+        protected void RemoveChild(Control child) {
+            Children.Remove(child);
         }
 
         /// <summary>

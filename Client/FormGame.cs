@@ -13,7 +13,17 @@ namespace ShiftDrive {
     /// Implements a form displaying in-game client state and a linked <seealso cref="ShiftDrive.Console"/>.
     /// </summary>
     internal class FormGame : Control {
-        private Console Console { get; set; }
+
+        private Console _console;
+        private Console Console {
+            get { return _console; }
+            set {
+                // clean up previous inst, and set up parent for the new one
+                _console?.Destroy();
+                _console = value;
+                _console.Parent = this;
+            }
+        }
 
         private float gameOverTime;
         private float gameOverFade;
@@ -77,6 +87,7 @@ namespace ShiftDrive {
                 Console.Update(gameTime);
             }
         }
+
     }
 
 }
