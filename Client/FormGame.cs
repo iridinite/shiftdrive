@@ -41,7 +41,7 @@ namespace ShiftDrive {
                 switcher.AddConsoleButton(5, sender => Console = new ConsoleIntel(), Locale.Get("console_intel"));
 
             switcher.AddConsoleButton(6, sender => Console = new ConsoleLrs(), Locale.Get("console_lrs")); // debug LRS
-            Children.Add(switcher);
+            AddChild(switcher);
         }
 
         protected override void OnRender(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {

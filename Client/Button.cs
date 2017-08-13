@@ -82,8 +82,8 @@ namespace ShiftDrive {
                 return;
             }
 
-            // do not respond to user input while animating
-            if (!Visible || closing || expand < 1f)
+            // do not respond to user input while animating or on an inactive layer
+            if (!Visible || closing || expand < 1f || !IsActiveLayer)
                 return;
 
             // update tooltip position and visibility

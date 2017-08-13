@@ -17,7 +17,7 @@ namespace ShiftDrive {
         private readonly Vector2 messageSize;
 
         public FormMessage(string message) {
-            Children.Add(new Skybox());
+            AddChild(new Skybox());
 
             // store the message
             this.message = Utils.WrapText(Assets.fontDefault, message, SDGame.Inst.GameWidth - 200);
@@ -26,7 +26,7 @@ namespace ShiftDrive {
             var btnCancel = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 200, 250, 40, Locale.Get("returntomenu"));
             btnCancel.OnClick += sender => ((Button)sender).Close();
             btnCancel.OnClosed += sender => SDGame.Inst.SetUIRoot(new FormMainMenu());
-            Children.Add(btnCancel);
+            AddChild(btnCancel);
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {

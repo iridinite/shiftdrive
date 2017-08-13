@@ -42,7 +42,7 @@ namespace ShiftDrive {
 
         protected override void OnUpdate(GameTime gameTime) {
             // do not accept input if invisible
-            if (!Visible) {
+            if (!Visible || !IsActiveLayer) {
                 focus = false;
                 return;
             }

@@ -19,10 +19,10 @@ namespace ShiftDrive {
             int waterfallWidth = SDGame.Inst.GameWidth > 1280 ? 400 : 350;
 
             worldView = new PanelWorldView(SDGame.Inst.GameWidth - waterfallWidth, SDGame.Inst.GameHeight);
-            Children.Add(worldView);
-            Children.Add(new PanelCommsWaterfall(waterfallWidth));
-            Children.Add(new PanelAnnounce());
-            Children.Add(new PanelHullBar());
+            AddChild(worldView);
+            AddChild(new PanelCommsWaterfall(waterfallWidth));
+            AddChild(new PanelAnnounce());
+            AddChild(new PanelHullBar());
 
             DrawMode = ControlDrawMode.ChildrenFirst;
         }

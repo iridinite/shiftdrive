@@ -30,7 +30,31 @@ namespace ShiftDrive {
         public bool Visible { get; set; } = true;
         public ControlDrawMode DrawMode { get; set; } = ControlDrawMode.ChildrenFirst;
 
-        protected readonly List<Control> Children = new List<Control>();
+        private readonly List<Control> Children = new List<Control>();
+        private Control Parent { get; set; }
+
+        private Control _root;
+
+        /// <summary>
+        /// Returns the root control on this UI stack layer.
+        /// </summary>
+        public Control Root {
+            get {
+                // use cached result
+                if (_root != null) return _root;
+                // move up hierarchy until we find the root
+                var current = this;
+                while (current.Parent != null) current = current.Parent;
+                // cache and return it
+                _root = current;
+                return current;
+            }
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether this Control resides on the currently active UI layer.
+        /// </summary>
+        public bool IsActiveLayer => Root == SDGame.Inst.GetActiveUILayer();
 
         /// <summary>
         /// Called when the control should compose images to the screen.
@@ -58,6 +82,21 @@ namespace ShiftDrive {
         /// Called when the control should clean up after itself, in preparation for deletion.
         /// </summary>
         protected virtual void OnDestroy() {}
+
+        /// <summary>
+        /// Adds a child to this control's collection and sets the child's parent reference.
+        /// </summary>
+        protected void AddChild(Control child) {
+            child.Parent = this;
+            Children.Add(child);
+        }
+
+        /// <summary>
+        /// Returns the number of children contained by this control.
+        /// </summary>
+        protected int GetChildrenCount() {
+            return Children.Count;
+        }
 
         /// <summary>
         /// Instructs the control and its children to perform any render target drawing operations.

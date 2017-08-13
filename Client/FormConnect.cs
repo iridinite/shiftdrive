@@ -33,8 +33,8 @@ namespace ShiftDrive {
         private string connectErrorMsg;
 
         public FormConnect() {
-            Children.Add(new Skybox());
-            Children.Add(new PanelGameTitle(-100f));
+            AddChild(new Skybox());
+            AddChild(new PanelGameTitle(-100f));
 
             int centerY = SDGame.Inst.GameHeight / 2;
             state = FormState.Default;
@@ -42,14 +42,14 @@ namespace ShiftDrive {
             // create UI controls
             txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, centerY + 50, 250);
             txtIP.text = Config.ServerIP;
-            Children.Add(txtIP);
+            AddChild(txtIP);
             btnConnect = new TextButton(0, -1, centerY + 110, 250, 40, Locale.Get("connect"));
             btnConnect.OnClick += btnConnect_Click;
-            Children.Add(btnConnect);
+            AddChild(btnConnect);
             btnConnectFailConfirm = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("ok"));
             btnConnectFailConfirm.Visible = false;
             btnConnectFailConfirm.OnClick += btnConnectFailConfirm_Click;
-            Children.Add(btnConnectFailConfirm);
+            AddChild(btnConnectFailConfirm);
             btnBackToMenu = new TextButton(1, -1, centerY + 160, 250, 40, Locale.Get("cancel"));
             btnBackToMenu.CancelSound = true;
             btnBackToMenu.OnClosed += sender => {
@@ -57,7 +57,7 @@ namespace ShiftDrive {
                     SDGame.Inst.SetUIRoot(new FormMainMenu());
             };
             btnBackToMenu.OnClick += btnBackToMenu_Click;
-            Children.Add(btnBackToMenu);
+            AddChild(btnBackToMenu);
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {

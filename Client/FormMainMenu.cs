@@ -14,24 +14,24 @@ namespace ShiftDrive {
         private int leaveAction;
 
         public FormMainMenu() {
-            Children.Add(new Skybox());
-            Children.Add(new PanelGameTitle(0f));
+            AddChild(new Skybox());
+            AddChild(new PanelGameTitle(0f));
 
             // create UI controls
             btnConnect = new TextButton(0, -1, SDGame.Inst.GameHeight / 2 + 100, 260, 40, Locale.Get("menu_connect"));
             btnConnect.OnClick += btnConnect_Click;
-            Children.Add(btnConnect);
+            AddChild(btnConnect);
             btnHost = new TextButton(1, -1, SDGame.Inst.GameHeight / 2 + 150, 260, 40, Locale.Get("menu_host"));
             btnHost.OnClick += btnHost_OnClick;
             btnHost.Enabled = false;
-            Children.Add(btnHost);
+            AddChild(btnHost);
             btnOptions = new TextButton(2, SDGame.Inst.GameWidth / 2 - 130, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Locale.Get("menu_options"));
             btnOptions.OnClick += btnOptions_OnClick;
-            Children.Add(btnOptions);
+            AddChild(btnOptions);
             btnQuit = new TextButton(3, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 200, 125, 40, Locale.Get("menu_exit"));
             btnQuit.OnClick += btnClose_Click;
             btnQuit.OnClosed += btnClose_Closed;
-            Children.Add(btnQuit);
+            AddChild(btnQuit);
         }
 
         private void CloseButtons() {

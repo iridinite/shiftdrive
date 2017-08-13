@@ -4,6 +4,9 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -33,7 +36,7 @@ namespace ShiftDrive {
         /// <summary>
         /// The currently active form object.
         /// </summary>
-        private Control UIRoot { get; set; }
+        private Stack<Control> UIStack { get; }
 
         /// <summary>
         /// The projection matrix used for 3D rendering.
@@ -54,6 +57,7 @@ namespace ShiftDrive {
             Inst = this;
 
             console = new DeveloperConsole();
+            UIStack = new Stack<Control>();
             Config.Load();
 
             Window.AllowUserResizing = false;
@@ -119,12 +123,12 @@ namespace ShiftDrive {
             // re-calculate the 3D projection matrix
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60.0f), GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
 
-            // open a default form if none is active
             lock (uiRootLock) {
-                if (UIRoot == null)
-                    UIRoot = new FormMainMenu();
+                // open a default form if none is active
+                if (UIStack.Count == 0)
+                    SetUIRoot(new FormMainMenu());
                 // update the active form
-                UIRoot.Update(gameTime);
+                UIStack.ForEach(ctl => ctl.Update(gameTime));
             }
 
             console.Update(deltaTime);
@@ -141,12 +145,12 @@ namespace ShiftDrive {
         protected override void Draw(GameTime gameTime) {
             lock (uiRootLock) {
                 // some controls may want to draw to rendertargets
-                UIRoot?.Render(GraphicsDevice, spriteBatch);
+                UIStack.ForEach(ctl => ctl.Render(GraphicsDevice, spriteBatch));
                 // active form should draw its contents
                 GraphicsDevice.SetRenderTarget(null);
                 GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-                UIRoot?.Draw(spriteBatch);
+                UIStack.ForEach(ctl => ctl.Draw(spriteBatch));
                 spriteBatch.End();
             }
 
@@ -189,8 +193,39 @@ namespace ShiftDrive {
         /// </summary>
         public void SetUIRoot(Control val) {
             lock (uiRootLock) {
-                UIRoot?.Destroy();
-                UIRoot = val;
+                // clear the stack
+                while (UIStack.Count > 0) PopUI();
+                // push the new item
+                PushUI(val);
+            }
+        }
+
+        /// <summary>
+        /// Adds a control on top of the UI stack.
+        /// </summary>
+        public void PushUI(Control val) {
+            lock (uiRootLock) {
+                UIStack.Push(val);
+            }
+        }
+
+        /// <summary>
+        /// Removes the topmost control from the UI stack and calls its Destroy function.
+        /// </summary>
+        public void PopUI() {
+            lock (uiRootLock) {
+                Debug.Assert(UIStack.Count > 0);
+                UIStack.Peek().Destroy();
+                UIStack.Pop();
+            }
+        }
+
+        /// <summary>
+        /// Returns the topmost Control on the UI stack.
+        /// </summary>
+        public Control GetActiveUILayer() {
+            lock (uiRootLock) {
+                return UIStack.Peek();
             }
         }
 

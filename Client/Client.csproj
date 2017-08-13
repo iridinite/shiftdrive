@@ -49,6 +49,7 @@
     <Compile Include="CommMessage.cs" />
     <Compile Include="ConsoleIntel.cs" />
     <Compile Include="ConsoleSettings.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="FormGameOver.cs" />
     <Compile Include="ImageButton.cs" />
     <Compile Include="Locale.cs" />

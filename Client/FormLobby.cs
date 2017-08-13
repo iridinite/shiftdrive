@@ -18,34 +18,34 @@ namespace ShiftDrive {
         private bool isReady;
 
         public FormLobby() {
-            Children.Add(new Skybox());
+            AddChild(new Skybox());
 
             int cx = SDGame.Inst.GameWidth / 2;
             int cy = SDGame.Inst.GameHeight / 2;
             btnHelm = new TextButton(1, cx - 80, cy - 150, 200, 40, Locale.Get("console_helm"));
             btnHelm.OnClick += BtnHelm_OnClick;
-            Children.Add(btnHelm);
+            AddChild(btnHelm);
             btnWeap = new TextButton(2, cx - 80, cy - 100, 200, 40, Locale.Get("console_wep"));
             btnWeap.OnClick += BtnWeap_OnClick;
-            Children.Add(btnWeap);
+            AddChild(btnWeap);
             btnEngi = new TextButton(3, cx - 80, cy - 50, 200, 40, Locale.Get("console_eng"));
             btnEngi.OnClick += BtnEngi_OnClick;
-            Children.Add(btnEngi);
+            AddChild(btnEngi);
             btnQuar = new TextButton(4, cx - 80, cy, 200, 40, Locale.Get("console_quar"));
             btnQuar.OnClick += BtnQuar_OnClick;
-            Children.Add(btnQuar);
+            AddChild(btnQuar);
             btnIntel = new TextButton(5, cx - 80, cy + 50, 200, 40, Locale.Get("console_intel"));
             btnIntel.OnClick += BtnIntel_OnClick;
-            Children.Add(btnIntel);
+            AddChild(btnIntel);
 
             btnDisconnect = new TextButton(0, 20, SDGame.Inst.GameHeight - 60, 200, 40, Locale.Get("disconnect"));
             btnDisconnect.CancelSound = true;
             btnDisconnect.OnClick += BtnDisconnect_OnClick;
-            Children.Add(btnDisconnect);
+            AddChild(btnDisconnect);
             btnReady = new TextButton(6, SDGame.Inst.GameWidth - 220, SDGame.Inst.GameHeight - 60, 200, 40, Locale.Get("ready"));
             btnReady.OnClick += BtnReady_OnClick;
             btnReady.OnClosed += BtnReady_OnClosed;
-            Children.Add(btnReady);
+            AddChild(btnReady);
 
             isReady = false;
 

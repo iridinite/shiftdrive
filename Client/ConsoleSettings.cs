@@ -12,7 +12,7 @@ namespace ShiftDrive {
         public ConsoleSettings() {
             var btnToLobby = new TextButton(-1, -1, 300, 300, 40, Locale.Get("returntolobby"));
             btnToLobby.OnClick += sender => SDGame.Inst.SetUIRoot(new FormLobby());
-            Children.Add(btnToLobby);
+            AddChild(btnToLobby);
         }
     }
 

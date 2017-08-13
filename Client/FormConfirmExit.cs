@@ -17,18 +17,18 @@ namespace ShiftDrive {
         private int leaveAction;
 
         public FormConfirmExit() {
-            Children.Add(new Skybox());
-            Children.Add(new PanelGameTitle(0f));
+            AddChild(new Skybox());
+            AddChild(new PanelGameTitle(0f));
 
             // create UI controls
             btnQuit = new TextButton(0, SDGame.Inst.GameWidth / 2 - 185, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Locale.Get("confirmexit_yes"));
             btnQuit.OnClick += btnConnect_Click;
-            Children.Add(btnQuit);
+            AddChild(btnQuit);
             btnCancel = new TextButton(1, SDGame.Inst.GameWidth / 2 + 5, SDGame.Inst.GameHeight / 2 + 100, 180, 40, Locale.Get("confirmexit_no"));
             btnCancel.CancelSound = true;
             btnCancel.OnClick += btnCancel_Click;
             btnCancel.OnClosed += btnCancel_Closed;
-            Children.Add(btnCancel);
+            AddChild(btnCancel);
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {

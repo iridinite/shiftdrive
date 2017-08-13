@@ -19,11 +19,11 @@ namespace ShiftDrive {
         private float glowSize;
 
         public ConsoleHelm() {
-            Children.Add(new PanelWorldView(SDGame.Inst.GameWidth, SDGame.Inst.GameHeight));
-            Children.Add(new PanelHullBar());
-            Children.Add(new PanelAnnounce());
-            Children.Add(new PanelFuelGauge());
-            Children.Add(new PanelThrottleBar());
+            AddChild(new PanelWorldView(SDGame.Inst.GameWidth, SDGame.Inst.GameHeight));
+            AddChild(new PanelHullBar());
+            AddChild(new PanelAnnounce());
+            AddChild(new PanelFuelGauge());
+            AddChild(new PanelThrottleBar());
             glowVisible = false;
         }
 

@@ -17,14 +17,14 @@ namespace ShiftDrive {
 
         public ConsoleWeapons() {
             worldView = new PanelWorldView(SDGame.Inst.GameWidth, SDGame.Inst.GameHeight);
-            Children.Add(worldView);
-            Children.Add(new PanelHullBar());
-            Children.Add(new PanelAnnounce());
-            Children.Add(new PanelFuelGauge());
+            AddChild(worldView);
+            AddChild(new PanelHullBar());
+            AddChild(new PanelAnnounce());
+            AddChild(new PanelFuelGauge());
 
             var btnShields = new TextButton(-1, SDGame.Inst.GameWidth - 200, 400, 120, 40, Locale.Get("shields_toggle"));
             btnShields.OnClick += btnShields_Click;
-            Children.Add(btnShields);
+            AddChild(btnShields);
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch) {
