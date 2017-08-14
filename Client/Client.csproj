@@ -46,6 +46,7 @@
     <Compile Include="Button.cs" />
     <Compile Include="BVHTree.cs" />
     <Compile Include="CollisionLayer.cs" />
+    <Compile Include="ComboBox.cs" />
     <Compile Include="CommMessage.cs" />
     <Compile Include="ConsoleIntel.cs" />
     <Compile Include="ConsoleSettings.cs" />
