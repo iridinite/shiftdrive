@@ -18,6 +18,7 @@ namespace ShiftDrive {
     /// Represents an interactive button.
     /// </summary>
     internal abstract class Button : Control {
+
         public bool Enabled { get; set; }
         public bool CancelSound { get; set; }
 
@@ -146,6 +147,7 @@ namespace ShiftDrive {
         public void SetTooltip(string text) {
             tooltip = new Tooltip(new Rectangle(X, Y, Width, Height), text);
         }
+
     }
 
 }

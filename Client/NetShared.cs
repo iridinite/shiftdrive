@@ -31,6 +31,7 @@ namespace ShiftDrive {
     /// Helper functions for networking.
     /// </summary>
     internal static class NetShared {
+
         public const byte ProtocolVersion = 1;
 
         /// <summary>

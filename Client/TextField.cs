@@ -13,7 +13,8 @@ namespace ShiftDrive {
     /// Represents a text field that can receive user input.
     /// </summary>
     internal sealed class TextField : Control {
-        public string text;
+
+        public string Text { get; set; }
 
         private bool focus;
 
@@ -25,7 +26,7 @@ namespace ShiftDrive {
             this.Y = y;
             this.Width = width;
             this.Height = 24;
-            text = "";
+            Text = "";
             blinktime = 1.0;
             blinkmode = true;
             focus = false;
@@ -37,7 +38,7 @@ namespace ShiftDrive {
             spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(X, Y, 8, 24), new Rectangle(0, 0, 8, 24), Color.White);
             spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(X + 8, Y, Width - 16, 24), new Rectangle(8, 0, 8, 24), Color.White);
             spriteBatch.Draw(Assets.GetTexture("ui/textentry"), new Rectangle(X + Width - 8, Y, 8, 24), new Rectangle(16, 0, 8, 24), Color.White);
-            spriteBatch.DrawString(Assets.fontDefault, blinkmode && focus ? text + "|" : text, new Vector2(X + 6, Y + 6), Color.Black);
+            spriteBatch.DrawString(Assets.fontDefault, blinkmode && focus ? Text + "|" : Text, new Vector2(X + 6, Y + 6), Color.Black);
         }
 
         protected override void OnUpdate(GameTime gameTime) {
@@ -75,12 +76,12 @@ namespace ShiftDrive {
             if (!focus) return;
             int ascii = Convert.ToInt32(e.Character);
             if (ascii == 8) { // backspace
-                if (text.Length > 0) text = text.Substring(0, text.Length - 1);
+                if (Text.Length > 0) Text = Text.Substring(0, Text.Length - 1);
             } else if (ascii < 32) { // control characters
                 return;
             } else {
                 // new character
-                text += e.Character;
+                Text += e.Character;
             }
         }
 

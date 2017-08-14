@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 namespace ShiftDrive {
 
     internal static class NetClient {
+
         private static Iridinite.Networking.Client socket;
 
         public static GameState World { get; private set; }

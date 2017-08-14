@@ -16,6 +16,7 @@ namespace ShiftDrive {
     /// Represents a collection of <seealso cref="SoundEffect"/>s with an optional set of playback parameters.
     /// </summary>
     internal sealed class SoundCue : IDisposable {
+
         private readonly List<SoundEffect> sounds;
         private double lastPlayedAt;
 
@@ -118,6 +119,7 @@ namespace ShiftDrive {
         public override string ToString() {
             return $"{Count} sounds";
         }
+
     }
 
 }

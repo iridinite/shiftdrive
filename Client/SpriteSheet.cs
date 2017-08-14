@@ -17,6 +17,7 @@ namespace ShiftDrive {
     /// Represents an animated sprite.
     /// </summary>
     internal sealed class SpriteSheet {
+
         /// <summary>
         /// Specifies a style with which to render a sprite.
         /// </summary>
@@ -53,7 +54,6 @@ namespace ShiftDrive {
 
         public List<SpriteLayer> layers = new List<SpriteLayer>();
         public bool isPrototype;
-        private bool offsetRandom;
 
         /// <summary>
         /// Reads a sprite sheet prototype from a file.
@@ -129,21 +129,22 @@ namespace ShiftDrive {
             ret.isPrototype = false;
             ret.layers = new List<SpriteLayer>();
             foreach (SpriteLayer protlayer in layers) {
-                SpriteLayer clonelayer = new SpriteLayer();
-                clonelayer.tag = protlayer.tag;
-                clonelayer.blend = protlayer.blend;
-                clonelayer.frames = protlayer.frames;
-                clonelayer.frameTime = protlayer.frameTime;
-                clonelayer.frameNo = 0;
-                clonelayer.rotate = 0f;
-                clonelayer.rotateSpeed = protlayer.rotateSpeed;
-                clonelayer.scale = protlayer.scale;
-                clonelayer.color = protlayer.color;
+                SpriteLayer clonelayer = new SpriteLayer {
+                    tag = protlayer.tag,
+                    blend = protlayer.blend,
+                    frames = protlayer.frames,
+                    frameTime = protlayer.frameTime,
+                    frameNo = 0,
+                    rotate = 0f,
+                    rotateSpeed = protlayer.rotateSpeed,
+                    scale = protlayer.scale,
+                    color = protlayer.color
+                };
                 ret.layers.Add(clonelayer);
             }
-            if (offsetRandom) // randomize offsets
+            /*if (offsetRandom) // randomize offsets
                 foreach (SpriteLayer layer in ret.layers)
-                    layer.frameTime = (float)Utils.RNG.NextDouble() * layer.frames[0].hold;
+                    layer.frameTime = (float)Utils.RNG.NextDouble() * layer.frames[0].hold;*/
             return ret;
         }
 
@@ -185,6 +186,7 @@ namespace ShiftDrive {
                 if (layer.frameNo >= layer.frames.Count) layer.frameNo = 0;
             }
         }
+
     }
 
 }

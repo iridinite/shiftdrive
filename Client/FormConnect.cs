@@ -41,7 +41,7 @@ namespace ShiftDrive {
 
             // create UI controls
             txtIP = new TextField(SDGame.Inst.GameWidth / 2 - 125, centerY + 50, 250);
-            txtIP.text = Config.ServerIP;
+            txtIP.Text = Config.ServerIP;
             AddChild(txtIP);
             btnConnect = new TextButton(0, -1, centerY + 110, 250, 40, Locale.Get("connect"));
             btnConnect.OnClick += btnConnect_Click;
@@ -89,7 +89,7 @@ namespace ShiftDrive {
                 return;
             NetServer.Start();
             // connect to the remote server
-            NetClient.Connect(txtIP.text, ConnectResult);
+            NetClient.Connect(txtIP.Text, ConnectResult);
             // hide UI
             txtIP.Visible = false;
             btnConnect.Close();
