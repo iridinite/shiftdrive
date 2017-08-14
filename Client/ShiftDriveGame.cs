@@ -128,7 +128,7 @@ namespace ShiftDrive {
                 if (UIStack.Count == 0)
                     SetUIRoot(new FormMainMenu());
                 // update the active form
-                UIStack.ForEach(ctl => ctl.Update(gameTime));
+                UIStack.Reverse().ForEach(ctl => ctl.Update(gameTime));
             }
 
             console.Update(deltaTime);
@@ -145,12 +145,12 @@ namespace ShiftDrive {
         protected override void Draw(GameTime gameTime) {
             lock (uiRootLock) {
                 // some controls may want to draw to rendertargets
-                UIStack.ForEach(ctl => ctl.Render(GraphicsDevice, spriteBatch));
+                UIStack.Reverse().ForEach(ctl => ctl.Render(GraphicsDevice, spriteBatch));
                 // active form should draw its contents
                 GraphicsDevice.SetRenderTarget(null);
                 GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap);
-                UIStack.ForEach(ctl => ctl.Draw(spriteBatch));
+                UIStack.Reverse().ForEach(ctl => ctl.Draw(spriteBatch));
                 spriteBatch.End();
             }
 
