@@ -16,12 +16,18 @@ namespace ShiftDrive {
     /// </summary>
     internal static class Logger {
 
-        internal static readonly DirectoryInfo BaseDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+        internal static readonly DirectoryInfo BaseDir = new DirectoryInfo(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+            Path.DirectorySeparatorChar + "My Games" +
+            Path.DirectorySeparatorChar + "ShiftDrive");
+
         private static StreamWriter Writer;
 
         static Logger() {
             Debug.Assert(HasWritePermission());
-            Writer = new StreamWriter(BaseDir.FullName + "output.log");
+
+            if (!BaseDir.Exists) BaseDir.Create();
+            Writer = new StreamWriter(BaseDir.FullName + Path.DirectorySeparatorChar + "output.log");
         }
 
         /// <summary>
