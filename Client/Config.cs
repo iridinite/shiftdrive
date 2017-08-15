@@ -4,8 +4,8 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework.Audio;
 
 namespace ShiftDrive {
 
@@ -14,75 +14,43 @@ namespace ShiftDrive {
     /// </summary>
     internal static class Config {
 
-        private const string cfgFileName = "config.dat";
-        private const byte cfgVersion = 1;
+        private const string CONFIG_FILE_NAME = "settings.ini";
+        private static SettingsFile store;
 
-        private static byte _volumeSound = 10;
+        public static List<Tuple<int, int>> SupportedResolutions { get; } = new List<Tuple<int, int>>();
 
-        public static ushort ResolutionW { get; set; } = 1280;
-        public static ushort ResolutionH { get; set; } = 720;
-        public static bool FullScreen { get; set; } = false;
+        public static int ResolutionW { get; set; }
+        public static int ResolutionH { get; set; }
+        public static bool FullScreen { get; set; }
 
-        public static byte VolumeSound {
-            get { return _volumeSound; }
-            set {
-                _volumeSound = value;
-                SoundEffect.MasterVolume = value / 10f;
-            }
-        }
+        public static int VolumeSound { get; set; }
+        public static int VolumeMusic { get; set; }
 
-        public static byte VolumeMusic { get; set; } = 8;
-
-        public static string ServerIP { get; set; } = "localhost";
-        public static ushort ServerPort { get; set; } = 7777;
+        public static string ServerIP { get; set; }
+        public static int ServerPort { get; set; }
         
         public static void Load() {
             if (!Logger.HasWritePermission())
-                Logger.LogWarning("ShiftDrive does not have permission to save files to the app directory.\nAny settings you change will be lost.");
+                Logger.LogWarning("ShiftDrive does not have permission to save files to your 'My Games' folder. Any settings you change will be lost.");
 
-#if DEBUG
-            // if debugging, we probably always want windowed mode etc.
-#else
-            if (!File.Exists(Logger.BaseDir.FullName + cfgFileName))
-                return;
+            // load settings file from disk
+            store = new SettingsFile(Logger.BaseDir.FullName + Path.DirectorySeparatorChar + CONFIG_FILE_NAME);
 
-            try {
-                using (FileStream stream = new FileStream(Logger.BaseDir.FullName + cfgFileName, FileMode.Open)) {
-                    using (BinaryReader reader = new BinaryReader(stream)) {
-                        if (reader.ReadByte() != cfgVersion) throw new InvalidDataException("Invalid config file version");
+            // copy the settings into the static properties
+            ResolutionW = store.GetInt32("resolutionWidth");
+            ResolutionH = store.GetInt32("resolutionHeight");
+            FullScreen = store.GetBool("fullscreen", true);
 
-                        ResolutionW = reader.ReadUInt16();
-                        ResolutionH = reader.ReadUInt16();
-                        FullScreen = reader.ReadBoolean();
-                        VolumeSound = reader.ReadByte();
-                        VolumeMusic = reader.ReadByte();
-                    }
-                }
+            VolumeSound = store.GetInt32("volumeSound", 100);
+            VolumeMusic = store.GetInt32("volumeMusic", 80);
 
-            } catch (Exception ex) {
-                Logger.LogError("Failed to read config: " + ex);
-            }
-#endif
+            ServerIP = store.GetString("serverIP", "localhost");
+            ServerPort = store.GetInt32("serverPort", 7777);
         }
 
         public static void Save() {
             if (!Logger.HasWritePermission()) return;
-
-            try {
-                using (FileStream stream = new FileStream(Logger.BaseDir.FullName + cfgFileName, FileMode.Create)) {
-                    using (BinaryWriter writer = new BinaryWriter(stream)) {
-                        writer.Write(cfgVersion);
-                        writer.Write(ResolutionW);
-                        writer.Write(ResolutionH);
-                        writer.Write(FullScreen);
-                        writer.Write(VolumeSound);
-                        writer.Write(VolumeMusic);
-                    }
-                }
-
-            } catch (Exception ex) {
-                Logger.LogError("Failed to write config: " + ex);
-            }
+            store.Save();
         }
         
     }
