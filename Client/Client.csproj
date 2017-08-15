@@ -66,6 +66,7 @@
     <Compile Include="PanelWorldView.cs" />
     <Compile Include="ParticleManager.cs" />
     <Compile Include="ScriptableAttribute.cs" />
+    <Compile Include="SettingsFile.cs" />
     <Compile Include="SoundCue.cs" />
     <Compile Include="SpaceStation.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
