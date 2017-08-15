@@ -93,7 +93,8 @@ namespace ShiftDrive {
                 GraphicsProfile = GraphicsProfile.HiDef,
                 PreferredBackBufferWidth = Config.ResolutionW,
                 PreferredBackBufferHeight = Config.ResolutionH,
-                IsFullScreen = Config.FullScreen
+                IsFullScreen = Config.FullScreen,
+                HardwareModeSwitch = false
             };
         }
 
