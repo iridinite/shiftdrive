@@ -54,25 +54,47 @@ namespace ShiftDrive {
         public int GameHeight { get; private set; }
 
         public SDGame() {
-            Inst = this;
-
-            console = new DeveloperConsole();
-            UIStack = new Stack<Control>();
             Config.Load();
 
+            foreach (var mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes) {
+                // require at least a resolution of 1280 x 720
+                if (mode.Width < 1280 || mode.Height < 720) continue;
+                // save unique resolutions (there might be duplicates because of varying refresh rates)
+                var pair = new Tuple<int, int>(mode.Width, mode.Height);
+                if (!Config.SupportedResolutions.Contains(pair))
+                    Config.SupportedResolutions.Add(pair);
+            }
+            // sort from small to large
+            Config.SupportedResolutions.Sort();
+
+            // if no resolution has been set up, pick the largest in the list
+#if DEBUG
+            Config.ResolutionW = 1280;
+            Config.ResolutionH = 720;
+            Config.FullScreen = false;
+#else
+            if (Config.ResolutionW < 1280 || Config.ResolutionH < 720) {
+                Config.ResolutionW = Config.SupportedResolutions.Last().Item1;
+                Config.ResolutionH = Config.SupportedResolutions.Last().Item2;
+            }
+#endif
+
+            // state setup
+            Inst = this;
+            console = new DeveloperConsole();
+            UIStack = new Stack<Control>();
             Window.AllowUserResizing = false;
             IsMouseVisible = true;
+            Content.RootDirectory = "Content";
+            Exiting += SDGame_Exiting;
 
+            // graphics device setup
             graphics = new GraphicsDeviceManager(this) {
                 GraphicsProfile = GraphicsProfile.HiDef,
                 PreferredBackBufferWidth = Config.ResolutionW,
                 PreferredBackBufferHeight = Config.ResolutionH,
                 IsFullScreen = Config.FullScreen
             };
-
-            Content.RootDirectory = "Content";
-
-            Exiting += SDGame_Exiting;
         }
 
         protected override void Initialize() {
