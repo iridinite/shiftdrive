@@ -97,8 +97,7 @@ namespace ShiftDrive {
             if (!HasWritePermission()) return;
 
             try {
-                using (StreamWriter exWriter = new StreamWriter(
-                    $"{BaseDir.FullName}crash{DateTime.Now.ToFileTime()}.log")) {
+                using (StreamWriter exWriter = new StreamWriter($"{BaseDir.FullName}{Path.DirectorySeparatorChar}crash{DateTime.Now.ToFileTime()}.log")) {
                     exWriter.WriteLine("===================================");
                     exWriter.WriteLine("EXCEPTION REPORT");
                     exWriter.WriteLine("===================================");
